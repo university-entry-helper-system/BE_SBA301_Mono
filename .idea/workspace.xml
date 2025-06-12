@@ -5,21 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/UserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/AuthService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/util/JwtUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/LoginRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/Role.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/Token.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/RoleRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/TokenRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/Account.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/AccountRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/AuthService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SBA_M/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -35,35 +43,35 @@
     <option name="delegateBuildToMaven" value="true" />
     <option name="jreName" value="#JAVA_HOME" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2yOq920aSMEgv3BLhyD8gJ5l7io" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Maven.SBA_M [install].executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.SbaMApplication.executor": "Run",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/LENOVO/Documents/MyProject/SBA_M",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.rmicompiler",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.SBA_M [install].executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.SbaMApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/LENOVO/Documents/MyProject/SBA_M&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.rmicompiler&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="SbaMApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="SBA_M" />
@@ -100,7 +108,10 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1749715812866</updated>
-      <workItem from="1749715813917" duration="1534000" />
+      <workItem from="1749715813917" duration="3253000" />
+      <workItem from="1749726786462" duration="1060000" />
+      <workItem from="1749738446854" duration="2115000" />
+      <workItem from="1749760979548" duration="1446000" />
     </task>
     <servers />
   </component>
