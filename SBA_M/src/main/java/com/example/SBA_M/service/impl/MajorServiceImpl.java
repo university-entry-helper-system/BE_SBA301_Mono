@@ -1,10 +1,27 @@
 package com.example.SBA_M.service.impl;
 
 import com.example.SBA_M.entity.Major;
+import com.example.SBA_M.repository.MajorRepository;
+import com.example.SBA_M.service.MajorService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public interface MajorServiceImpl {
-    List<Major> getAllMajors();
-    Major saveMajor(Major major);
+@Service
+public class MajorServiceImpl implements MajorService {
+    private final MajorRepository majorRepository;
+
+    public MajorServiceImpl(MajorRepository majorRepository) {
+        this.majorRepository = majorRepository;
+    }
+
+    @Override
+    public List<Major> getAllMajors() {
+        return majorRepository.findAll();
+    }
+
+    @Override
+    public Major saveMajor(Major major) {
+        return majorRepository.save(major);
+    }
 }

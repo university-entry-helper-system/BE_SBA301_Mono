@@ -3,11 +3,15 @@ package com.example.SBA_M.security;
 import com.example.SBA_M.entity.Account;
 import com.example.SBA_M.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.*;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -16,16 +20,23 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final AccountRepository accountRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account user = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        Account account = accountRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                user.getRoles().stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().name()))
-                        .collect(Collectors.toSet())
+        // Kiểm tra trạng thái tài khoản
+        if (!"ACTIVE".equals(account.getStatus())) {
+            throw new UsernameNotFoundException("Account is not active. Status: " + account.getStatus());
+        }
+
+        // Tạo GrantedAuthority từ vai trò của Account
+        // Spring Security yêu cầu vai trò bắt đầu bằng "ROLE_"
+        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + account.getRole().getName());
+
+        return new User(
+                account.getUsername(), // Sử dụng username làm principal
+                account.getPasswordHash(),
+                Collections.singleton(authority) // Chỉ có một vai trò
         );
     }
 }
