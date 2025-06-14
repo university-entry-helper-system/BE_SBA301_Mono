@@ -1,4 +1,4 @@
-package com.example.SBA_M.util;
+package com.example.SBA_M.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

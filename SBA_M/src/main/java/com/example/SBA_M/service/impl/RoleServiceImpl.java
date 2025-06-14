@@ -3,7 +3,7 @@ import com.example.SBA_M.entity.Role;
 
 import java.util.List;
 
-public interface IRoleService {
+public interface RoleServiceImpl {
     List<Role> getAllRoles();
     Role getRoleById(Long id);
     Role saveRole(Role role);

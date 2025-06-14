@@ -1,4 +1,4 @@
-package com.example.SBA_M.dto;
+package com.example.SBA_M.dto.request;
 
 import lombok.Data;
 
