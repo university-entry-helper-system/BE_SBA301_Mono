@@ -1,7 +1,7 @@
 package com.example.SBA_M.controller;
 
 import com.example.SBA_M.entity.University;
-import com.example.SBA_M.service.UniversityService;
+import com.example.SBA_M.service.UniversityServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,9 +9,9 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/universities")
 public class UniversityController {
-    private final UniversityService universityService;
+    private final UniversityServiceImpl universityService;
 
-    public UniversityController(UniversityService universityService) {
+    public UniversityController(UniversityServiceImpl universityService) {
         this.universityService = universityService;
     }
 

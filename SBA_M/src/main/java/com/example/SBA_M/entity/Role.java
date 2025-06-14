@@ -1,5 +1,6 @@
 package com.example.SBA_M.entity;
 
+import com.example.SBA_M.utils.RoleName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,10 +22,4 @@ public class Role {
 
     @Column(columnDefinition = "TEXT")
     private String description;
-
-    public enum RoleName {
-        USER,
-        MODERATOR,
-        ADMIN
-    }
 }

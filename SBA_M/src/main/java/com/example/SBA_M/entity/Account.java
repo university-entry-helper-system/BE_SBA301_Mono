@@ -1,4 +1,6 @@
 package com.example.SBA_M.entity;
+import com.example.SBA_M.utils.AccountStatus;
+import com.example.SBA_M.utils.Gender;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,7 +33,7 @@ public class Account {
     @Column(name = "password", nullable = false, columnDefinition = "TEXT")
     private String password;
 
-    @Column(name = "full_name", length = 255)
+    @Column(name = "full_name", length = 100)
     private String fullName;
 
     @Column(length = 20, unique = true)
@@ -40,6 +42,13 @@ public class Account {
     @Column(nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     private AccountStatus status = AccountStatus.INACTIVE;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private Gender gender;
+
+    @Column(name = "dob")
+    private LocalDateTime dob;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -52,6 +61,12 @@ public class Account {
 
     @Column(name = "updated_by", length = 100)
     private String updatedBy;
+
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
+
+    @Column(name = "login_count")
+    private Integer loginCount = 0;
 
     @PrePersist
     protected void onCreate() {
@@ -70,9 +85,5 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public enum AccountStatus {
-        ACTIVE,
-        INACTIVE,
-        BANNED
-    }
+
 }

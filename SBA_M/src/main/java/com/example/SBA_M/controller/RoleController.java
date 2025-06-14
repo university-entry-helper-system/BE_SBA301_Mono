@@ -2,7 +2,7 @@ package com.example.SBA_M.controller;
 
 
 import com.example.SBA_M.entity.Role;
-import com.example.SBA_M.service.impl.IRoleService;
+import com.example.SBA_M.service.impl.RoleServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,9 +10,9 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/roles")
 public class RoleController {
-    private final IRoleService roleService;
+    private final RoleServiceImpl roleService;
 
-    public RoleController(IRoleService roleService) {
+    public RoleController(RoleServiceImpl roleService) {
         this.roleService = roleService;
     }
 

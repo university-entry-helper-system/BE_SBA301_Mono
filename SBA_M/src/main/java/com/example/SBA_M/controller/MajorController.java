@@ -1,7 +1,7 @@
 package com.example.SBA_M.controller;
 
 import com.example.SBA_M.entity.Major;
-import com.example.SBA_M.service.MajorService;
+import com.example.SBA_M.service.MajorServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,9 +9,9 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/majors")
 public class MajorController {
-    private final MajorService majorService;
+    private final MajorServiceImpl majorService;
 
-    public MajorController(MajorService majorService) {
+    public MajorController(MajorServiceImpl majorService) {
         this.majorService = majorService;
     }
 

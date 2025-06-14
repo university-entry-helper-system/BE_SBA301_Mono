@@ -1,17 +1,16 @@
 package com.example.SBA_M.service;
 
 import com.example.SBA_M.entity.Role;
-import com.example.SBA_M.service.impl.IRoleService;
 import com.example.SBA_M.repository.RoleRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class RoleService implements IRoleService {
+public class RoleServiceImpl implements com.example.SBA_M.service.impl.RoleServiceImpl {
     private final RoleRepository roleRepository;
 
-    public RoleService(RoleRepository roleRepository) {
+    public RoleServiceImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 

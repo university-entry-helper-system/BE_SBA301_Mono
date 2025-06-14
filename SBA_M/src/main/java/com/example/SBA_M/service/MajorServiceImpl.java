@@ -1,16 +1,15 @@
 package com.example.SBA_M.service;
 import com.example.SBA_M.entity.Major;
-import com.example.SBA_M.service.impl.IMajorService;
 import com.example.SBA_M.repository.MajorRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class MajorService implements IMajorService {
+public class MajorServiceImpl implements com.example.SBA_M.service.impl.MajorServiceImpl {
     private final MajorRepository majorRepository;
 
-    public MajorService(MajorRepository majorRepository) {
+    public MajorServiceImpl(MajorRepository majorRepository) {
         this.majorRepository = majorRepository;
     }
 

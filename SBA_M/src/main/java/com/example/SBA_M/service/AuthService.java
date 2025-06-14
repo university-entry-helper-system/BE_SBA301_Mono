@@ -1,13 +1,13 @@
 package com.example.SBA_M.service;
 
-import com.example.SBA_M.dto.LoginRequest;
+import com.example.SBA_M.dto.request.LoginRequest;
 import com.example.SBA_M.entity.Account;
 import com.example.SBA_M.entity.Role;
 import com.example.SBA_M.entity.Token;
 import com.example.SBA_M.repository.AccountRepository;
 import com.example.SBA_M.repository.RoleRepository;
 import com.example.SBA_M.repository.TokenRepository;
-import com.example.SBA_M.util.JwtUtil;
+import com.example.SBA_M.utils.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
