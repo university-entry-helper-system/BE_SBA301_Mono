@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/majors")
+@RequestMapping("api/v1/majors")
 public class MajorController {
     private final MajorService majorService;
 

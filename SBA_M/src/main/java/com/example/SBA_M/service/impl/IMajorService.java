@@ -1,4 +1,4 @@
-package com.example.SBA_M.iservice;
+package com.example.SBA_M.service.impl;
 
 import com.example.SBA_M.entity.Major;
 

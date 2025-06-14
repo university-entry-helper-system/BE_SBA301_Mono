@@ -2,7 +2,7 @@ package com.example.SBA_M.service;
 
 
 import com.example.SBA_M.entity.University;
-import com.example.SBA_M.iservice.IUniversityService;
+import com.example.SBA_M.service.impl.IUniversityService;
 import com.example.SBA_M.repository.UniversityRepository;
 import org.springframework.stereotype.Service;
 
