@@ -1,49 +1,78 @@
 package com.example.SBA_M.entity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "accounts")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Account {
     @Id
-    @Column(columnDefinition = "CHAR(36)")
-    private String id = UUID.randomUUID().toString();
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
-
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(nullable = false, unique = true, length = 255)
+    @Column(nullable = false, unique = true, length = 50)
     private String email;
 
-    @Column(name = "password_hash", nullable = false, columnDefinition = "TEXT")
-    private String passwordHash;
+    @Column(name = "password", nullable = false, columnDefinition = "TEXT")
+    private String password;
 
     @Column(name = "full_name", length = 255)
     private String fullName;
 
-    @Column(length = 20)
+    @Column(length = 20, unique = true)
     private String phone;
 
     @Column(nullable = false, length = 20)
-    private String status = "INACTIVE";
+    @Enumerated(EnumType.STRING)
+    private AccountStatus status = AccountStatus.INACTIVE;
 
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @Column(name = "created_by", length = 100)
     private String createdBy;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt;
 
     @Column(name = "updated_by", length = 100)
     private String updatedBy;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    public enum AccountStatus {
+        ACTIVE,
+        INACTIVE,
+        BANNED
+    }
 }
