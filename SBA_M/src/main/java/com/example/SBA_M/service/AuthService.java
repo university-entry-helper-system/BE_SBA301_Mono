@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AuthService {
@@ -33,7 +34,7 @@ public class AuthService {
 
     public String login(LoginRequest loginRequest) {
         Optional<Account> account = accountRepository.findByUsername(loginRequest.getUsername());
-        if (account.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), account.get().getPasswordHash())) {
+        if (account.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), account.get().getPassword())) {
             String token = jwtUtil.generateToken(loginRequest.getUsername());
             Token tokenEntity = new Token();
             tokenEntity.setAccount(account.get());
@@ -46,10 +47,10 @@ public class AuthService {
     }
 
     public String register(Account account) {
-        Role defaultRole = (Role) roleRepository.findByName("USER")
+        Role defaultRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("Default role not found"));
-        account.setRole(defaultRole);
-        account.setPasswordHash(passwordEncoder.encode(account.getPasswordHash()));
+        account.setRoles(Set.of(defaultRole));
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
         accountRepository.save(account);
         return "Account registered successfully!";
     }

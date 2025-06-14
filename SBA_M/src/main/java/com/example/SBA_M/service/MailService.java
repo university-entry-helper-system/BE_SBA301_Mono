@@ -1,11 +1,24 @@
 package com.example.SBA_M.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class MailService {
 
-    JavaMailSender mailSender;
+    private static final Logger log = LoggerFactory.getLogger(MailService.class);
+
+    private final JavaMailSender mailSender;
+
+    @Autowired
+    public MailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     public void sendActivationEmail(String to, String activationLink) {
         String subject = "Kích hoạt tài khoản của bạn";
@@ -25,7 +38,6 @@ public class MailService {
             message.setTo(to);
             message.setSubject(subject);
             message.setText(body);
-            // Có thể thêm message.setFrom("your-email@example.com") nếu cần
 
             mailSender.send(message);
             log.info("Email sent successfully to: {}", to);
