@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 @Table(name = "roles")
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "accounts")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

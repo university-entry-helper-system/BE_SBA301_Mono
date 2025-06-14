@@ -4,9 +4,11 @@ import com.example.SBA_M.dto.request.AccountCreationRequest;
 import com.example.SBA_M.dto.request.LoginRequest;
 import com.example.SBA_M.dto.request.RefreshTokenRequest;
 import com.example.SBA_M.dto.response.AuthResponse;
+import com.example.SBA_M.dto.response.AccountResponse;
 import com.example.SBA_M.entity.Account;
 import com.example.SBA_M.entity.Role;
 import com.example.SBA_M.entity.Token;
+import com.example.SBA_M.utils.Gender;
 import com.example.SBA_M.exception.AppException;
 import com.example.SBA_M.exception.ErrorCode;
 import com.example.SBA_M.mapper.AccountMapper;
@@ -22,25 +24,29 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 public class AuthService {
 
-    AccountRepository accountRepository;
-    RoleRepository roleRepository;
-    TokenRepository tokenRepository;
-    PasswordEncoder passwordEncoder;
-    JwtService jwtService;
-    MailService mailService;
+    private final AccountRepository accountRepository;
+    private final RoleRepository roleRepository;
+    private final TokenRepository tokenRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final MailService mailService;
+    private final AccountMapper accountMapper;
 
     @Value("${app.activation-code.expiration-minutes}")
     private long activationCodeExpirationMinutes;
@@ -48,34 +54,98 @@ public class AuthService {
     @Value("${app.password-reset-code.expiration-minutes}")
     private long passwordResetCodeExpirationMinutes;
 
-    public void registerUser(AccountCreationRequest request) {
-        if (accountRepository.findByUsername(request.getUsername()).isPresent()) {
+    @Transactional
+    public AccountResponse registerUser(AccountCreationRequest request) {
+        log.info("Starting user registration for username: {}", request.getUsername());
+        
+        // Validate username
+        if (accountRepository.existsByUsername(request.getUsername())) {
+            log.warn("Registration failed: Username '{}' already exists", request.getUsername());
             throw new AppException(ErrorCode.USERNAME_EXISTED);
         }
-        if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
+
+        // Validate email
+        if (accountRepository.existsByEmail(request.getEmail())) {
+            log.warn("Registration failed: Email '{}' already exists", request.getEmail());
             throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
 
-        Account account = AccountMapper.INSTANCE.toAccount(request);
-        account.setPassword(passwordEncoder.encode(request.getPassword()));
+        // Validate phone if provided
+        if (request.getPhone() != null && !request.getPhone().trim().isEmpty()) {
+            String normalizedPhone = request.getPhone().startsWith("+84") 
+                ? "0" + request.getPhone().substring(3) 
+                : request.getPhone();
+            
+            if (!normalizedPhone.matches("^0\\d{9}$")) {
+                log.warn("Registration failed: Invalid phone number format '{}'", request.getPhone());
+                throw new AppException(ErrorCode.INVALID_PARAM);
+            }
+            
+            if (accountRepository.existsByPhone(normalizedPhone)) {
+                log.warn("Registration failed: Phone number '{}' already exists", normalizedPhone);
+                throw new AppException(ErrorCode.PHONE_EXISTED);
+            }
+            request.setPhone(normalizedPhone);
+        }
 
-        // FIX 1: Convert RoleName enum to String
-        Role defaultRole = roleRepository.findByName(RoleName.USER.name())
+        // Validate date of birth if provided
+        if (request.getDob() != null && !request.getDob().trim().isEmpty()) {
+            try {
+                LocalDate dob = request.getDobAsLocalDate();
+                if (dob != null) {
+                    int year = dob.getYear();
+                    int currentYear = LocalDate.now().getYear();
+                    if (year < 1900 || year > currentYear) {
+                        log.warn("Registration failed: Invalid birth year '{}'", year);
+                        throw new AppException(ErrorCode.INVALID_PARAM);
+                    }
+                }
+            } catch (DateTimeParseException e) {
+                log.warn("Registration failed: Invalid date format for dob '{}'", request.getDob());
+                throw new AppException(ErrorCode.INVALID_PARAM);
+            } catch (IllegalArgumentException e) {
+                log.warn("Registration failed: Invalid date value for dob '{}'", request.getDob());
+                throw new AppException(ErrorCode.INVALID_PARAM);
+            }
+        }
+
+        // Validate gender if provided
+        if (request.getGender() != null) {
+            // Đã là enum, không cần kiểm tra thêm
+        }
+
+        try {
+            // Create new account
+            Account account = accountMapper.toAccount(request);
+            account.setPassword(passwordEncoder.encode(request.getPassword()));
+            
+            // Set default role
+            Role userRole = roleRepository.findByName(RoleName.USER)
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
-        Set<Role> roles = new HashSet<>();
-        roles.add(defaultRole);
-        account.setRoles(roles);
-        account.setStatus(AccountStatus.INACTIVE);
-        account.setIsDeleted(false);
+            
+            // Create roles set with initial role
+            Set<Role> roles = new HashSet<>();
+            roles.add(userRole);
+            account.setRoles(roles);
+            
+            // Save account
+            account = accountRepository.save(account);
+            log.info("User registered successfully: {}", account.getUsername());
+            
+            // Generate activation code and send email
+            String activationCode = UUID.randomUUID().toString();
+            account.setCreatedBy(activationCode);
+            account.setCreatedAt(Instant.now());
+            accountRepository.save(account);
 
-        String activationCode = UUID.randomUUID().toString();
-        account.setCreatedBy(activationCode);
-        account.setCreatedAt(Instant.now());
-
-        accountRepository.save(account);
-
-        String activationLink = "http://localhost:8080/api/v1/auth/activate?email=" + request.getEmail() + "&code=" + activationCode;
-        mailService.sendActivationEmail(request.getEmail(), activationLink);
+            String activationLink = "http://localhost:8080/api/v1/auth/activate?email=" + account.getEmail() + "&code=" + activationCode;
+            mailService.sendActivationEmail(account.getEmail(), activationLink);
+            
+            return accountMapper.toAccountResponse(account);
+        } catch (Exception e) {
+            log.error("Registration failed with unexpected error: ", e);
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
     }
 
     public void activateAccount(String email, String code) {

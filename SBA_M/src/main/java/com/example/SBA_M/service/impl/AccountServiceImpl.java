@@ -57,7 +57,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountMapper.toAccount(request);
         account.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        Role userRole = roleRepository.findByName(RoleName.USER.name())
+        Role userRole = roleRepository.findByName(RoleName.USER)
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         Set<Role> roles = new HashSet<>();
         roles.add(userRole);
@@ -82,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountMapper.toAccount(request);
         account.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        Role adminRole = roleRepository.findByName(RoleName.ADMIN.name())
+        Role adminRole = roleRepository.findByName(RoleName.ADMIN)
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         Set<Role> roles = new HashSet<>();
         roles.add(adminRole);

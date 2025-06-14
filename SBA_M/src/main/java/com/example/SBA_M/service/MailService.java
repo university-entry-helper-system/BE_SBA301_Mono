@@ -31,16 +31,17 @@ public class MailService {
 
     public void sendEmail(String to, String subject, String body) {
         try {
+            log.info("Attempting to send email to: {}", to);
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(to);
             message.setSubject(subject);
             message.setText(body);
-            // Có thể thêm message.setFrom("your-email@example.com") nếu cần
-
+            message.setFrom("dangkhoipham80@gmail.com");
+            
             mailSender.send(message);
             log.info("Email sent successfully to: {}", to);
         } catch (MailException e) {
-            log.error("Failed to send email to {}: {}", to, e.getMessage());
+            log.error("Failed to send email to {}: {}", to, e.getMessage(), e);
             throw new RuntimeException("Failed to send email: " + e.getMessage());
         }
     }
