@@ -11,10 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LoginRequest {
-    @NotBlank(message = "Tên đăng nhập hoặc email không được để trống.")
-    String usernameOrEmail;
-
-    @NotBlank(message = "Mật khẩu không được để trống.")
-    String password;
+public class RefreshTokenRequest {
+    @NotBlank(message = "Refresh token không được để trống.")
+    String refreshToken;
 }
