@@ -1,7 +1,7 @@
 package com.example.SBA_M.controller;
 
 import com.example.SBA_M.entity.UniversityCategory;
-import com.example.SBA_M.service.UniversityCategoryServiceImpl;
+import com.example.SBA_M.service.UniversityCategoryService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,9 +9,9 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/university-categories")
 public class UniversityCategoryController {
-    private final UniversityCategoryServiceImpl categoryService;
+    private final UniversityCategoryService categoryService;
 
-    public UniversityCategoryController(UniversityCategoryServiceImpl categoryService) {
+    public UniversityCategoryController(UniversityCategoryService categoryService) {
         this.categoryService = categoryService;
     }
 

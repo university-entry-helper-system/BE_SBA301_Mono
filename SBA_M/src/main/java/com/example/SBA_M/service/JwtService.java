@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
-import javax.crypto.SecretKey; // Import SecretKey
+import javax.crypto.SecretKey;
 
 @Service
 @Slf4j
@@ -45,15 +45,13 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
-        // FIX 1: Change Jwts.parserBuilder() to Jwts.parser()
-        // FIX 2: Change setSigningKey() to verifyWith() for parsing
-        // FIX 3: Change parseClaimsJws() to parseSignedClaims()
+    // FIX 5: Changed access modifier from private to public
+    public Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith((SecretKey) getSigningKey()) // Casting to SecretKey is safe here
+                .verifyWith((SecretKey) getSigningKey())
                 .build()
-                .parseSignedClaims(token) // New method for parsing signed JWTs
-                .getPayload(); // Get the claims payload
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     private Key getSigningKey() {
@@ -71,7 +69,6 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
-                // Keep signWith(Key, SignatureAlgorithm) for signing, as it's still valid
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -79,8 +76,11 @@ public class JwtService {
     public String generateAccessToken(Account account) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("accountId", account.getId().toString());
-        claims.put("roleId", account.getRole().getId());
-        claims.put("roleName", account.getRole().getName());
+        account.getRoles().stream().findFirst().ifPresent(role -> {
+            claims.put("roleId", role.getId());
+            claims.put("roleName", role.getName().name());
+        });
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(account.getUsername())
@@ -118,5 +118,9 @@ public class JwtService {
 
     public Long extractRoleId(String token) {
         return extractClaim(token, claims -> claims.get("roleId", Long.class));
+    }
+
+    public long getRefreshTokenExpiration() {
+        return refreshTokenExpiration;
     }
 }

@@ -1,17 +1,15 @@
 package com.example.SBA_M.dto.response;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 public class AuthResponse {
     String accessToken;
     String refreshToken;
-    Long expiresIn; // Thời gian hiệu lực của accessToken tính bằng milliseconds
+    Long expiresIn;
 }

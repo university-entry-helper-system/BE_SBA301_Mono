@@ -12,9 +12,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginRequest {
-    @NotBlank(message = "Tên đăng nhập hoặc email không được để trống.")
-    String usernameOrEmail;
+    @NotBlank(message = "Username cannot be blank")
+    String username; // Ensure this field exists and has its getter
 
-    @NotBlank(message = "Mật khẩu không được để trống.")
+    @NotBlank(message = "Password cannot be blank")
     String password;
 }

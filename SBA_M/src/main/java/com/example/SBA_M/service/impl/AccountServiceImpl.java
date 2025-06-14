@@ -5,13 +5,16 @@ import com.example.SBA_M.dto.request.UpdatePasswordRequest;
 import com.example.SBA_M.dto.request.UserUpdateRequest;
 import com.example.SBA_M.dto.response.AccountResponse;
 import com.example.SBA_M.dto.response.PageResponse;
-import com.example.SBA_M.dto.response.RoleResponse;
 import com.example.SBA_M.entity.Account;
 import com.example.SBA_M.entity.Role;
+import com.example.SBA_M.exception.AppException;
+import com.example.SBA_M.exception.ErrorCode;
+import com.example.SBA_M.mapper.AccountMapper;
 import com.example.SBA_M.repository.AccountRepository;
 import com.example.SBA_M.repository.RoleRepository;
 import com.example.SBA_M.service.AccountService;
-import com.example.SBA_M.utils.RoleConstants;
+import com.example.SBA_M.utils.AccountStatus;
+import com.example.SBA_M.utils.RoleName;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,13 +22,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -38,220 +43,238 @@ public class AccountServiceImpl implements AccountService {
     AccountRepository accountRepository;
     RoleRepository roleRepository;
     PasswordEncoder passwordEncoder;
+    AccountMapper accountMapper;
 
-    // Helper method to map Account entity to AccountResponse DTO
-    private AccountResponse mapAccountToAccountResponse(Account account) {
-        if (account == null) return null;
-        return new AccountResponse(
-                account.getId(),
-                account.getUsername(),
-                account.getEmail(),
-                account.getFullName(),
-                account.getPhone(),
-                account.getStatus(),
-                new RoleResponse(account.getRole().getId(), account.getRole().getName()),
-                account.getCreatedAt(),
-                account.getUpdatedAt()
-        );
-    }
-
-    @Override
-    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public AccountResponse createGeneralUser(AccountCreationRequest request) {
-        if (accountRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists.");
+        if (accountRepository.findByUsername(request.getUsername()).isPresent()) {
+            throw new AppException(ErrorCode.USERNAME_EXISTED);
         }
-        if (accountRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists.");
+        if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
 
-        Role userRole = roleRepository.findByName(RoleConstants.USER)
-                .orElseThrow(() -> new RuntimeException("USER role not found."));
+        Account account = accountMapper.toAccount(request);
+        account.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        Account newAccount = new Account();
-        newAccount.setUsername(request.getUsername());
-        newAccount.setEmail(request.getEmail());
-        newAccount.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        newAccount.setFullName(request.getFullName());
-        newAccount.setPhone(request.getPhone());
-        newAccount.setRole(userRole);
-        newAccount.setStatus("ACTIVE"); // Admin tạo thì có thể ACTIVE luôn
+        Role userRole = roleRepository.findByName(RoleName.USER.name())
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        Set<Role> roles = new HashSet<>();
+        roles.add(userRole);
+        account.setRoles(roles);
+        account.setStatus(AccountStatus.ACTIVE);
+        account.setIsDeleted(false);
+        account.setCreatedAt(Instant.now());
+        account.setCreatedBy(getCurrentUsername());
 
-        Account savedAccount = accountRepository.save(newAccount);
-        log.info("Admin created general user: {}", savedAccount.getUsername());
-        return mapAccountToAccountResponse(savedAccount);
+        return accountMapper.toAccountResponse(accountRepository.save(account));
     }
 
-    @Override
-    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public AccountResponse createAdminUser(AccountCreationRequest request) {
-        if (accountRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists.");
+        if (accountRepository.findByUsername(request.getUsername()).isPresent()) {
+            throw new AppException(ErrorCode.USERNAME_EXISTED);
         }
-        if (accountRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists.");
+        if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
 
-        Role adminRole = roleRepository.findByName(RoleConstants.ADMIN)
-                .orElseThrow(() -> new RuntimeException("ADMIN role not found."));
+        Account account = accountMapper.toAccount(request);
+        account.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        Account newAccount = new Account();
-        newAccount.setUsername(request.getUsername());
-        newAccount.setEmail(request.getEmail());
-        newAccount.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        newAccount.setFullName(request.getFullName());
-        newAccount.setPhone(request.getPhone());
-        newAccount.setRole(adminRole);
-        newAccount.setStatus("ACTIVE");
+        Role adminRole = roleRepository.findByName(RoleName.ADMIN.name())
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        Set<Role> roles = new HashSet<>();
+        roles.add(adminRole);
+        account.setRoles(roles);
+        account.setStatus(AccountStatus.ACTIVE);
+        account.setIsDeleted(false);
+        account.setCreatedAt(Instant.now());
+        account.setCreatedBy(getCurrentUsername());
 
-        Account savedAccount = accountRepository.save(newAccount);
-        log.info("Admin created new admin user: {}", savedAccount.getUsername());
-        return mapAccountToAccountResponse(savedAccount);
+        return accountMapper.toAccountResponse(accountRepository.save(account));
     }
 
-    @Override
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT')")
     public PageResponse<AccountResponse> getAllUsers(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size);
         Page<Account> accountPage = accountRepository.findAll(pageable);
-
-        List<AccountResponse> content = accountPage.getContent().stream()
-                .map(this::mapAccountToAccountResponse)
-                .collect(Collectors.toList());
-
-        return new PageResponse<>(
-                content,
-                accountPage.getNumber(),
-                accountPage.getSize(),
-                accountPage.getTotalElements(),
-                accountPage.getTotalPages(),
-                accountPage.isLast(),
-                accountPage.isFirst(),
-                accountPage.isEmpty()
-        );
+        // Sửa lỗi: Thêm <AccountResponse> vào builder()
+        return PageResponse.<AccountResponse>builder()
+                .page(accountPage.getNumber())
+                .size(accountPage.getSize())
+                .totalElements(accountPage.getTotalElements())
+                .totalPages(accountPage.getTotalPages())
+                .items(accountPage.getContent().stream()
+                        .map(accountMapper::toAccountResponse)
+                        .collect(Collectors.toList()))
+                .build();
     }
 
-    @Override
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT')")
     public PageResponse<AccountResponse> getUsersBySearch(String name, int page, int size) {
-        // Tùy thuộc vào yêu cầu, bạn có thể tìm kiếm theo username, fullName hoặc cả hai
-        // Ví dụ này tìm theo username (cần thêm method trong repository)
-        // Hoặc tạo Custom Repository method với @Query
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        // Giả sử có một method findByUsernameContainingIgnoreCase trong AccountRepository
-        // Nếu không, bạn cần tạo một query riêng hoặc sử dụng Querydsl/Criteria API
-        Page<Account> accountPage = accountRepository.findByUsernameContainingIgnoreCase(name, pageable);
-        // Hoặc nếu muốn tìm cả theo fullName
-        // Page<Account> accountPage = accountRepository.findByUsernameContainingIgnoreCaseOrFullNameContainingIgnoreCase(name, name, pageable);
-
-
-        List<AccountResponse> content = accountPage.getContent().stream()
-                .map(this::mapAccountToAccountResponse)
-                .collect(Collectors.toList());
-
-        return new PageResponse<>(
-                content,
-                accountPage.getNumber(),
-                accountPage.getSize(),
-                accountPage.getTotalElements(),
-                accountPage.getTotalPages(),
-                accountPage.isLast(),
-                accountPage.isFirst(),
-                accountPage.isEmpty()
-        );
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Account> accountPage = accountRepository.findByFullNameContainingIgnoreCase(name, pageable);
+        // Sửa lỗi: Thêm <AccountResponse> vào builder()
+        return PageResponse.<AccountResponse>builder()
+                .page(accountPage.getNumber())
+                .size(accountPage.getSize())
+                .totalElements(accountPage.getTotalElements())
+                .totalPages(accountPage.getTotalPages())
+                .items(accountPage.getContent().stream()
+                        .map(accountMapper::toAccountResponse)
+                        .collect(Collectors.toList()))
+                .build();
     }
 
-    @Override
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT') or " +
+            "(@accountServiceImpl.isAccountOwner(#accountId) and hasRole('USER'))")
     public AccountResponse getUserById(UUID accountId) {
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account not found with ID: " + accountId));
-        return mapAccountToAccountResponse(account);
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
+        return accountMapper.toAccountResponse(account);
     }
 
-    @Override
-    @Transactional
-    public void deleteUser(UUID accountId) {
-        if (!accountRepository.existsById(accountId)) {
-            throw new RuntimeException("Account not found with ID: " + accountId);
-        }
-        accountRepository.deleteById(accountId);
-        log.info("Account with ID {} deleted.", accountId);
-    }
-
-    @Override
-    @Transactional
-    public AccountResponse updateUser(UUID accountId, UserUpdateRequest request) {
-        Account existingAccount = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account not found with ID: " + accountId));
-
-        // Cập nhật thông tin nếu có thay đổi
-        if (request.getFullName() != null) existingAccount.setFullName(request.getFullName());
-        if (request.getPhone() != null) existingAccount.setPhone(request.getPhone());
-        if (request.getEmail() != null && !request.getEmail().equals(existingAccount.getEmail())) {
-            if (accountRepository.existsByEmail(request.getEmail())) {
-                throw new RuntimeException("Email already in use.");
-            }
-            existingAccount.setEmail(request.getEmail());
-            // Nếu email thay đổi, có thể cần đặt lại trạng thái PENDING_VERIFICATION và gửi email xác minh mới
-            // existingAccount.setStatus("PENDING_VERIFICATION");
-            // mailService.sendVerificationEmail(existingAccount.getEmail(), ...);
-        }
-
-        Account updatedAccount = accountRepository.save(existingAccount);
-        log.info("Account with ID {} updated.", accountId);
-        return mapAccountToAccountResponse(updatedAccount);
-    }
-
-    @Override
-    @Transactional
-    public AccountResponse setRole(UUID accountId, List<Long> roleIds) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteUser(UUID accountId, boolean hardDelete) {
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account not found with ID: " + accountId));
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
 
-        if (roleIds == null || roleIds.isEmpty()) {
-            throw new RuntimeException("Role IDs cannot be empty.");
-        }
-
-        // Lấy tất cả các roles hợp lệ từ DB
-        List<Role> newRoles = roleRepository.findAllByIdIn(roleIds);
-
-        if (newRoles.size() != roleIds.size()) {
-            throw new RuntimeException("One or more specified roles do not exist.");
-        }
-
-        // Hiện tại Account chỉ có 1 Role (ManyToOne), nên ta chỉ lấy role đầu tiên
-        // Nếu muốn hỗ trợ nhiều vai trò (ManyToMany), bạn cần thay đổi Entity và logic
-        if (!newRoles.isEmpty()) {
-            account.setRole(newRoles.get(0)); // Gán vai trò đầu tiên từ danh sách
+        if (hardDelete) {
+            accountRepository.delete(account);
         } else {
-            throw new RuntimeException("No valid roles provided.");
+            account.setIsDeleted(true);
+            account.setUpdatedAt(Instant.now());
+            account.setUpdatedBy(getCurrentUsername());
+            accountRepository.save(account);
         }
-
-        Account updatedAccount = accountRepository.save(account);
-        log.info("Role(s) for account {} updated.", accountId);
-        return mapAccountToAccountResponse(updatedAccount);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    public void restoreUser(UUID accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
 
-    @Override
-    public AccountResponse getMyInfo(String username) {
-        Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Current user not found."));
-        return mapAccountToAccountResponse(account);
-    }
-
-    @Override
-    @Transactional
-    public void updatePassword(String username, UpdatePasswordRequest updatePasswordRequest) {
-        Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found."));
-
-        // Kiểm tra mật khẩu cũ
-        if (!passwordEncoder.matches(updatePasswordRequest.getOldPassword(), account.getPasswordHash())) {
-            throw new RuntimeException("Old password does not match.");
+        if (!account.getIsDeleted()) {
+            throw new AppException(ErrorCode.ACCOUNT_NOT_DELETED);
         }
 
-        // Cập nhật mật khẩu mới
-        account.setPasswordHash(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
+        account.setIsDeleted(false);
+        account.setUpdatedAt(Instant.now());
+        account.setUpdatedBy(getCurrentUsername());
         accountRepository.save(account);
-        log.info("Password for account {} updated successfully.", username);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public AccountResponse updateUser(UUID accountId, UserUpdateRequest request) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
+
+        accountMapper.updateAccount(account, request);
+        account.setUpdatedAt(Instant.now());
+        account.setUpdatedBy(getCurrentUsername());
+        return accountMapper.toAccountResponse(accountRepository.save(account));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public AccountResponse setRoles(UUID accountId, Set<Long> roleIds) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
+
+        Set<Role> newRoles = new HashSet<>();
+        if (roleIds != null && !roleIds.isEmpty()) {
+            List<Role> foundRoles = roleRepository.findAllById(roleIds);
+            if (foundRoles.size() != roleIds.size()) {
+                throw new AppException(ErrorCode.ROLE_NOT_FOUND);
+            }
+            newRoles.addAll(foundRoles);
+        }
+        account.setRoles(newRoles);
+        account.setUpdatedAt(Instant.now());
+        account.setUpdatedBy(getCurrentUsername());
+        return accountMapper.toAccountResponse(accountRepository.save(account));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT') or " +
+            "(@accountServiceImpl.isAccountOwner(#accountId) and hasRole('USER'))")
+    public Set<String> getUserRoles(UUID accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
+        return account.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toSet());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public AccountResponse updateStatus(UUID accountId, AccountStatus status) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
+
+        account.setStatus(status);
+        account.setUpdatedAt(Instant.now());
+        account.setUpdatedBy(getCurrentUsername());
+        return accountMapper.toAccountResponse(accountRepository.save(account));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    public AccountResponse getMyInfo(String username) {
+        String currentUsername = getCurrentUsername();
+        if (!currentUsername.equals(username)) {
+            throw new AppException(ErrorCode.ACCESS_DENIED);
+        }
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
+        return accountMapper.toAccountResponse(account);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    public void updatePassword(String username, UpdatePasswordRequest request) {
+        String currentUsername = getCurrentUsername();
+        if (!currentUsername.equals(username)) {
+            throw new AppException(ErrorCode.ACCESS_DENIED);
+        }
+
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), account.getPassword())) {
+            throw new AppException(ErrorCode.OLD_PASSWORD_MISMATCH);
+        }
+        if (!request.getNewPassword().equals(request.getConfirmNewPassword())) {
+            throw new AppException(ErrorCode.PASSWORD_MISMATCH);
+        }
+
+        account.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        account.setUpdatedAt(Instant.now());
+        account.setUpdatedBy(getCurrentUsername());
+        accountRepository.save(account);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    public AccountResponse updateProfile(String username, UserUpdateRequest request) {
+        String currentUsername = getCurrentUsername();
+        if (!currentUsername.equals(username)) {
+            throw new AppException(ErrorCode.ACCESS_DENIED);
+        }
+
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
+
+        accountMapper.updateAccount(account, request);
+        account.setUpdatedAt(Instant.now());
+        account.setUpdatedBy(getCurrentUsername());
+        return accountMapper.toAccountResponse(accountRepository.save(account));
+    }
+
+    // Helper method for @PreAuthorize
+    public boolean isAccountOwner(UUID accountId) {
+        String currentUsername = getCurrentUsername();
+        return accountRepository.findById(accountId)
+                .map(account -> account.getUsername().equals(currentUsername))
+                .orElse(false);
+    }
+
+    private String getCurrentUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

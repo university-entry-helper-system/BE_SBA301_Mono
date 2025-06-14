@@ -1,6 +1,7 @@
 package com.example.SBA_M.controller;
 
 import com.example.SBA_M.dto.request.AccountCreationRequest;
+import com.example.SBA_M.dto.request.AccountStatusUpdateRequest;
 import com.example.SBA_M.dto.request.RoleAssignmentRequest;
 import com.example.SBA_M.dto.request.UpdatePasswordRequest;
 import com.example.SBA_M.dto.request.UserUpdateRequest;
@@ -9,7 +10,6 @@ import com.example.SBA_M.dto.response.MessageResponse;
 import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,142 +21,110 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID; // Sử dụng UUID cho Account ID
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("api/v1/accounts") // Đường dẫn gốc cho các API quản lý tài khoản
+@RequestMapping("api/v1/accounts")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class AccountController {
 
-    AccountService accountService; // Dịch vụ quản lý tài khoản
+    AccountService accountService;
 
-    // --- Admin/Management Endpoints ---
-
-    // Create a new general user (by an admin)
-    @Operation(summary = "Create a general user (Admin)", description = "Creates a general user account by an administrator. Requires ADMIN role.")
-    @ApiResponse(responseCode = "201", description = "User created successfully.")
-    @ApiResponse(responseCode = "400", description = "Bad request due to invalid input.")
+    @Operation(summary = "Create general user", description = "Admin creates a general user account")
     @PostMapping("/create-user")
     public ResponseEntity<AccountResponse> createGeneralUser(@RequestBody @Valid AccountCreationRequest request) {
-        AccountResponse response = accountService.createGeneralUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(accountService.createGeneralUser(request));
     }
 
-    // Create an admin user (by another admin)
-    @Operation(summary = "Create an admin user (Admin)", description = "Creates an admin user account by an administrator. Requires ADMIN role.")
-    @ApiResponse(responseCode = "201", description = "Admin user created successfully.")
-    @ApiResponse(responseCode = "400", description = "Bad request due to invalid input.")
+    @Operation(summary = "Create admin user", description = "Admin creates another admin user")
     @PostMapping("/create-admin")
     public ResponseEntity<AccountResponse> createAdminUser(@RequestBody @Valid AccountCreationRequest request) {
-        AccountResponse response = accountService.createAdminUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(accountService.createAdminUser(request));
     }
 
-    // Get all users with pagination
-    @Operation(summary = "Get all users with pagination", description = "Retrieves a paginated list of all users. Requires ADMIN or CONSULTANT role.")
-    @ApiResponse(responseCode = "200", description = "Users retrieved successfully.")
+    @Operation(summary = "Get all users", description = "Paginated list of all users")
     @GetMapping
-    public ResponseEntity<PageResponse<AccountResponse>> getAllUsers(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size
-    ) {
-        PageResponse<AccountResponse> response = accountService.getAllUsers(page, size);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<PageResponse<AccountResponse>> getAllUsers(@RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(accountService.getAllUsers(page, size));
     }
 
-    // Search users by name with pagination
-    @Operation(summary = "Search users by name", description = "Allows searching users by name with pagination. Requires ADMIN or CONSULTANT role.")
-    @ApiResponse(responseCode = "200", description = "Users retrieved successfully.")
+    @Operation(summary = "Search users by name", description = "Search users by name with pagination")
     @GetMapping("/search")
-    public ResponseEntity<PageResponse<AccountResponse>> searchUsers(
-            @RequestParam String name,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size
-    ) {
-        PageResponse<AccountResponse> response = accountService.getUsersBySearch(name, page, size);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<PageResponse<AccountResponse>> searchUsers(@RequestParam String name,
+                                                                     @RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(accountService.getUsersBySearch(name, page, size));
     }
 
-    // Get user by ID
-    @Operation(summary = "Get user by ID", description = "Retrieves user details based on the user ID. Requires ADMIN/CONSULTANT role or self-access.")
-    @ApiResponse(responseCode = "200", description = "User retrieved successfully.")
-    @ApiResponse(responseCode = "404", description = "User not found.")
+    @Operation(summary = "Get user by ID", description = "Retrieve user details by ID")
     @GetMapping("/{accountId}")
     public ResponseEntity<AccountResponse> getUserById(@PathVariable UUID accountId) {
-        AccountResponse response = accountService.getUserById(accountId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(accountService.getUserById(accountId));
     }
 
-    // Delete user
-    @Operation(summary = "Delete a user", description = "Deletes a user account. Requires ADMIN role.")
-    @ApiResponse(responseCode = "204", description = "User deleted successfully.")
-    @ApiResponse(responseCode = "404", description = "User not found.")
+    @Operation(summary = "Delete user", description = "Delete user (soft or hard based on param)")
     @DeleteMapping("/{accountId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID accountId) {
-        accountService.deleteUser(accountId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID accountId,
+                                           @RequestParam(value = "hard", defaultValue = "false") boolean hardDelete) {
+        accountService.deleteUser(accountId, hardDelete);
+        return ResponseEntity.noContent().build();
     }
 
-    // Update user by ID
-    @Operation(summary = "Update user by ID", description = "Allows updating user information using their ID. Requires ADMIN role or self-access.")
-    @ApiResponse(responseCode = "200", description = "User updated successfully.")
-    @ApiResponse(responseCode = "404", description = "User not found.")
+    @Operation(summary = "Restore user", description = "Restore a soft-deleted user")
+    @PostMapping("/{accountId}/restore")
+    public ResponseEntity<MessageResponse> restoreUser(@PathVariable UUID accountId) {
+        accountService.restoreUser(accountId);
+        return ResponseEntity.ok(new MessageResponse("User restored successfully."));
+    }
+
+    @Operation(summary = "Update user info", description = "Update user data by ID")
     @PutMapping("/{accountId}")
     public ResponseEntity<AccountResponse> updateUser(@PathVariable UUID accountId, @RequestBody @Valid UserUpdateRequest request) {
-        AccountResponse response = accountService.updateUser(accountId, request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(accountService.updateUser(accountId, request));
     }
 
-    // Set roles for a user
-    @Operation(summary = "Set roles for a user", description = "Allows setting roles for a user account. Requires ADMIN role.")
-    @ApiResponse(responseCode = "200", description = "Roles assigned successfully.")
-    @ApiResponse(responseCode = "404", description = "User or role not found.")
+    @Operation(summary = "Assign roles", description = "Assign roles to a user")
     @PostMapping("/{accountId}/set-roles")
-    public ResponseEntity<AccountResponse> setRole(@PathVariable UUID accountId, @RequestBody @Valid RoleAssignmentRequest request) { // Dùng DTO cho request
-        AccountResponse response = accountService.setRole(accountId, request.getRoleIds());
-        return ResponseEntity.ok(response);
+    public ResponseEntity<AccountResponse> setRoles(@PathVariable UUID accountId, @RequestBody @Valid RoleAssignmentRequest request) {
+        return ResponseEntity.ok(accountService.setRoles(accountId, new HashSet<>(request.getRoleIds())));
+
     }
 
-    // --- User-Specific Endpoints (Requires Authentication) ---
+    @Operation(summary = "Get user roles", description = "Get assigned role names of user")
+    @GetMapping("/{accountId}/roles")
+    public ResponseEntity<Set<String>> getUserRoles(@PathVariable UUID accountId) {
+        return ResponseEntity.ok(accountService.getUserRoles(accountId));
+    }
 
-    // Get current user's info
-    @Operation(summary = "Get current user's info", description = "Retrieves the currently authenticated user's information.")
-    @ApiResponse(responseCode = "200", description = "Current user info retrieved successfully.")
+    @Operation(summary = "Update user status", description = "Update account status (ACTIVE, INACTIVE, etc)")
+    @PatchMapping("/{accountId}/status")
+    public ResponseEntity<AccountResponse> updateUserStatus(@PathVariable UUID accountId, @RequestBody @Valid AccountStatusUpdateRequest request) {
+        return ResponseEntity.ok(accountService.updateStatus(accountId, request.getStatus()));
+    }
+
+    @Operation(summary = "Get current user info", description = "Authenticated user fetches own info")
     @GetMapping("/my-info")
     public ResponseEntity<AccountResponse> getMyInfo(@AuthenticationPrincipal UserDetails userDetails) {
-        AccountResponse response = accountService.getMyInfo(userDetails.getUsername()); // Lấy username từ UserDetails
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(accountService.getMyInfo(userDetails.getUsername()));
     }
 
-    // Update password for authenticated user
-    @Operation(summary = "Update user password", description = "Allows an authenticated user to update their password.")
-    @ApiResponse(responseCode = "200", description = "Password updated successfully.")
-    @ApiResponse(responseCode = "400", description = "Bad request due to invalid input (e.g., wrong old password).")
-    @PostMapping("/my-info/update-password") // Endpoint rõ ràng hơn
-    public ResponseEntity<MessageResponse> updateMyPassword(@AuthenticationPrincipal UserDetails userDetails, @RequestBody @Valid UpdatePasswordRequest updatePasswordRequest) {
-        accountService.updatePassword(userDetails.getUsername(), updatePasswordRequest);
+    @Operation(summary = "Update password", description = "Authenticated user changes password")
+    @PostMapping("/my-info/update-password")
+    public ResponseEntity<MessageResponse> updateMyPassword(@AuthenticationPrincipal UserDetails userDetails,
+                                                            @RequestBody @Valid UpdatePasswordRequest request) {
+        accountService.updatePassword(userDetails.getUsername(), request);
         return ResponseEntity.ok(new MessageResponse("Password updated successfully."));
     }
 
+    @Operation(summary = "Update profile", description = "Authenticated user updates profile info")
     @PutMapping("/my-info/update-profile")
-    @Operation(summary = "Update profile", description = "Allows authenticated users to update their profile.")
-    @ApiResponse(responseCode = "200", description = "Profile updated successfully.")
-    public ResponseEntity<AccountResponse> updateProfile(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody @Valid UserProfileUpdateRequest request
-    ) {
-        AccountResponse response = accountService.updateProfile(userDetails.getUsername(), request);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<AccountResponse> updateProfile(@AuthenticationPrincipal UserDetails userDetails,
+                                                         @RequestBody @Valid UserUpdateRequest request) {
+        return ResponseEntity.ok(accountService.updateProfile(userDetails.getUsername(), request));
     }
-
-    @Bean
-    public FilterRegistrationBean<RateLimitingFilter> rateLimitingFilter() {
-        FilterRegistrationBean<RateLimitingFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new RateLimitingFilter());
-        registration.addUrlPatterns("/api/v1/auth/forgot-password");
-        return registration;
-    }
-
 }

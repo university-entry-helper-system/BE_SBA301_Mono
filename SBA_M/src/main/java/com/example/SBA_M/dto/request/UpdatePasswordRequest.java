@@ -19,8 +19,10 @@ public class UpdatePasswordRequest {
 
     @NotBlank(message = "Mật khẩu mới không được để trống.")
     @Size(min = 8, message = "Mật khẩu mới phải có ít nhất {min} ký tự.")
-    // Regex cho mật khẩu mạnh: ít nhất 1 chữ hoa, 1 chữ thường, 1 số, 1 ký tự đặc biệt
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$",
             message = "Mật khẩu mới phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.")
     String newPassword;
+
+    @NotBlank(message = "Xác nhận mật khẩu mới không được để trống.")
+    String confirmNewPassword; // Thêm trường xác nhận mật khẩu mới
 }

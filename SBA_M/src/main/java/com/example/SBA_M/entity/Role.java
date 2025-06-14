@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @Entity
 @Table(name = "roles")
@@ -22,4 +24,7 @@ public class Role {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @ManyToMany(mappedBy = "roles")
+    private Set<Account> accounts;
 }

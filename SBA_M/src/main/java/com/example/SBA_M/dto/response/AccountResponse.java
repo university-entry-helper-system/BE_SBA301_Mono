@@ -17,9 +17,10 @@ public class AccountResponse {
     UUID id; // ID tài khoản là UUID
     String username;
     String email;
+    String password;
     String fullName;
     String phone;
-    String status; // Trạng thái tài khoản (e.g., "Active", "Pending_Verification")
+    String status;
     RoleResponse role; // Thông tin về vai trò của tài khoản
     Instant createdAt;
     Instant updatedAt;
