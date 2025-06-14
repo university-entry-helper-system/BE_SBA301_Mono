@@ -1,7 +1,7 @@
 package com.example.SBA_M.service;
 
 import com.example.SBA_M.entity.Role;
-import com.example.SBA_M.iservice.IRoleService;
+import com.example.SBA_M.service.impl.IRoleService;
 import com.example.SBA_M.repository.RoleRepository;
 import org.springframework.stereotype.Service;
 

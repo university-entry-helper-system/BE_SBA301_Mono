@@ -46,7 +46,7 @@ public class AuthService {
     }
 
     public String register(Account account) {
-        Role defaultRole = roleRepository.findByName("USER")
+        Role defaultRole = (Role) roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("Default role not found"));
         account.setRole(defaultRole);
         account.setPasswordHash(passwordEncoder.encode(account.getPasswordHash()));

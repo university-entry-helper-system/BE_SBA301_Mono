@@ -1,6 +1,6 @@
 package com.example.SBA_M.service;
 import com.example.SBA_M.entity.Major;
-import com.example.SBA_M.iservice.IMajorService;
+import com.example.SBA_M.service.impl.IMajorService;
 import com.example.SBA_M.repository.MajorRepository;
 import org.springframework.stereotype.Service;
 

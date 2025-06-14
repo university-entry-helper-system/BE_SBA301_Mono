@@ -2,13 +2,13 @@ package com.example.SBA_M.controller;
 
 
 import com.example.SBA_M.entity.Role;
-import com.example.SBA_M.iservice.IRoleService;
+import com.example.SBA_M.service.impl.IRoleService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("api/v1/roles")
 public class RoleController {
     private final IRoleService roleService;
 
