@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM openjdk:21
 
 COPY target/backend-service.jar backend-service.jar
 
