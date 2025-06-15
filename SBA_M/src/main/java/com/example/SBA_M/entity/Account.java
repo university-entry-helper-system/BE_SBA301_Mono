@@ -1,13 +1,17 @@
 package com.example.SBA_M.entity;
+
 import com.example.SBA_M.utils.AccountStatus;
 import com.example.SBA_M.utils.Gender;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -30,7 +34,7 @@ public class Account {
     @Column(nullable = false, unique = true, length = 50)
     private String email;
 
-    @Column(name = "password", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "password", nullable = false, columnDefinition = "VARCHAR(255)")
     private String password;
 
     @Column(name = "full_name", length = 100)
@@ -39,8 +43,8 @@ public class Account {
     @Column(length = 20, unique = true)
     private String phone;
 
-    @Column(nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private AccountStatus status = AccountStatus.INACTIVE;
 
     @Enumerated(EnumType.STRING)
@@ -48,42 +52,36 @@ public class Account {
     private Gender gender;
 
     @Column(name = "dob")
-    private LocalDateTime dob;
+    private LocalDate dob;
 
+    @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "created_by", length = 100)
     private String createdBy;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Column(name = "updated_by", length = 100)
     private String updatedBy;
 
     @Column(name = "last_login_at")
-    private LocalDateTime lastLoginAt;
+    private Instant lastLoginAt;
 
     @Column(name = "login_count")
     private Integer loginCount = 0;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "account_roles",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Set<Role> roles = new HashSet<>();
 
-
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
 }

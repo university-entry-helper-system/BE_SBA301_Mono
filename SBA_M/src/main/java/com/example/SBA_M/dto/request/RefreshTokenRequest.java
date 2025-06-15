@@ -11,10 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LoginRequest {
-    @NotBlank(message = "Username cannot be blank")
-    String username; // Ensure this field exists and has its getter
-
-    @NotBlank(message = "Password cannot be blank")
-    String password;
+public class RefreshTokenRequest {
+    @NotBlank(message = "Refresh token không được để trống.")
+    String refreshToken;
 }

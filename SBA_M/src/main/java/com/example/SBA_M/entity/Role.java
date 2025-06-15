@@ -5,12 +5,16 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+
+import java.util.Set;
 
 @Data
 @Entity
 @Table(name = "roles")
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "accounts")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +26,7 @@ public class Role {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @ManyToMany(mappedBy = "roles")
+    private Set<Account> accounts;
 }
