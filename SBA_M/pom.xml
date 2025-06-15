@@ -7,9 +7,9 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.0</version> <relativePath/> </parent>
 	<groupId>com.example</groupId>
-	<artifactId>SBA_M</artifactId>
+	<artifactId>backend-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>SBA_M</name>
+	<name>backend-service</name>
 	<description>SBA_M</description>
 	<url/>
 	<licenses>
@@ -130,6 +130,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>backend-service</finalName>
 	</build>
 
 </project>
