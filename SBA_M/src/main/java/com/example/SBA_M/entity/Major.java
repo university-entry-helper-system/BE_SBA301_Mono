@@ -1,18 +1,16 @@
 package com.example.SBA_M.entity;
 
-
 import jakarta.persistence.*;
-import lombok.Data;
-
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name = "majors")
-public class Major {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class Major extends AbstractEntity<Long> {
 
     @Column(nullable = false, length = 255)
     private String name;
@@ -31,10 +29,4 @@ public class Major {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
-
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now();
 }

@@ -1,17 +1,17 @@
 package com.example.SBA_M.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "university_categories")
-public class UniversityCategory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class UniversityCategory extends AbstractEntity<Long> {
 
     @Column(nullable = false, unique = true, length = 100)
     private String name;
