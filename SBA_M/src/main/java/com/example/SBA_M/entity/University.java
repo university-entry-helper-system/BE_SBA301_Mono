@@ -1,17 +1,17 @@
 package com.example.SBA_M.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
 @Table(name = "universities")
-public class University {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class University extends AbstractEntity<Long> {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
@@ -50,9 +50,9 @@ public class University {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<News> news;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Events> events;
 }

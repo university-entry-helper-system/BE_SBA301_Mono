@@ -1,23 +1,18 @@
 package com.example.SBA_M.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "tokens")
-@Builder(toBuilder = true)
-public class Token {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@EqualsAndHashCode(callSuper = true)
+public class Token extends AbstractEntity<Long> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
@@ -37,7 +32,4 @@ public class Token {
 
     @Column(nullable = false)
     private Boolean revoked = false;
-
-    @Column(name = "created_at", updatable = false)
-    private Instant createdAt;
 }
