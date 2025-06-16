@@ -15,6 +15,7 @@ import java.time.Instant;
 public abstract class AbstractEntity<T extends Serializable> implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private T id;
 

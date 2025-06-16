@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**", "/api/v1/accounts/check-username", "/api/v1/accounts/check-email").permitAll()
                         // Cho phép truy cập Swagger UI và API docs
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                        .requestMatchers("/api/v1/universities/{id}", "/api/v1/universities").permitAll()
                         // Tất cả các request khác yêu cầu xác thực
                         .anyRequest().authenticated()
                 )
