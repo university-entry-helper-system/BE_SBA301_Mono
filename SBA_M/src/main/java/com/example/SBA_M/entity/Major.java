@@ -29,4 +29,7 @@ public class Major extends AbstractEntity<Long> {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+
+    @OneToMany(mappedBy = "major", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UniversityMajor> universityMajors;
 }
