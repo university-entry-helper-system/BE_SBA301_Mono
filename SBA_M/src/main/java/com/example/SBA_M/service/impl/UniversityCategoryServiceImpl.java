@@ -1,7 +1,7 @@
 package com.example.SBA_M.service.impl;
 
-import com.example.SBA_M.entity.UniversityCategory;
-import com.example.SBA_M.repository.UniversityCategoryRepository;
+import com.example.SBA_M.entity.commands.UniversityCategory;
+import com.example.SBA_M.repository.commands.UniversityCategoryRepository;
 import com.example.SBA_M.service.UniversityCategoryService;
 import org.springframework.stereotype.Service;
 

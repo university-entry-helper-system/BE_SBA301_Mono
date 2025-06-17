@@ -1,7 +1,7 @@
 package com.example.SBA_M.controller;
 
 
-import com.example.SBA_M.entity.Role;
+import com.example.SBA_M.entity.commands.Role;
 import com.example.SBA_M.service.impl.RoleServiceImpl;
 import org.springframework.web.bind.annotation.*;
 

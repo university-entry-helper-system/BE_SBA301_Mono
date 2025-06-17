@@ -1,7 +1,7 @@
 package com.example.SBA_M.service.impl;
 
-import com.example.SBA_M.entity.Major;
-import com.example.SBA_M.repository.MajorRepository;
+import com.example.SBA_M.entity.commands.Major;
+import com.example.SBA_M.repository.commands.MajorRepository;
 import com.example.SBA_M.service.MajorService;
 import org.springframework.stereotype.Service;
 

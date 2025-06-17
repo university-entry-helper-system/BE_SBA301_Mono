@@ -6,7 +6,7 @@ import com.example.SBA_M.dto.request.PasswordCreationRequest;
 import com.example.SBA_M.dto.request.RefreshTokenRequest;
 import com.example.SBA_M.dto.response.AuthResponse;
 import com.example.SBA_M.dto.response.MessageResponse;
-import com.example.SBA_M.service.AuthService;
+import com.example.SBA_M.service.auth.AuthService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;

@@ -1,7 +1,7 @@
 package com.example.SBA_M.service.impl;
 
-import com.example.SBA_M.entity.Role;
-import com.example.SBA_M.repository.RoleRepository;
+import com.example.SBA_M.entity.commands.Role;
+import com.example.SBA_M.repository.commands.RoleRepository;
 import com.example.SBA_M.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

@@ -1,7 +1,7 @@
 package com.example.SBA_M.security;
 
-import com.example.SBA_M.entity.Account;
-import com.example.SBA_M.repository.AccountRepository;
+import com.example.SBA_M.entity.commands.Account;
+import com.example.SBA_M.repository.commands.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Set; // Import Set
 import java.util.stream.Collectors; // Import Collectors
 

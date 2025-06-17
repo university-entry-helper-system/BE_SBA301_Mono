@@ -1,7 +1,6 @@
 package com.example.SBA_M.security;
 
-import com.example.SBA_M.security.CustomUserDetailsService;
-import com.example.SBA_M.service.JwtService;
+import com.example.SBA_M.service.auth.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

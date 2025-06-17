@@ -1,6 +1,6 @@
 package com.example.SBA_M.controller;
 
-import com.example.SBA_M.entity.UniversityCategory;
+import com.example.SBA_M.entity.commands.UniversityCategory;
 import com.example.SBA_M.service.UniversityCategoryService;
 import org.springframework.web.bind.annotation.*;
 

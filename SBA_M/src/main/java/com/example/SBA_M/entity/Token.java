@@ -1,5 +1,6 @@
 package com.example.SBA_M.entity;
 
+import com.example.SBA_M.entity.commands.Account;
 import jakarta.persistence.*;
 import lombok.*;
 

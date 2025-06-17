@@ -1,8 +1,8 @@
 package com.example.SBA_M.controller;
 
 import com.example.SBA_M.dto.request.UniversityRequest;
-import com.example.SBA_M.entity.University;
-import com.example.SBA_M.entity.UniversityDocument;
+import com.example.SBA_M.entity.commands.University;
+import com.example.SBA_M.entity.queries.UniversityDocument;
 import com.example.SBA_M.service.UniversityService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;

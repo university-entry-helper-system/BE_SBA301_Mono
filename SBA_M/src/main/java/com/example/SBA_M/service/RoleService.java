@@ -1,6 +1,6 @@
 package com.example.SBA_M.service;
 
-import com.example.SBA_M.entity.Role;
+import com.example.SBA_M.entity.commands.Role;
 
 import java.util.List;
 

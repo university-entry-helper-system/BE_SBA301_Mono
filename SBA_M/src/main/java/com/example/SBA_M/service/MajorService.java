@@ -1,6 +1,6 @@
 package com.example.SBA_M.service;
 
-import com.example.SBA_M.entity.Major;
+import com.example.SBA_M.entity.commands.Major;
 
 import java.util.List;
 

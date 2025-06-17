@@ -3,7 +3,7 @@ package com.example.SBA_M.mapper;
 import com.example.SBA_M.dto.request.AccountCreationRequest;
 import com.example.SBA_M.dto.request.UserUpdateRequest;
 import com.example.SBA_M.dto.response.AccountResponse;
-import com.example.SBA_M.entity.Account;
+import com.example.SBA_M.entity.commands.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

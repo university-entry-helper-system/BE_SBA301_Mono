@@ -1,6 +1,6 @@
 package com.example.SBA_M.service;
 
-import com.example.SBA_M.entity.UniversityCategory;
+import com.example.SBA_M.entity.commands.UniversityCategory;
 
 import java.util.List;
 

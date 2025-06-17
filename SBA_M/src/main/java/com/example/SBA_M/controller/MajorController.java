@@ -1,6 +1,6 @@
 package com.example.SBA_M.controller;
 
-import com.example.SBA_M.entity.Major;
+import com.example.SBA_M.entity.commands.Major;
 import com.example.SBA_M.service.MajorService;
 import org.springframework.web.bind.annotation.*;
 

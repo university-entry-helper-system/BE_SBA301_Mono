@@ -1,12 +1,12 @@
 package com.example.SBA_M.service.impl;
 
 import com.example.SBA_M.dto.request.UniversityRequest;
-import com.example.SBA_M.entity.University;
-import com.example.SBA_M.entity.UniversityDocument;
-import com.example.SBA_M.repository.UniversityReadRepository;
-import com.example.SBA_M.repository.UniversityRepository;
+import com.example.SBA_M.entity.commands.University;
+import com.example.SBA_M.entity.queries.UniversityDocument;
+import com.example.SBA_M.repository.queries.UniversityReadRepository;
+import com.example.SBA_M.repository.commands.UniversityRepository;
 import com.example.SBA_M.service.UniversityService;
-import com.example.SBA_M.service.producer.UniversityProducer;
+import com.example.SBA_M.service.messaging.producer.UniversityProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
