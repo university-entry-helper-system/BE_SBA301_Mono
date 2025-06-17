@@ -4,7 +4,8 @@ import com.example.SBA_M.utils.AccountStatus;
 import com.example.SBA_M.utils.Gender;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -17,11 +18,10 @@ import java.util.UUID;
 @Table(name = "accounts")
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class Account extends AbstractEntity<UUID> {
+public class Account {
 
+    @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", updatable = false, nullable = false, insertable = false)
     private UUID id;
 
@@ -67,4 +67,18 @@ public class Account extends AbstractEntity<UUID> {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private Instant createdAt;
+
+    @Column(name = "created_by", length = 100)
+    private String createdBy;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @Column(name = "updated_by", length = 100)
+    private String updatedBy;
 }
