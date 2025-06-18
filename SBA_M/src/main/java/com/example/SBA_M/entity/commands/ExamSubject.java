@@ -1,6 +1,5 @@
 package com.example.SBA_M.entity.commands;
 
-import com.example.SBA_M.entity.AbstractEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

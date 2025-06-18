@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 @Data
 @RequiredArgsConstructor
 public class UniversityRequest {
-    private Long id;
-    private Long categoryId;
+    private Integer id;
+    private Integer categoryId;
     private String name;
     private String shortName;
     private String logoUrl;

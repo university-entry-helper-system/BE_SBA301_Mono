@@ -32,7 +32,7 @@ public class UniversityController {
 
     @Operation(summary = "Get university by ID", description = "Retrieve a university document by its ID")
     @GetMapping("/{id}")
-    public ResponseEntity<UniversityDocument> getUniversityById(@PathVariable Long id) {
+    public ResponseEntity<UniversityDocument> getUniversityById(@PathVariable Integer id) {
         UniversityDocument university = universityService.getUniversityById(id);
         if (university != null) {
             return ResponseEntity.ok(university);

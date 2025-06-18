@@ -177,7 +177,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public AccountResponse setRoles(UUID accountId, Set<Long> roleIds) {
+    public AccountResponse setRoles(UUID accountId, Set<Integer> roleIds) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
 

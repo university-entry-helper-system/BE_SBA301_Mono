@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class UniversityCategoryEvent {
-    private Long id;
+    private Integer id;
     private String name;
     private String description;
     private List<Long> universityIds;

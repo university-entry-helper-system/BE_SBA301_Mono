@@ -1,6 +1,5 @@
 package com.example.SBA_M.entity.commands;
 
-import com.example.SBA_M.entity.AbstractEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -15,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class AdmissionMethod extends AbstractEntity<Long> {
+public class AdmissionMethod extends AbstractEntity<Integer> {
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -26,6 +25,4 @@ public class AdmissionMethod extends AbstractEntity<Long> {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(length = 20)
-    private String status = "Active";
 }

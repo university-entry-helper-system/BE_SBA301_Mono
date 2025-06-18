@@ -23,7 +23,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public Role getRoleById(Long id) {
+    public Role getRoleById(Integer id) {
         return roleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Role not found with ID: " + id));
     }
@@ -37,7 +37,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public Role updateRole(Long id, Role role) {
+    public Role updateRole(Integer id, Role role) {
         Role existingRole = getRoleById(id); // Sử dụng phương thức getRoleById đã có quyền
         existingRole.setName(role.getName());
         existingRole.setDescription(role.getDescription());
@@ -46,7 +46,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteRole(Long id) {
+    public void deleteRole(Integer id) {
         if (!roleRepository.existsById(id)) {
             throw new RuntimeException("Role not found with ID: " + id);
         }

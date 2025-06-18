@@ -13,7 +13,7 @@ import com.example.SBA_M.exception.ErrorCode;
 import com.example.SBA_M.mapper.AccountMapper;
 import com.example.SBA_M.repository.commands.AccountRepository;
 import com.example.SBA_M.repository.commands.RoleRepository;
-import com.example.SBA_M.repository.TokenRepository;
+import com.example.SBA_M.repository.commands.TokenRepository;
 import com.example.SBA_M.utils.AccountStatus;
 import com.example.SBA_M.utils.RoleName;
 import lombok.RequiredArgsConstructor;

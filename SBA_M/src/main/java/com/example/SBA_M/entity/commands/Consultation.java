@@ -1,6 +1,5 @@
 package com.example.SBA_M.entity.commands;
 
-import com.example.SBA_M.entity.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,7 +34,7 @@ public class Consultation extends AbstractEntity<Long> {
     private String answer;
 
     @Column(length = 20)
-    private String status = "Pending";
+    private String consultationsStatus = "Pending";
 
     @Column(name = "sent_at")
     private Instant sentAt;

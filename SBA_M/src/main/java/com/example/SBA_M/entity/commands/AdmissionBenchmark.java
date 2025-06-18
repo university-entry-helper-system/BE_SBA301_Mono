@@ -1,6 +1,5 @@
 package com.example.SBA_M.entity.commands;
 
-import com.example.SBA_M.entity.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -31,7 +31,7 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public UniversityDocument getUniversityById(Long id) {
+    public UniversityDocument getUniversityById(Integer id) {
         return universityReadRepository.findById(id).orElseThrow(() -> new RuntimeException("University not found with id: " + id));
     }
 

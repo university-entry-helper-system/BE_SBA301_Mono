@@ -20,7 +20,7 @@ public interface AccountService {
     void deleteUser(UUID accountId, boolean hardDelete); // Bổ sung tham số hardDelete
     void restoreUser(UUID accountId); // Thêm phương thức restoreUser
     AccountResponse updateUser(UUID accountId, UserUpdateRequest request);
-    AccountResponse setRoles(UUID accountId, Set<Long> roleIds); // Đổi tên và kiểu List sang Set
+    AccountResponse setRoles(UUID accountId, Set<Integer> roleIds); // Đổi tên và kiểu List sang Set
     Set<String> getUserRoles(UUID accountId); // Thêm phương thức getUserRoles
     AccountResponse updateStatus(UUID accountId, AccountStatus status); // Thêm phương thức updateStatus
     AccountResponse getMyInfo(String username);

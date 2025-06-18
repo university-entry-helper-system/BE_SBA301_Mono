@@ -1,6 +1,5 @@
 package com.example.SBA_M.entity.commands;
 
-import com.example.SBA_M.entity.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +16,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class UniversityMajor extends AbstractEntity<Long> {
+public class UniversityMajor extends AbstractEntity<Integer> {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "university_id", nullable = false)

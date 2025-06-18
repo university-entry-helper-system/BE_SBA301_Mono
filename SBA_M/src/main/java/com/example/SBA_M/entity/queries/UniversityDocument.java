@@ -1,23 +1,23 @@
 package com.example.SBA_M.entity.queries;
 
+import com.example.SBA_M.entity.commands.University;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "universities")
-public class UniversityDocument {
-
-    @Id
-    @Field("id")
-    private Long id;
+@EqualsAndHashCode(callSuper = true)
+public class UniversityDocument extends AbstractDocument<Integer> {
 
     @Field("category")
     private UniversityCategoryDocument category;
@@ -55,9 +55,21 @@ public class UniversityDocument {
     @Field("description")
     private String description;
 
-    @Field("created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Field("updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    public UniversityDocument(Integer id, UniversityCategoryDocument categoryDoc, String name, String shortName, String logoUrl, Integer foundingYear, String province, String type, String address, String email, String phone, String website, String description, Instant createdAt, Instant updatedAt) {
+        this.setId(id);
+        this.category = categoryDoc;
+        this.name = name;
+        this.shortName = shortName;
+        this.logoUrl = logoUrl;
+        this.foundingYear = foundingYear;
+        this.province = province;
+        this.type = type;
+        this.address = address;
+        this.email = email;
+        this.phone = phone;
+        this.website = website;
+        this.description = description;
+        this.setCreatedAt(createdAt);
+        this.setUpdatedAt(updatedAt);
+    }
 }

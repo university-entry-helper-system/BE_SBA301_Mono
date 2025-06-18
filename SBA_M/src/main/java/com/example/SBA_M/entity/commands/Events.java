@@ -1,6 +1,5 @@
 package com.example.SBA_M.entity.commands;
 
-import com.example.SBA_M.entity.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,5 +43,5 @@ public class Events extends AbstractEntity<Long> {
     private String registrationLink;
 
     @Column(length = 20)
-    private String status = "Upcoming";
+    private String eventStatus = "Upcoming";
 }

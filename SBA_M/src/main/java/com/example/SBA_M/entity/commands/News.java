@@ -1,6 +1,5 @@
 package com.example.SBA_M.entity.commands;
 
-import com.example.SBA_M.entity.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,7 +36,7 @@ public class News extends AbstractEntity<Long> {
     private Integer viewCount = 0;
 
     @Column(length = 20)
-    private String status = "Published";
+    private String newStatus = "Published";
 
     @Column(name = "published_at")
     private Instant publishedAt;

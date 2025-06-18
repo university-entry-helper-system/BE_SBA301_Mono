@@ -1,7 +1,10 @@
-package com.example.SBA_M.entity;
+package com.example.SBA_M.entity.commands;
 
+import com.example.SBA_M.utils.Status;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -18,6 +21,10 @@ public abstract class AbstractEntity<T extends Serializable> implements Serializ
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private T id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="status", length = 20)
+    private Status status;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

@@ -9,6 +9,6 @@ import java.util.List;
 public interface UniversityService {
     List<University> getAllUniversities();
     University saveUniversity(University university);
-    UniversityDocument getUniversityById(Long id);
+    UniversityDocument getUniversityById(Integer id);
     University createUniversity(UniversityRequest university);
 }

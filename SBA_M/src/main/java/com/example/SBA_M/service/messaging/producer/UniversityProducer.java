@@ -54,8 +54,8 @@ public class UniversityProducer {
             savedUni.getPhone(),
             savedUni.getWebsite(),
                 savedUni.getDescription(),
-                LocalDateTime.ofInstant(savedUni.getCreatedAt(), ZoneId.systemDefault()),
-                LocalDateTime.ofInstant(savedUni.getUpdatedAt(), ZoneId.systemDefault())
+                savedUni.getCreatedAt(),
+               (savedUni.getUpdatedAt())
         );
 
         kafkaTemplate.send("uni.created", event);

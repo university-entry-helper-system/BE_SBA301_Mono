@@ -1,7 +1,9 @@
 package com.example.SBA_M.entity.queries;
 
+import com.example.SBA_M.entity.commands.AbstractEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,11 +16,8 @@ import java.time.LocalDateTime;
 @Document(collection = "majors")
 @NoArgsConstructor
 @AllArgsConstructor
-public class MajorDocument {
-
-    @Id
-    @Field("id")
-    private String id;
+@EqualsAndHashCode(callSuper = true)
+public class MajorDocument extends AbstractDocument<String> {
 
     @Field("name")
     private String name;
@@ -36,13 +35,12 @@ public class MajorDocument {
     @Field("description")
     private String description;
 
-    @Field("is_active")
-    private Boolean isActive = true;
-
-    @Field("created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Field("(updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now();
-
+    public MajorDocument(String id, String name, String code, String majorGroup, String degree, String description) {
+        this.setId(id);
+        this.name = name;
+        this.code = code;
+        this.majorGroup = majorGroup;
+        this.degree = degree;
+        this.description = description;
+    }
 }

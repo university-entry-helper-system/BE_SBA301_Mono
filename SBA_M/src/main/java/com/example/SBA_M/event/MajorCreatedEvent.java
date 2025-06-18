@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class MajorCreatedEvent {
-    private Long id;
+    private Integer id;
     private String name;
     private String code;
     private String majorGroup;

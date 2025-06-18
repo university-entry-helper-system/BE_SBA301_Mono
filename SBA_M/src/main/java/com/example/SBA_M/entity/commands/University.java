@@ -1,6 +1,5 @@
 package com.example.SBA_M.entity.commands;
 
-import com.example.SBA_M.entity.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class University extends AbstractEntity<Long> {
+public class University extends AbstractEntity<Integer> {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)

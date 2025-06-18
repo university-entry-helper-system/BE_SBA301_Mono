@@ -16,5 +16,5 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoleAssignmentRequest {
     @NotEmpty(message = "Danh sách Role ID không được để trống.")
-    List<Long> roleIds;
+    List<Integer> roleIds;
 }
