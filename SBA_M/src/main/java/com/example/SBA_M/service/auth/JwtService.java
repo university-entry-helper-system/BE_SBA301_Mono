@@ -78,7 +78,7 @@ public class JwtService {
         claims.put("accountId", account.getId().toString());
         account.getRoles().stream().findFirst().ifPresent(role -> {
             claims.put("roleId", role.getId());
-            claims.put("roleName", role.getName().name());
+            claims.put("roleName", "ROLE_" + role.getName().name());
         });
 
         return Jwts.builder()
@@ -102,9 +102,9 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public boolean isTokenValid(String token, String username) {
+        final String tokenUsername = extractUsername(token);
+        return (tokenUsername.equals(username) && !isTokenExpired(token));
     }
 
     public boolean isTokenExpired(String token) {

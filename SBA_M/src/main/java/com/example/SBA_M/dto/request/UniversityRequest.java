@@ -3,7 +3,6 @@ package com.example.SBA_M.dto.request;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDateTime;
 @Data
 @RequiredArgsConstructor
 public class UniversityRequest {
@@ -20,6 +19,5 @@ public class UniversityRequest {
     private String phone;
     private String website;
     private String description;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
 }

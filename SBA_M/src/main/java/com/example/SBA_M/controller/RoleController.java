@@ -3,12 +3,14 @@ package com.example.SBA_M.controller;
 
 import com.example.SBA_M.entity.commands.Role;
 import com.example.SBA_M.service.impl.RoleServiceImpl;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/roles")
+@SecurityRequirement(name = "bearerAuth")
 public class RoleController {
     private final RoleServiceImpl roleService;
 

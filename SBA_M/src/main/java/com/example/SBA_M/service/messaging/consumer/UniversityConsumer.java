@@ -39,8 +39,11 @@ public class UniversityConsumer {
                 event.getPhone(),
                 event.getWebsite(),
                 event.getDescription(),
+                event.getStatus(),
                 event.getCreatedAt(),
-                event.getUpdatedAt()
+                event.getCreatedBy(),
+                event.getUpdatedAt(),
+                event.getUpdatedBy()
         );
         universityReadRepository.save(doc);
     }

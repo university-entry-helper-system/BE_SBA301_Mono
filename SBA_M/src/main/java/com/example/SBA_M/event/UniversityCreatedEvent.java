@@ -1,17 +1,19 @@
 package com.example.SBA_M.event;
 
+import com.example.SBA_M.utils.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UniversityCreatedEvent {
-    private Integer id;
+@EqualsAndHashCode(callSuper = true)
+public class UniversityCreatedEvent extends AbstractCreatedEvent<Integer> {
     private Integer categoryId;
     private String name;
     private String shortName;
@@ -24,6 +26,44 @@ public class UniversityCreatedEvent {
     private String phone;
     private String website;
     private String description;
-    private Instant createdAt;
-    private Instant updatedAt;
-}
+
+    public UniversityCreatedEvent(
+            Integer id,
+            Integer categoryId,
+            String name,
+            String shortName,
+            String logoUrl,
+            Integer foundingYear,
+            String province,
+            String type,
+            String address,
+            String email,
+            String phone,
+            String website,
+            String description,
+            Status status,
+            Instant createdAt,
+            String createdBy,
+            Instant updatedAt,
+            String updatedBy
+    ) {
+        this.setId(id);
+        this.setStatus(status);
+        this.setCreatedBy(createdBy);
+        this.setCreatedAt(createdAt);
+        this.setUpdatedBy(updatedBy);
+        this.setUpdatedAt(updatedAt);
+        this.categoryId = categoryId;
+        this.name = name;
+        this.shortName = shortName;
+        this.logoUrl = logoUrl;
+        this.foundingYear = foundingYear;
+        this.province = province;
+        this.type = type;
+        this.address = address;
+        this.email = email;
+        this.phone = phone;
+        this.website = website;
+        this.description = description;
+    }
+    }

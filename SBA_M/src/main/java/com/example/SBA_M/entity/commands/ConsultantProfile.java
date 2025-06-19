@@ -13,8 +13,12 @@ import java.util.UUID;
 @Table(name = "consultant_profiles")
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class ConsultantProfile extends AbstractEntity<UUID> {
+public class ConsultantProfile {
+
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @Column(name = "id", updatable = false, nullable = false, insertable = false)
+    private UUID id;
 
     @Column(columnDefinition = "TEXT")
     private String bio;

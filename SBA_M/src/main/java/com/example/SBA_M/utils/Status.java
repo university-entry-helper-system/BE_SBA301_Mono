@@ -6,5 +6,7 @@ public enum Status {
     @JsonProperty("deleted")
     DELETED,
     @JsonProperty("active")
-    ACTIVE
+    ACTIVE,
+    @JsonProperty("inActive")
+    INACTIVE
 }

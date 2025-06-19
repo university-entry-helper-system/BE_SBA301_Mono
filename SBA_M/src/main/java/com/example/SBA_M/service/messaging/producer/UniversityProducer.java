@@ -5,6 +5,7 @@ import com.example.SBA_M.entity.commands.University;
 import com.example.SBA_M.entity.commands.UniversityCategory;
 import com.example.SBA_M.event.UniversityCreatedEvent;
 import com.example.SBA_M.repository.commands.UniversityRepository;
+import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class UniversityProducer {
     private final UniversityRepository universityRepository;
     private final KafkaTemplate<String, UniversityCreatedEvent> kafkaTemplate;
 
-    public University createUniversity(UniversityRequest universityRequest) {
+    public University createUniversity(UniversityRequest universityRequest, String username) {
         // Assuming you have a method to get UniversityCategory by ID
         UniversityCategory category = new UniversityCategory();
         category.setId(universityRequest.getCategoryId());
@@ -36,6 +37,11 @@ public class UniversityProducer {
         uni.setPhone(universityRequest.getPhone());
         uni.setWebsite(universityRequest.getWebsite());
         uni.setDescription(universityRequest.getDescription());
+        uni.setStatus(Status.ACTIVE); // Default status
+        uni.setCreatedBy(username);
+        uni.setCreatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
+        uni.setUpdatedBy(username);
+        uni.setUpdatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
         // createdAt and updatedAt are set by default
 
         University savedUni = universityRepository.save(uni);
@@ -54,8 +60,11 @@ public class UniversityProducer {
             savedUni.getPhone(),
             savedUni.getWebsite(),
                 savedUni.getDescription(),
+                savedUni.getStatus(),
                 savedUni.getCreatedAt(),
-               (savedUni.getUpdatedAt())
+                savedUni.getCreatedBy(),
+               savedUni.getUpdatedAt(),
+                savedUni.getUpdatedBy()
         );
 
         kafkaTemplate.send("uni.created", event);

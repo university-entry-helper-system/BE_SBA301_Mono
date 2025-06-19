@@ -1,5 +1,6 @@
 package com.example.SBA_M.entity.commands;
 
+import com.example.SBA_M.utils.AccountStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class University extends AbstractEntity<Integer> {
 
+    public static AccountStatus Status;
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private UniversityCategory category;

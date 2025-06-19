@@ -1,6 +1,7 @@
 package com.example.SBA_M.entity.queries;
 
 import com.example.SBA_M.entity.commands.University;
+import com.example.SBA_M.utils.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -55,7 +56,7 @@ public class UniversityDocument extends AbstractDocument<Integer> {
     @Field("description")
     private String description;
 
-    public UniversityDocument(Integer id, UniversityCategoryDocument categoryDoc, String name, String shortName, String logoUrl, Integer foundingYear, String province, String type, String address, String email, String phone, String website, String description, Instant createdAt, Instant updatedAt) {
+    public UniversityDocument(Integer id, UniversityCategoryDocument categoryDoc, String name, String shortName, String logoUrl, Integer foundingYear, String province, String type, String address, String email, String phone, String website, String description,Status status, Instant createdAt, String creatBy, Instant updatedAt, String createdBy) {
         this.setId(id);
         this.category = categoryDoc;
         this.name = name;
@@ -69,7 +70,10 @@ public class UniversityDocument extends AbstractDocument<Integer> {
         this.phone = phone;
         this.website = website;
         this.description = description;
+        this.setStatus(status);
         this.setCreatedAt(createdAt);
+        this.setCreatedBy(creatBy);
         this.setUpdatedAt(updatedAt);
+        this.setUpdatedBy(createdBy);
     }
 }

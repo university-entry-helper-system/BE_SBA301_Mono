@@ -2,19 +2,18 @@ package com.example.SBA_M.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class MajorCreatedEvent {
-    private Integer id;
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class MajorCreatedEvent extends AbstractCreatedEvent<Integer>{
     private String name;
     private String code;
     private String majorGroup;
     private String degree;
     private String description;
-    private Boolean isActive;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }
