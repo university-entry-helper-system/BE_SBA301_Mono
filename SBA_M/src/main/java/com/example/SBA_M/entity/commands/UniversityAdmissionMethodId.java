@@ -12,7 +12,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Embeddable
 public class UniversityAdmissionMethodId implements Serializable {
-    private Long universityId;
-    private Long admissionMethodId;
-    private Integer year;
+    private Integer universityId;
+    private Integer admissionMethodId;
 }

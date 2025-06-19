@@ -3,10 +3,11 @@ package com.example.SBA_M.dto.request;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Data
 @RequiredArgsConstructor
 public class UniversityRequest {
-    private Integer id;
     private Integer categoryId;
     private String name;
     private String shortName;
@@ -19,5 +20,5 @@ public class UniversityRequest {
     private String phone;
     private String website;
     private String description;
-
+    private List<Integer> admissionMethodIds;
 }

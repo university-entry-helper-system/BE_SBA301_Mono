@@ -25,9 +25,18 @@ public class UniversityAdmissionMethod {
     @JoinColumn(name = "admission_method_id")
     private AdmissionMethod admissionMethod;
 
-    @Column(name = "quota_percentage")
-    private Float quotaPercentage;
+    @Column(nullable = false)
+    private Integer year;
 
     @Column(columnDefinition = "TEXT")
     private String notes;
+
+    @Column(columnDefinition = "TEXT")
+    private String conditions;
+
+    @Column(columnDefinition = "TEXT")
+    private String regulations;
+
+    @Column(name="admission_time" ,columnDefinition = "TEXT")
+    private String admissionTime;
 }

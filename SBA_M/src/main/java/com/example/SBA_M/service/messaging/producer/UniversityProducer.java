@@ -23,7 +23,6 @@ public class UniversityProducer {
         // Assuming you have a method to get UniversityCategory by ID
         UniversityCategory category = new UniversityCategory();
         category.setId(universityRequest.getCategoryId());
-
         University uni = new University();
         uni.setCategory(category);
         uni.setName(universityRequest.getName());
@@ -34,7 +33,6 @@ public class UniversityProducer {
         uni.setType(universityRequest.getType());
         uni.setAddress(universityRequest.getAddress());
         uni.setEmail(universityRequest.getEmail());
-        uni.setPhone(universityRequest.getPhone());
         uni.setWebsite(universityRequest.getWebsite());
         uni.setDescription(universityRequest.getDescription());
         uni.setStatus(Status.ACTIVE); // Default status
@@ -42,8 +40,6 @@ public class UniversityProducer {
         uni.setCreatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
         uni.setUpdatedBy(username);
         uni.setUpdatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
-        // createdAt and updatedAt are set by default
-
         University savedUni = universityRepository.save(uni);
 
         UniversityCreatedEvent event = new UniversityCreatedEvent(

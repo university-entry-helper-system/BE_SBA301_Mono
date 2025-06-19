@@ -15,8 +15,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import com.example.SBA_M.dto.response.PageResponse;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +30,16 @@ public class UniversityServiceImpl implements UniversityService {
 
 
     @Override
-    public List<University> getAllUniversities() {
-        return universityRepository.findAll();
+    public PageResponse<University> getAllUniversities(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<University> universityPage = universityRepository.findAll(pageable);
+        return PageResponse.<University>builder()
+                .page(universityPage.getNumber())
+                .size(universityPage.getSize())
+                .totalElements(universityPage.getTotalElements())
+                .totalPages(universityPage.getTotalPages())
+                .items(universityPage.getContent())
+                .build();
     }
 
     @Override

@@ -70,6 +70,8 @@ public class SecurityConfig {
                         // Cho phép truy cập Swagger UI và API docs
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         .requestMatchers("/api/v1/universities/{id}", "/api/v1/universities").hasRole("ADMIN")
+                        // Allow public access to admission APIs
+                        .requestMatchers("/api/v1/admission-methods/**").hasRole("ADMIN")
                         // Tất cả các request khác yêu cầu xác thực
                         .anyRequest().authenticated()
                 )

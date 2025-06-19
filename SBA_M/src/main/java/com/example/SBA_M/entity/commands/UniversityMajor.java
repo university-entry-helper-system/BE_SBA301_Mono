@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Entity
@@ -25,6 +26,15 @@ public class UniversityMajor extends AbstractEntity<Integer> {
     @ManyToOne(optional = false)
     @JoinColumn(name = "major_id", nullable = false)
     private Major major;
+
+    @ManyToMany
+    @JoinTable(
+            name = "university_major_admission_methods",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name = "admission_method_id")
+    )
+    private List<AdmissionMethod> admissionMethods;
+
 
     @Column(nullable = false)
     private Integer year;

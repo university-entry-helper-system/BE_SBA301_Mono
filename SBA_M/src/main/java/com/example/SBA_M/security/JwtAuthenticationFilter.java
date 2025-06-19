@@ -51,17 +51,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.debug("JWT claims: {}", claims);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                List<String> roleNames = claims.get("roles", List.class);
-                if (roleNames == null || roleNames.isEmpty()) {
+                String roleName = claims.get("roleName", String.class);
+                if (roleName == null || roleName.isEmpty()) {
                     log.warn("No roles found in JWT for user: {}", username);
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.getWriter().write("No roles found in JWT");
                     return;
                 }
 
-                List<GrantedAuthority> authorities = roleNames.stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+                List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(roleName));
                 log.debug("Authorities from JWT: {}", authorities);
 
                 if (jwtService.isTokenValid(jwt, username)) {

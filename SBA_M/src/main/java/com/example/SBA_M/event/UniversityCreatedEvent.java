@@ -26,6 +26,7 @@ public class UniversityCreatedEvent extends AbstractCreatedEvent<Integer> {
     private String phone;
     private String website;
     private String description;
+    private Integer admissionMethodId;
 
     public UniversityCreatedEvent(
             Integer id,
