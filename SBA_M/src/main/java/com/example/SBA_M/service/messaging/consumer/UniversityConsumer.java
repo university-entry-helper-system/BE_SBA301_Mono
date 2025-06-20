@@ -33,7 +33,6 @@ public class UniversityConsumer {
                 event.getLogoUrl(),
                 event.getFoundingYear(),
                 event.getProvince(),
-                event.getType(),
                 event.getAddress(),
                 event.getEmail(),
                 event.getPhone(),

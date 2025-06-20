@@ -38,9 +38,6 @@ public class UniversityDocument extends AbstractDocument<Integer> {
     @Field("province")
     private String province;
 
-    @Field("type")
-    private String type;
-
     @Field("address")
     private String address;
 
@@ -56,7 +53,7 @@ public class UniversityDocument extends AbstractDocument<Integer> {
     @Field("description")
     private String description;
 
-    public UniversityDocument(Integer id, UniversityCategoryDocument categoryDoc, String name, String shortName, String logoUrl, Integer foundingYear, String province, String type, String address, String email, String phone, String website, String description,Status status, Instant createdAt, String creatBy, Instant updatedAt, String createdBy) {
+    public UniversityDocument(Integer id, UniversityCategoryDocument categoryDoc, String name, String shortName, String logoUrl, Integer foundingYear, String province, String address, String email, String phone, String website, String description,Status status, Instant createdAt, String creatBy, Instant updatedAt, String createdBy) {
         this.setId(id);
         this.category = categoryDoc;
         this.name = name;
@@ -64,7 +61,6 @@ public class UniversityDocument extends AbstractDocument<Integer> {
         this.logoUrl = logoUrl;
         this.foundingYear = foundingYear;
         this.province = province;
-        this.type = type;
         this.address = address;
         this.email = email;
         this.phone = phone;

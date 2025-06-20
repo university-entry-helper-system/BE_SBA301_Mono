@@ -3,6 +3,7 @@ package com.example.SBA_M.entity.commands;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -10,18 +11,14 @@ import lombok.NoArgsConstructor;
 @Table(name = "university_admission_methods")
 @NoArgsConstructor
 @AllArgsConstructor
-public class UniversityAdmissionMethod {
-
-    @EmbeddedId
-    private UniversityAdmissionMethodId id;
+@EqualsAndHashCode(callSuper = true)
+public class UniversityAdmissionMethod extends AbstractEntity<Integer>{
 
     @ManyToOne
-    @MapsId("universityId")
     @JoinColumn(name = "university_id")
     private University university;
 
     @ManyToOne
-    @MapsId("admissionMethodId")
     @JoinColumn(name = "admission_method_id")
     private AdmissionMethod admissionMethod;
 

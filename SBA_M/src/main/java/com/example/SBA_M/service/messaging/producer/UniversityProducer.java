@@ -30,7 +30,6 @@ public class UniversityProducer {
         uni.setLogoUrl(universityRequest.getLogoUrl());
         uni.setFoundingYear(universityRequest.getFoundingYear());
         uni.setProvince(universityRequest.getProvince());
-        uni.setType(universityRequest.getType());
         uni.setAddress(universityRequest.getAddress());
         uni.setEmail(universityRequest.getEmail());
         uni.setWebsite(universityRequest.getWebsite());
@@ -50,7 +49,6 @@ public class UniversityProducer {
             savedUni.getLogoUrl(),
             savedUni.getFoundingYear(),
             savedUni.getProvince(),
-            savedUni.getType(),
             savedUni.getAddress(),
             savedUni.getEmail(),
             savedUni.getPhone(),

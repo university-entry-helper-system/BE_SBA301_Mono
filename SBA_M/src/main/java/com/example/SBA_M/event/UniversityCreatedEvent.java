@@ -20,7 +20,6 @@ public class UniversityCreatedEvent extends AbstractCreatedEvent<Integer> {
     private String logoUrl;
     private Integer foundingYear;
     private String province;
-    private String type;
     private String address;
     private String email;
     private String phone;
@@ -36,7 +35,6 @@ public class UniversityCreatedEvent extends AbstractCreatedEvent<Integer> {
             String logoUrl,
             Integer foundingYear,
             String province,
-            String type,
             String address,
             String email,
             String phone,
@@ -60,7 +58,6 @@ public class UniversityCreatedEvent extends AbstractCreatedEvent<Integer> {
         this.logoUrl = logoUrl;
         this.foundingYear = foundingYear;
         this.province = province;
-        this.type = type;
         this.address = address;
         this.email = email;
         this.phone = phone;

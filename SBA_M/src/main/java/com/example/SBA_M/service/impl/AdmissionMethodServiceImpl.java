@@ -39,7 +39,7 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public PageResponse<AdmissionMethodResponse> getAllAdmissionMethods(int page, int size) {
         Page<AdmissionMethodDocument> methodPage = admissionMethodReadRepository
                 .findAllByStatus(Status.ACTIVE, PageRequest.of(page, size));
@@ -55,7 +55,7 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public AdmissionMethodResponse getAdmissionMethodById(Integer id) {
         AdmissionMethodDocument am = admissionMethodReadRepository.findByIdAndStatus(id, Status.ACTIVE)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));

@@ -33,4 +33,15 @@ public class Major extends AbstractEntity<Long> {
 
     @OneToMany(mappedBy = "major", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UniversityMajor> universityMajors;
+
+    @ManyToMany(mappedBy = "specialties")
+    private List<ConsultantProfile> consultants;
+
+    @ManyToMany
+    @JoinTable(
+            name = "major_subject_combinations",
+            joinColumns = @JoinColumn(name = "major_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_combination_id")
+    )
+    private List<SubjectCombination> subjectCombinations;
 }

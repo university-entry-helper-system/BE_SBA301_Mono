@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -35,4 +36,13 @@ public class ConsultantProfile {
     @OneToOne
     @JoinColumn(name = "id", referencedColumnName = "id")
     private Account account;
+
+    @ManyToMany
+    @JoinTable(
+            name = "consultant_specialties",
+            joinColumns = @JoinColumn(name = "consultant_id"),
+            inverseJoinColumns = @JoinColumn(name = "major_id")
+    )
+    private List<Major> specialties;
+
 }

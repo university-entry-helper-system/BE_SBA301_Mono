@@ -13,8 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class University extends AbstractEntity<Integer> {
-
-    public static AccountStatus Status;
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private UniversityCategory category;
@@ -33,9 +31,6 @@ public class University extends AbstractEntity<Integer> {
 
     @Column(length = 100)
     private String province;
-
-    @Column(length = 50)
-    private String type;
 
     @Column(columnDefinition = "TEXT")
     private String address;

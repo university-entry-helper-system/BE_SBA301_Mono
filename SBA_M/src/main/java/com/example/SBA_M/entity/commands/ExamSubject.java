@@ -2,11 +2,14 @@ package com.example.SBA_M.entity.commands;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -21,4 +24,7 @@ public class ExamSubject extends AbstractEntity<Long> {
 
     @Column(name = "short_name", length = 20)
     private String shortName;
+
+    @ManyToMany(mappedBy = "examSubjects")
+    private List<SubjectCombination> subjectCombinations;
 }

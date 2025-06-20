@@ -1,6 +1,5 @@
 package com.example.SBA_M.dto.response;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
