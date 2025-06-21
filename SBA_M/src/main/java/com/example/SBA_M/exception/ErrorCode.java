@@ -35,7 +35,9 @@ public enum ErrorCode {
 
     // Authorization & Authentication Errors
     UNAUTHENTICATED(1019, "Unauthenticated", HttpStatus.UNAUTHORIZED),
-    ACCESS_DENIED(1020, "You do not have permission to access this resource.", HttpStatus.FORBIDDEN);
+    ACCESS_DENIED(1020, "You do not have permission to access this resource.", HttpStatus.FORBIDDEN),
+    UNIVERSITY_NOT_FOUND(1021, "University not found", HttpStatus.NOT_FOUND),
+    CATEGORY_NOT_FOUND(404, "University category not found", HttpStatus.NOT_FOUND), ;
 
     private final int code;
     private final String message;
