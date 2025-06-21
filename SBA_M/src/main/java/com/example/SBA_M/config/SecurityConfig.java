@@ -72,8 +72,10 @@ public class SecurityConfig {
 //                        .requestMatchers("/api/v1/universities/{id}", "/api/v1/universities").permitAll()
                                 .requestMatchers("/api/v1/universities/**").permitAll()
                                 .requestMatchers("/api/v1/university-categories/**").permitAll()
+                                .requestMatchers("/api/v1/news/**").permitAll()
 
-                        // Allow public access to admission APIs
+
+                                // Allow public access to admission APIs
                         .requestMatchers("/api/v1/admission-methods/**").hasRole("ADMIN")
                         // Tất cả các request khác yêu cầu xác thực
                         .anyRequest().authenticated()

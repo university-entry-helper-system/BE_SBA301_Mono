@@ -37,8 +37,11 @@ public enum ErrorCode {
     UNAUTHENTICATED(1019, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     ACCESS_DENIED(1020, "You do not have permission to access this resource.", HttpStatus.FORBIDDEN),
     UNIVERSITY_NOT_FOUND(1021, "University not found", HttpStatus.NOT_FOUND),
-    CATEGORY_NOT_FOUND(404, "University category not found", HttpStatus.NOT_FOUND), ;
+    CATEGORY_NOT_FOUND(404, "University category not found", HttpStatus.NOT_FOUND),
+    NEWS_NOT_FOUND(1022, "News not found", HttpStatus.NOT_FOUND),
+    INTERNAL_SERVER_ERROR(500, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR)
 
+    ;
     private final int code;
     private final String message;
     private final HttpStatus statusCode;

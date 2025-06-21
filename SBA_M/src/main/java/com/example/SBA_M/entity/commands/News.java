@@ -36,7 +36,7 @@ public class News extends AbstractEntity<Long> {
     private Integer viewCount = 0;
 
     @Column(length = 20)
-    private String newStatus = "Published";
+    private String newStatus = "PUBLISHED";
 
     @Column(name = "published_at")
     private Instant publishedAt;
