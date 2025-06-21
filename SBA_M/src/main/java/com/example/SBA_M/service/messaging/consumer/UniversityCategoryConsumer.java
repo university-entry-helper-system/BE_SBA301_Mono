@@ -21,7 +21,12 @@ public class UniversityCategoryConsumer {
         UniversityCategoryDocument document = new UniversityCategoryDocument(
                 event.getId(),
                 event.getName(),
-                event.getDescription()
+                event.getDescription(),
+                event.getStatus(),
+                event.getCreatedAt(),
+                event.getCreatedBy(),
+                event.getUpdatedAt(),
+                event.getUpdatedBy()
         );
 
         universityCategoryReadRepository.save(document);
@@ -37,6 +42,9 @@ public class UniversityCategoryConsumer {
 
         existingDocument.setName(event.getName());
         existingDocument.setDescription(event.getDescription());
+        existingDocument.setStatus(event.getStatus());
+        existingDocument.setUpdatedAt(event.getUpdatedAt());
+        existingDocument.setUpdatedBy(event.getUpdatedBy());
 
         universityCategoryReadRepository.save(existingDocument);
         log.info("University category document updated: {}", existingDocument.getId());

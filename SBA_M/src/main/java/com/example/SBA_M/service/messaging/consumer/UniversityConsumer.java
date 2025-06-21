@@ -23,7 +23,12 @@ public class UniversityConsumer {
         UniversityCategoryDocument categoryDoc = new UniversityCategoryDocument(
                 category.getId(),
                 category.getName(),
-                category.getDescription()
+                category.getDescription(),
+                category.getStatus(),
+                category.getCreatedAt(),
+                category.getCreatedBy(),
+                category.getUpdatedAt(),
+                category.getUpdatedBy()
         );
         UniversityDocument doc = new UniversityDocument(
                 event.getId(),
@@ -60,7 +65,12 @@ public class UniversityConsumer {
         UniversityCategoryDocument categoryDoc = new UniversityCategoryDocument(
                 category.getId(),
                 category.getName(),
-                category.getDescription()
+                category.getDescription(),
+                category.getStatus(),
+                category.getCreatedAt(),
+                category.getCreatedBy(),
+                category.getUpdatedAt(),
+                category.getUpdatedBy()
         );
 
         // Update fields
