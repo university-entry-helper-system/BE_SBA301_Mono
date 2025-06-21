@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ public class NewsServiceImpl implements NewsService {
     private final NewsProducer newsProducer;
     private final NewsReadRepository newsReadRepository;
     private final NewsSearchRepository newsSearchRepository;
+
 
     @Override
     public PageResponse<NewsResponse> getNewsPaginated(int page, int size) {
@@ -116,7 +118,7 @@ public class NewsServiceImpl implements NewsService {
                 .build();
     }
     @Override
-    public NewsResponse createNews(NewsRequest request) {
+    public NewsResponse createNews(NewsRequest request, MultipartFile image) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.isAuthenticated() || authentication.getName() == null) {
@@ -125,7 +127,7 @@ public class NewsServiceImpl implements NewsService {
             String username = authentication.getName();
 
             log.info("Creating news with title: {}", request.getTitle());
-            return newsProducer.createNews(request, username);
+            return newsProducer.createNews(request, image,  username);
         } catch (AppException ex) {
             throw ex;
         } catch (Exception ex) {

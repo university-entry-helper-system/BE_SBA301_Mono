@@ -3,6 +3,7 @@ package com.example.SBA_M.service;
 import com.example.SBA_M.dto.request.NewsRequest;
 import com.example.SBA_M.dto.response.NewsResponse;
 import com.example.SBA_M.dto.response.PageResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 
 public interface NewsService {
@@ -27,7 +28,7 @@ public interface NewsService {
     /**
      * Create a new news item
      */
-    NewsResponse createNews(NewsRequest request);
+     NewsResponse createNews(NewsRequest request, MultipartFile image);
 
     /**
      * Update an existing news item

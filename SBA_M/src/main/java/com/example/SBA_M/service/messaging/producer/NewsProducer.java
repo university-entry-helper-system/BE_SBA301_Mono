@@ -8,12 +8,16 @@ import com.example.SBA_M.entity.commands.University;
 import com.example.SBA_M.event.NewsEvent;
 import com.example.SBA_M.repository.commands.NewsRepository;
 import com.example.SBA_M.repository.commands.UniversityRepository;
+import com.example.SBA_M.service.minio.MinioService;
 import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -24,15 +28,19 @@ public class NewsProducer {
     private final NewsRepository newsRepository;
     private final UniversityRepository universityRepository;
     private final KafkaTemplate<String, NewsEvent> kafkaTemplate;
-
-    public NewsResponse createNews(NewsRequest request, String username) {
+    private final MinioService minioService;
+    public NewsResponse createNews(NewsRequest request, MultipartFile image, String username) {
         University university = universityRepository.findById(request.getUniversityId())
                 .orElseThrow(() -> new RuntimeException("University not found with id: " + request.getUniversityId()));
+        String presignedImageUrl = null;
+        if (image != null && !image.isEmpty()) {
+            presignedImageUrl = minioService.uploadFileAndGetPresignedUrl(image);
+        }
         News news = new News();
         news.setTitle(request.getTitle());
         news.setContent(request.getContent());
         news.setSummary(request.getSummary());
-        news.setImageUrl(request.getImageUrl());
+        news.setImageUrl(presignedImageUrl);
         news.setCategory(request.getCategory());
         news.setUniversity(university);
         news.setViewCount(0);

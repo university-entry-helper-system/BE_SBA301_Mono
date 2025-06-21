@@ -4,21 +4,28 @@ import com.example.SBA_M.dto.request.NewsRequest;
 import com.example.SBA_M.dto.response.NewsResponse;
 import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.service.NewsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/v1/news")
 @SecurityRequirement(name = "bearerAuth")
+@Slf4j
 public class NewsController {
     private final NewsService newsService;
+    private final ObjectMapper objectMapper;
 
-    public NewsController(NewsService newsService) {
+    public NewsController(NewsService newsService, ObjectMapper objectMapper) {
         this.newsService = newsService;
+        this.objectMapper = objectMapper;
     }
 
     @Operation(summary = "Get paginated news", description = "Retrieve news items with pagination")
@@ -36,11 +43,22 @@ public class NewsController {
         return ResponseEntity.ok(news);
     }
 
-    @Operation(summary = "Create a news item", description = "Create a new news item from the provided request data")
-    @PostMapping
-    public ResponseEntity<NewsResponse> createNews(@Valid @RequestBody NewsRequest newsRequest) {
-        NewsResponse created = newsService.createNews(newsRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    @Operation(summary = "Create news with optional image", description = "Create a new news item with optional image upload")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createNews(
+            @RequestParam("news") String newsJson,
+            @RequestParam(value = "image", required = false) MultipartFile image) {
+
+        try {
+            log.info("Received news request: {}", newsJson);
+            NewsRequest newsRequest = objectMapper.readValue(newsJson, NewsRequest.class);
+            NewsResponse created = newsService.createNews(newsRequest, image);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } catch (Exception e) {
+            log.error("Error processing news creation: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid JSON format or image: " + e.getMessage());
+        }
     }
 
     @Operation(summary = "Update a news item", description = "Update an existing news item with the provided request data")
