@@ -51,9 +51,6 @@ public class University extends AbstractEntity<Integer> {
     private List<News> news;
 
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Events> events;
-
-    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UniversityMajor> universityMajors;
 
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)

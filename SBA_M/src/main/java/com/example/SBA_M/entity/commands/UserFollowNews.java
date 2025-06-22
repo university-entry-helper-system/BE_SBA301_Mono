@@ -11,19 +11,15 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "user_follow_news")
-public class UserFollowNews {
-
-    @EmbeddedId
-    private UserFollowNewsId id = new UserFollowNewsId();
+public class UserFollowNews extends AbstractEntity<Long>{
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("accountId")
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("newsId")
     @JoinColumn(name = "news_id", nullable = false)
     private News news;
 
