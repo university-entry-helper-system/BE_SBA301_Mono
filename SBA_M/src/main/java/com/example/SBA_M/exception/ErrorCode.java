@@ -42,6 +42,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(500, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
     UNIVERSITY_MAJOR_NOT_FOUND(1023, "University major not found", HttpStatus.NOT_FOUND),
     EXAM_SUBJECT_NOT_FOUND(1024, "Exam subject not found", HttpStatus.NOT_FOUND),
+    SUBJECT_COMBINATION_NOT_FOUND(1025, "Subject combination not found", HttpStatus.NOT_FOUND),
     ;
     private final int code;
     private final String message;
