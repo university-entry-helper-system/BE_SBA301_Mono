@@ -23,7 +23,7 @@ public enum ErrorCode {
     OLD_PASSWORD_MISMATCH(1011, "Old password does not match.", HttpStatus.BAD_REQUEST),
     PASSWORD_MISMATCH(1012, "New passwords do not match.", HttpStatus.BAD_REQUEST),
     ACCOUNT_NOT_DELETED(1013, "Account is not marked as deleted.", HttpStatus.BAD_REQUEST),
-
+    MAJOR_NOT_FOUND(1014, "Major not found", HttpStatus.NOT_FOUND),
     // Role Errors
     ROLE_NOT_FOUND(1014, "Role not found", HttpStatus.NOT_FOUND),
 
@@ -39,7 +39,8 @@ public enum ErrorCode {
     UNIVERSITY_NOT_FOUND(1021, "University not found", HttpStatus.NOT_FOUND),
     CATEGORY_NOT_FOUND(404, "University category not found", HttpStatus.NOT_FOUND),
     NEWS_NOT_FOUND(1022, "News not found", HttpStatus.NOT_FOUND),
-    INTERNAL_SERVER_ERROR(500, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR)
+    INTERNAL_SERVER_ERROR(500, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
+    UNIVERSITY_MAJOR_NOT_FOUND(1023, "University major not found", HttpStatus.NOT_FOUND)
 
     ;
     private final int code;
