@@ -73,6 +73,8 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/universities/**").permitAll()
                                 .requestMatchers("/api/v1/university-categories/**").permitAll()
                                 .requestMatchers("/api/v1/news/**").permitAll()
+                                .requestMatchers("/api/v1/exam-subjects/**").permitAll()
+
 
 
                                 // Allow public access to admission APIs

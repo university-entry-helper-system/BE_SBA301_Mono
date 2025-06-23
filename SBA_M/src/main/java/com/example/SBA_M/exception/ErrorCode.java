@@ -40,8 +40,8 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND(404, "University category not found", HttpStatus.NOT_FOUND),
     NEWS_NOT_FOUND(1022, "News not found", HttpStatus.NOT_FOUND),
     INTERNAL_SERVER_ERROR(500, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
-    UNIVERSITY_MAJOR_NOT_FOUND(1023, "University major not found", HttpStatus.NOT_FOUND)
-
+    UNIVERSITY_MAJOR_NOT_FOUND(1023, "University major not found", HttpStatus.NOT_FOUND),
+    EXAM_SUBJECT_NOT_FOUND(1024, "Exam subject not found", HttpStatus.NOT_FOUND),
     ;
     private final int code;
     private final String message;
