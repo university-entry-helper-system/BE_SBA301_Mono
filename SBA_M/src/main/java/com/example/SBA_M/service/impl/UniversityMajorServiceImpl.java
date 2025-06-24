@@ -146,12 +146,10 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
     public AdmissionUniversityTuitionResponse getAdmissionYearGroupsByUniversityId(Integer universityId) {
         List<AdmissionEntriesDocument> entries = universityMajorReadRepository
                 .findByUniversityIdAndStatus(universityId, Status.ACTIVE);
-
         if (entries.isEmpty()) {
             return null;
         }
-
-        String universityName = entries.get(0).getUniversityName();
+        String universityName = entries.getFirst().getUniversityName();
 
         // Group data: year -> method -> major -> subjectCombination
         Map<Integer, Map<Integer, Map<Long, List<AdmissionEntriesDocument>>>> grouped = new TreeMap<>(Collections.reverseOrder());
@@ -177,10 +175,9 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
                                         .map(AdmissionEntriesDocument::getMethodName)
                                         .orElse(null);
 
-                                List<MajorEntry> majors = methodEntry.getValue().entrySet().stream()
-                                        .map(majorEntry -> {
-                                            List<AdmissionEntriesDocument> docs = majorEntry.getValue();
-                                            AdmissionEntriesDocument any = docs.get(0);
+                                List<MajorEntry> majors = methodEntry.getValue().values().stream()
+                                        .map(docs -> {
+                                            AdmissionEntriesDocument any = docs.getFirst();
 
                                             List<SubjectCombinationTuitionScore> scores = docs.stream()
                                                     .map(d -> new SubjectCombinationTuitionScore(
@@ -218,8 +215,6 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
                 years
         );
     }
-
-
     @Override
     public MajorAdmissionResponse getMajorAdmissionByUniversityAndMajor(Integer universityId, Long majorId) {
         List<AdmissionEntriesDocument> entries = universityMajorReadRepository
@@ -236,8 +231,8 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
         }
 
         // Extract static info from the first entry
-        String universityName = entries.get(0).getUniversityName();
-        String majorName = entries.get(0).getMajorName();
+        String universityName = entries.getFirst().getUniversityName();
+        String majorName = entries.getFirst().getMajorName();
 
         // Grouping: year -> methodId -> methodName -> subjectCombination -> score + note
         Map<Integer, Map<Integer, Map<String, SubjectCombinationScore>>> grouped = new TreeMap<>(Collections.reverseOrder());
@@ -292,8 +287,8 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
             return null;
         }
 
-        String universityName = entries.get(0).getUniversityName();
-        String subjectCombination = entries.get(0).getSubjectCombination();
+        String universityName = entries.getFirst().getUniversityName();
+        String subjectCombination = entries.getFirst().getSubjectCombination();
 
         // Map to avoid repeated method name lookups
         Map<Integer, String> methodNameMap = entries.stream()

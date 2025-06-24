@@ -1,58 +1,80 @@
 package com.example.SBA_M.controller;
 
 import com.example.SBA_M.dto.request.SubjectCombinationRequest;
+import com.example.SBA_M.dto.response.ApiResponse;
 import com.example.SBA_M.dto.response.SubjectCombinationResponse;
 import com.example.SBA_M.service.SubjectCombinationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/subject-combinations")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class SubjectCombinationController {
 
     private final SubjectCombinationService subjectCombinationService;
 
+    @Operation(summary = "Create a new subject combination")
     @PostMapping
-    public ResponseEntity<SubjectCombinationResponse> createSubjectCombination(
+    public ApiResponse<SubjectCombinationResponse> createSubjectCombination(
             @Valid @RequestBody SubjectCombinationRequest request) {
         SubjectCombinationResponse response = subjectCombinationService.createSubjectCombination(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ApiResponse.<SubjectCombinationResponse>builder()
+                .code(1001)
+                .message("Subject combination created successfully")
+                .result(response)
+                .build();
     }
 
+    @Operation(summary = "Get subject combination by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<SubjectCombinationResponse> getSubjectCombinationById(
+    public ApiResponse<SubjectCombinationResponse> getSubjectCombinationById(
             @PathVariable Long id) {
         SubjectCombinationResponse response = subjectCombinationService.getSubjectCombinationById(id);
-        return ResponseEntity.ok(response);
+        return ApiResponse.<SubjectCombinationResponse>builder()
+                .code(1000)
+                .message("Subject combination fetched successfully")
+                .result(response)
+                .build();
     }
 
+    @Operation(summary = "Get all subject combinations")
     @GetMapping
-    public ResponseEntity<List<SubjectCombinationResponse>> getAllSubjectCombinations() {
+    public ApiResponse<List<SubjectCombinationResponse>> getAllSubjectCombinations() {
         List<SubjectCombinationResponse> responses = subjectCombinationService.getAllSubjectCombinations();
-        return ResponseEntity.ok(responses);
+        return ApiResponse.<List<SubjectCombinationResponse>>builder()
+                .code(1000)
+                .message("All subject combinations fetched successfully")
+                .result(responses)
+                .build();
     }
 
+    @Operation(summary = "Update subject combination")
     @PutMapping("/{id}")
-    public ResponseEntity<SubjectCombinationResponse> updateSubjectCombination(
+    public ApiResponse<SubjectCombinationResponse> updateSubjectCombination(
             @PathVariable Long id,
             @Valid @RequestBody SubjectCombinationRequest request) {
         SubjectCombinationResponse response = subjectCombinationService.updateSubjectCombination(id, request);
-        return ResponseEntity.ok(response);
+        return ApiResponse.<SubjectCombinationResponse>builder()
+                .code(1002)
+                .message("Subject combination updated successfully")
+                .result(response)
+                .build();
     }
 
+    @Operation(summary = "Delete subject combination")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, String>> deleteSubjectCombination(@PathVariable Long id) {
+    public ApiResponse<Void> deleteSubjectCombination(@PathVariable Long id) {
         subjectCombinationService.deleteSubjectCombination(id);
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Subject combination deleted successfully");
-        return ResponseEntity.ok(response);
+        return ApiResponse.<Void>builder()
+                .code(1003)
+                .message("Subject combination deleted successfully")
+                .build();
     }
 }
