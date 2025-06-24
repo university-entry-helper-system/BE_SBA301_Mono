@@ -13,7 +13,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class UniversityCreatedEvent extends AbstractCreatedEvent<Integer> {
+public class UniversityEvent extends AbstractCreatedEvent<Integer> {
     private Integer categoryId;
     private String name;
     private String shortName;
@@ -27,7 +27,7 @@ public class UniversityCreatedEvent extends AbstractCreatedEvent<Integer> {
     private String description;
     private Integer admissionMethodId;
 
-    public UniversityCreatedEvent(
+    public UniversityEvent(
             Integer id,
             Integer categoryId,
             String name,

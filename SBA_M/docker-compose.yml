@@ -14,9 +14,14 @@ services:
       DB_NAME: neondb
       DB_USERNAME: neondb_owner
       DB_PASSWORD: npg_pJ39SmHTNgiU
-
+      ELASTICSEARCH_HOST: http://elasticsearch:9200
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: robin
+      MINIO_SECRET_KEY: admin123456
     depends_on:
       - kafka
+      - elasticsearch
+      - minio
     networks:
       - backend-net
 
@@ -25,7 +30,7 @@ services:
     container_name: kafka
     hostname: kafka
     ports:
-      - "9094:9094"  # External
+      - "9094:9094"
     environment:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
@@ -36,6 +41,59 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
     networks:
       - backend-net
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - backend-net
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - xpack.security.enabled=false
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - backend-net
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"  # S3 API
+      - "9001:9001"  # Console Web UI
+    environment:
+      MINIO_ROOT_USER: robin
+      MINIO_ROOT_PASSWORD: admin123456
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - backend-net
+
+volumes:
+  es-data:
+  minio-data:
 
 networks:
   backend-net:

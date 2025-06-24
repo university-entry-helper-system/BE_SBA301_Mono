@@ -1,0 +1,44 @@
+package com.example.SBA_M.service.messaging.consumer;
+
+import com.example.SBA_M.entity.queries.AdmissionEntriesDocument;
+import com.example.SBA_M.event.UniversityMajorEvent;
+import com.example.SBA_M.event.UniversityMajorEventBatch;
+import com.example.SBA_M.repository.queries.UniversityMajorReadRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
+@Slf4j
+public class UniversityMajorConsumer {
+    private final UniversityMajorReadRepository universityMajorReadRepository;
+
+    @KafkaListener(topics = "university-major.bulk-event", groupId = "sba-group")
+    public void consume(UniversityMajorEventBatch batch) {
+        List<AdmissionEntriesDocument> documents = batch.getEvents().stream()
+                .map(event -> {
+                    AdmissionEntriesDocument doc = new AdmissionEntriesDocument();
+                    doc.setId(event.getId());
+                    doc.setUniversityId(event.getUniversityId());
+                    doc.setUniversityName(event.getUniversityName());
+                    doc.setMajorId(event.getMajorId());
+                    doc.setMajorName(event.getMajorName());
+                    doc.setMethodId(event.getMethodId());
+                    doc.setMethodName(event.getMethodName());
+                    doc.setSubjectCombinationId(event.getSubjectCombinationId());
+                    doc.setSubjectCombination(event.getSubjectCombination());
+                    doc.setYear(event.getYear());
+                    doc.setScore(event.getScore());
+                    doc.setNote(event.getNote());
+                    doc.setStatus(event.getStatus());
+                    return doc;
+                })
+                .toList();
+
+        universityMajorReadRepository.saveAll(documents);
+    }
+}

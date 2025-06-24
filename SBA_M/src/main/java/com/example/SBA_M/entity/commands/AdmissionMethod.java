@@ -1,9 +1,6 @@
 package com.example.SBA_M.entity.commands;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,6 +18,9 @@ public class AdmissionMethod extends AbstractEntity<Integer> {
 
     @ManyToMany(mappedBy = "admissionMethods")
     private List<UniversityMajor> universityMajors;
+
+    @OneToMany(mappedBy = "admissionMethod", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UniversityAdmissionMethod> admissionMethods;
 
     @Column(nullable = false, length = 100)
     private String name;

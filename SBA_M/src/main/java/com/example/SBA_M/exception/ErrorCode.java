@@ -23,7 +23,7 @@ public enum ErrorCode {
     OLD_PASSWORD_MISMATCH(1011, "Old password does not match.", HttpStatus.BAD_REQUEST),
     PASSWORD_MISMATCH(1012, "New passwords do not match.", HttpStatus.BAD_REQUEST),
     ACCOUNT_NOT_DELETED(1013, "Account is not marked as deleted.", HttpStatus.BAD_REQUEST),
-
+    MAJOR_NOT_FOUND(1014, "Major not found", HttpStatus.NOT_FOUND),
     // Role Errors
     ROLE_NOT_FOUND(1014, "Role not found", HttpStatus.NOT_FOUND),
 
@@ -35,8 +35,15 @@ public enum ErrorCode {
 
     // Authorization & Authentication Errors
     UNAUTHENTICATED(1019, "Unauthenticated", HttpStatus.UNAUTHORIZED),
-    ACCESS_DENIED(1020, "You do not have permission to access this resource.", HttpStatus.FORBIDDEN);
-
+    ACCESS_DENIED(1020, "You do not have permission to access this resource.", HttpStatus.FORBIDDEN),
+    UNIVERSITY_NOT_FOUND(1021, "University not found", HttpStatus.NOT_FOUND),
+    CATEGORY_NOT_FOUND(404, "University category not found", HttpStatus.NOT_FOUND),
+    NEWS_NOT_FOUND(1022, "News not found", HttpStatus.NOT_FOUND),
+    INTERNAL_SERVER_ERROR(500, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
+    UNIVERSITY_MAJOR_NOT_FOUND(1023, "University major not found", HttpStatus.NOT_FOUND),
+    EXAM_SUBJECT_NOT_FOUND(1024, "Exam subject not found", HttpStatus.NOT_FOUND),
+    SUBJECT_COMBINATION_NOT_FOUND(1025, "Subject combination not found", HttpStatus.NOT_FOUND),
+    ;
     private final int code;
     private final String message;
     private final HttpStatus statusCode;

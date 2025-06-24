@@ -26,7 +26,7 @@ public class News extends AbstractEntity<Long> {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "image_url", length = 255)
+    @Column(name = "image_url", length = 1000)
     private String imageUrl;
 
     @Column(length = 100)
@@ -36,7 +36,7 @@ public class News extends AbstractEntity<Long> {
     private Integer viewCount = 0;
 
     @Column(length = 20)
-    private String newStatus = "Published";
+    private String newStatus = "PUBLISHED";
 
     @Column(name = "published_at")
     private Instant publishedAt;

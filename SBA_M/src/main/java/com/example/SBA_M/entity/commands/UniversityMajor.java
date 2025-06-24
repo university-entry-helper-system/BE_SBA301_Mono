@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -39,8 +38,8 @@ public class UniversityMajor extends AbstractEntity<Integer> {
     @Column(nullable = false)
     private Integer year;
 
-    @Column(precision = 18, scale = 2)
-    private BigDecimal tuition;
+    @Column
+    private Double score;
 
     @Column
     private Integer quota;
