@@ -11,5 +11,4 @@ import java.util.Optional;
 @Repository
 public interface MajorRepository extends JpaRepository<Major, Long> {
     Optional<Major> findByIdAndStatus(Long id, Status status);
-
 }
