@@ -2,6 +2,7 @@ package com.example.SBA_M.service.messaging.producer;
 
 import com.example.SBA_M.dto.request.UniversityRequest;
 import com.example.SBA_M.dto.response.UniversityResponse;
+import com.example.SBA_M.entity.commands.Province;
 import com.example.SBA_M.entity.commands.University;
 import com.example.SBA_M.entity.commands.UniversityCategory;
 import com.example.SBA_M.event.UniversityEvent;
@@ -26,13 +27,15 @@ public class UniversityProducer {
         // Assuming you have a method to get UniversityCategory by ID
         UniversityCategory category = new UniversityCategory();
         category.setId(universityRequest.getCategoryId());
+        Province province = new Province();
+        province.setId(universityRequest.getProvinceId());
         University uni = new University();
         uni.setCategory(category);
         uni.setName(universityRequest.getName());
         uni.setShortName(universityRequest.getShortName());
         uni.setLogoUrl(universityRequest.getLogoUrl());
         uni.setFoundingYear(universityRequest.getFoundingYear());
-        uni.setProvince(universityRequest.getProvince());
+        uni.setProvince(province);
         uni.setAddress(universityRequest.getAddress());
         uni.setEmail(universityRequest.getEmail());
         uni.setPhone(universityRequest.getPhone());
@@ -52,7 +55,7 @@ public class UniversityProducer {
             savedUni.getShortName(),
             savedUni.getLogoUrl(),
             savedUni.getFoundingYear(),
-            savedUni.getProvince(),
+            savedUni.getProvince().getId(),
             savedUni.getAddress(),
             savedUni.getEmail(),
             savedUni.getPhone(),
@@ -77,13 +80,14 @@ public class UniversityProducer {
         // Update university fields
         UniversityCategory category = new UniversityCategory();
         category.setId(universityRequest.getCategoryId());
-
+        Province province = new Province();
+        province.setId(universityRequest.getProvinceId());
         existingUni.setCategory(category);
         existingUni.setName(universityRequest.getName());
         existingUni.setShortName(universityRequest.getShortName());
         existingUni.setLogoUrl(universityRequest.getLogoUrl());
         existingUni.setFoundingYear(universityRequest.getFoundingYear());
-        existingUni.setProvince(universityRequest.getProvince());
+        existingUni.setProvince(province);
         existingUni.setAddress(universityRequest.getAddress());
         existingUni.setEmail(universityRequest.getEmail());
         existingUni.setPhone(universityRequest.getPhone());
@@ -102,7 +106,7 @@ public class UniversityProducer {
                 updatedUni.getShortName(),
                 updatedUni.getLogoUrl(),
                 updatedUni.getFoundingYear(),
-                updatedUni.getProvince(),
+                updatedUni.getProvince().getId(),
                 updatedUni.getAddress(),
                 updatedUni.getEmail(),
                 updatedUni.getPhone(),
@@ -138,7 +142,7 @@ public class UniversityProducer {
                 deletedUni.getShortName(),
                 deletedUni.getLogoUrl(),
                 deletedUni.getFoundingYear(),
-                deletedUni.getProvince(),
+                deletedUni.getProvince().getId(),
                 deletedUni.getAddress(),
                 deletedUni.getEmail(),
                 deletedUni.getPhone(),

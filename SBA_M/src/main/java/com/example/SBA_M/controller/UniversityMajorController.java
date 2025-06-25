@@ -100,7 +100,7 @@ public class UniversityMajorController {
     }
 
     @Operation(summary = "Get grouped admissions by university + major")
-    @GetMapping("/admissions/university/{universityId}/major/{majorId}")
+    @GetMapping("/admissions/university/{majorId}/major/{universityId}")
     public ApiResponse<MajorAdmissionResponse> getMajorAdmissionByUniversity(
             @PathVariable Integer universityId,
             @PathVariable Long majorId
@@ -114,7 +114,7 @@ public class UniversityMajorController {
     }
 
     @Operation(summary = "Get grouped admissions by subject combination")
-    @GetMapping("/admissions/university/{universityId}/subject-combination/{subjectCombinationId}")
+    @GetMapping("/admissions/university/{subjectCombinationId}/subject-combination/{universityId}")
     public ApiResponse<SubjectCombinationResponse> getSubjectCombinationAdmission(
             @PathVariable Integer universityId,
             @PathVariable Long subjectCombinationId

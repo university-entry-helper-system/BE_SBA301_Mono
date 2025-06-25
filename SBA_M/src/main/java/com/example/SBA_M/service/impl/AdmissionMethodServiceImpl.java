@@ -57,7 +57,7 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     @Override
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public AdmissionMethodResponse getAdmissionMethodById(Integer id) {
-        AdmissionMethodDocument am = admissionMethodReadRepository.findByIdAndStatus(id, Status.ACTIVE)
+        AdmissionMethodDocument am = admissionMethodReadRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
         return admissionMethodMapper.toResponse(am);
     }
@@ -65,7 +65,7 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public AdmissionMethodResponse updateAdmissionMethod(Integer id, AdmissionMethodRequest request, String username) {
-        AdmissionMethodDocument amDoc = admissionMethodReadRepository.findByIdAndStatus(id, Status.ACTIVE)
+        AdmissionMethodDocument amDoc = admissionMethodReadRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
         AdmissionMethod am = admissionMethodRepository.findById(amDoc.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));

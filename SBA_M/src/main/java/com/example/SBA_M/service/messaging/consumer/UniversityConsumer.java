@@ -1,5 +1,6 @@
 package com.example.SBA_M.service.messaging.consumer;
 
+import com.example.SBA_M.entity.commands.Province;
 import com.example.SBA_M.entity.commands.UniversityCategory;
 import com.example.SBA_M.entity.queries.UniCategorySearch;
 import com.example.SBA_M.entity.queries.UniSearch;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Component;
 public class UniversityConsumer {
     private final UniversityReadRepository universityReadRepository;
     private final UniversityCategoryRepository universityCategoryRepository;
-    private final UniversityCategorySearchRepository universityCategorySearchRepository;
     private final UniversitySearchRepository universitySearchRepository;
 
     @KafkaListener(topics = "uni.created", groupId = "sba-group")
@@ -33,6 +33,7 @@ public class UniversityConsumer {
                     .findById(event.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("Category not found with ID: " + event.getCategoryId()));
 
+            Province province = new Province();
             // Save to MongoDB
             UniversityCategoryDocument categoryDoc = new UniversityCategoryDocument(
                     category.getId(),
@@ -52,7 +53,7 @@ public class UniversityConsumer {
                     event.getShortName(),
                     event.getLogoUrl(),
                     event.getFoundingYear(),
-                    event.getProvince(),
+                    province,
                     event.getAddress(),
                     event.getEmail(),
                     event.getPhone(),
@@ -73,6 +74,7 @@ public class UniversityConsumer {
                     .name(category.getName())
                     .description(category.getDescription())
                     .build();
+            Province provinceSearch = new Province();
 
             // Set the fields from AbstractElasticsearchDocument
             uniCategorySearch.setId(category.getId());
@@ -88,7 +90,7 @@ public class UniversityConsumer {
                     .shortName(event.getShortName())
                     .logoUrl(event.getLogoUrl())
                     .foundingYear(event.getFoundingYear())
-                    .province(event.getProvince())
+                    .province(provinceSearch)
                     .address(event.getAddress())
                     .email(event.getEmail())
                     .phone(event.getPhone())
@@ -133,6 +135,7 @@ public class UniversityConsumer {
                     category.getUpdatedAt(),
                     category.getUpdatedBy()
             );
+            Province provinceDoc = new Province();
 
             // Update fields
             existingDoc.setCategory(categoryDoc);
@@ -140,7 +143,7 @@ public class UniversityConsumer {
             existingDoc.setShortName(event.getShortName());
             existingDoc.setLogoUrl(event.getLogoUrl());
             existingDoc.setFoundingYear(event.getFoundingYear());
-            existingDoc.setProvince(event.getProvince());
+            existingDoc.setProvince(provinceDoc);
             existingDoc.setAddress(event.getAddress());
             existingDoc.setEmail(event.getEmail());
             existingDoc.setPhone(event.getPhone());
@@ -169,13 +172,15 @@ public class UniversityConsumer {
             uniCategorySearch.setUpdatedAt(category.getUpdatedAt());
             uniCategorySearch.setUpdatedBy(category.getUpdatedBy());
 
+            Province provinceSearch = new Province();
+
             // Update search fields
             existingSearch.setCategory(uniCategorySearch);
             existingSearch.setName(event.getName());
             existingSearch.setShortName(event.getShortName());
             existingSearch.setLogoUrl(event.getLogoUrl());
             existingSearch.setFoundingYear(event.getFoundingYear());
-            existingSearch.setProvince(event.getProvince());
+            existingSearch.setProvince(provinceSearch);
             existingSearch.setAddress(event.getAddress());
             existingSearch.setEmail(event.getEmail());
             existingSearch.setPhone(event.getPhone());

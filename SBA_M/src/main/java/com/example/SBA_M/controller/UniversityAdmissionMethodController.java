@@ -82,7 +82,7 @@ public class UniversityAdmissionMethodController {
     }
 
     @Operation(summary = "Get list of schools using a specific admission method (latest year only)")
-    @GetMapping("/methods/{methodId}/schools")
+    @GetMapping("/methods/{methodId}")
     public ApiResponse<List<UniversityAdmissionMethodSummaryResponse>> getSchoolsByMethod(
             @PathVariable Integer methodId
     ) {
@@ -95,7 +95,7 @@ public class UniversityAdmissionMethodController {
     }
 
     @Operation(summary = "Get all admission methods of a school (latest year only)")
-    @GetMapping("/schools/{universityId}/methods")
+    @GetMapping("/schools/{universityId}")
     public ApiResponse<UniversityAdmissionMethodDetailResponse> getMethodsBySchool(
             @PathVariable Integer universityId
     ) {

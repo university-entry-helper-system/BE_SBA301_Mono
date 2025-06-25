@@ -17,9 +17,4 @@ import java.util.List;
 public class MajorResponse {
     Long id;
     String name;
-    String code;
-    String degree;
-    String description;
-    MajorParentResponse majorParent;
-    List<SubjectCombinationResponse> subjectCombinations;
 }

@@ -29,8 +29,9 @@ public class University extends AbstractEntity<Integer> {
     @Column(name = "founding_year")
     private Integer foundingYear;
 
-    @Column(length = 100)
-    private String province;
+    @ManyToOne
+    @JoinColumn(name = "province_id", nullable = false)
+    private Province province;
 
     @Column(columnDefinition = "TEXT")
     private String address;

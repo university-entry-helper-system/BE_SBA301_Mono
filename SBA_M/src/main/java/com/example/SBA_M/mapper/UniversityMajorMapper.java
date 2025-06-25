@@ -12,6 +12,6 @@ public interface UniversityMajorMapper {
      @Mapping(source = "major.id", target = "majorId")
      @Mapping(source = "major.name", target = "majorName")
      @Mapping(source = "admissionMethods", target = "admissionMethods")
-     @Mapping(source = "major.subjectCombinations", target = "subjectCombinations")
+     @Mapping(source = "subjectCombinations", target = "subjectCombinations")
      UniversityMajorResponse toResponse(UniversityMajor entity);
 }

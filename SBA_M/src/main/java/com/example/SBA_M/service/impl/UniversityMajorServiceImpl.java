@@ -17,10 +17,7 @@ import com.example.SBA_M.entity.queries.AdmissionEntriesDocument;
 import com.example.SBA_M.exception.AppException;
 import com.example.SBA_M.exception.ErrorCode;
 import com.example.SBA_M.mapper.UniversityMajorMapper;
-import com.example.SBA_M.repository.commands.AdmissionMethodRepository;
-import com.example.SBA_M.repository.commands.MajorRepository;
-import com.example.SBA_M.repository.commands.UniversityMajorRepository;
-import com.example.SBA_M.repository.commands.UniversityRepository;
+import com.example.SBA_M.repository.commands.*;
 import com.example.SBA_M.repository.queries.UniversityMajorReadRepository;
 import com.example.SBA_M.service.UniversityMajorService;
 import com.example.SBA_M.service.messaging.producer.UniversityMajorProducer;
@@ -46,6 +43,7 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
     private final UniversityMajorMapper universityMajorMapper;
     private final UniversityMajorProducer universityMajorProducer;
     private final UniversityMajorReadRepository universityMajorReadRepository;
+    private final SubjectCombinationRepostiory subjectCombinationService;
 
     @Override
     public PageResponse<UniversityMajorResponse> getAllUniversityMajors(int page, int size) {
@@ -68,7 +66,7 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
 
     @Override
     public UniversityMajorResponse getUniversityMajorById(Integer id) {
-        UniversityMajor um = universityMajorRepository.findByIdAndStatus(id, Status.ACTIVE)
+        UniversityMajor um = universityMajorRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_MAJOR_NOT_FOUND));
         return universityMajorMapper.toResponse(um);
     }
@@ -80,7 +78,10 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
         Major major = majorRepository.findByIdAndStatus(request.getMajorId(), Status.ACTIVE)
                 .orElseThrow(() -> new AppException(ErrorCode.MAJOR_NOT_FOUND));
-
+        List<SubjectCombination> subjectCombination = subjectCombinationService.findAllById(request.getSubjectCombinationIds());
+        if (subjectCombination.size() != request.getAdmissionMethodIds().size()) {
+            throw new AppException(ErrorCode.INVALID_PARAM, "Some admission methods not found");
+        }
         List<AdmissionMethod> methods = admissionMethodRepository.findAllById(request.getAdmissionMethodIds());
         if (methods.size() != request.getAdmissionMethodIds().size()) {
             throw new AppException(ErrorCode.INVALID_PARAM, "Some admission methods not found");
@@ -90,6 +91,7 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
         entity.setUniversity(university);
         entity.setMajor(major);
         entity.setAdmissionMethods(methods);
+        entity.setSubjectCombinations(subjectCombination);
         entity.setUniversityMajorName(request.getUniversityMajorName());
         entity.setScore(request.getScores());
         entity.setQuota(request.getQuota());
@@ -103,12 +105,12 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
     @Override
     @Transactional
     public UniversityMajorResponse updateUniversityMajor(Integer id, UniversityMajorRequest request) {
-        UniversityMajor existing = universityMajorRepository.findByIdAndStatus(id, Status.ACTIVE)
+        UniversityMajor existing = universityMajorRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_MAJOR_NOT_FOUND));
 
         List<Integer> methodIds = request.getAdmissionMethodIds();
         List<AdmissionMethod> methods = admissionMethodRepository.findAllByIdInAndStatus(methodIds, Status.ACTIVE);
-
+        List<SubjectCombination> subjectCombinations = subjectCombinationService.findAllById(request.getSubjectCombinationIds());
         Set<Integer> foundIds = methods.stream()
                 .map(AdmissionMethod::getId)
                 .collect(Collectors.toSet());
@@ -122,6 +124,7 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
         }
 
         existing.setAdmissionMethods(methods);
+        existing.setSubjectCombinations(subjectCombinations);
         existing.setScore(request.getScores());
         existing.setQuota(request.getQuota());
         existing.setNotes(request.getNotes());

@@ -57,7 +57,7 @@ public class UniversityAdmissionMethodServiceImpl implements UniversityAdmission
 
     @Override
     public UniversityAdmissionMethodResponse getById(Integer id) {
-        UniversityAdmissionMethod uam = universityAdmissionMethodRepository.findByIdAndStatus(id, Status.ACTIVE)
+        UniversityAdmissionMethod uam = universityAdmissionMethodRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
         return mapper.toResponse(uam);
     }
@@ -87,7 +87,7 @@ public class UniversityAdmissionMethodServiceImpl implements UniversityAdmission
     @Override
     @Transactional
     public UniversityAdmissionMethodResponse update(Integer id, UniversityMethodRequest request) {
-        UniversityAdmissionMethod uam = universityAdmissionMethodRepository.findByIdAndStatus(id, Status.ACTIVE)
+        UniversityAdmissionMethod uam = universityAdmissionMethodRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
 
         if (request.getUniversityId() != null) {
