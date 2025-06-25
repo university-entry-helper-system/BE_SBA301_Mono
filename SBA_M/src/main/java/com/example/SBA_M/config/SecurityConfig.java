@@ -74,6 +74,8 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/university-categories/**").permitAll()
                                 .requestMatchers("/api/v1/news/**").permitAll()
                                 .requestMatchers("/api/v1/exam-subjects/**").permitAll()
+                                .requestMatchers("/api/v1/university-majors/**").permitAll()
+                                .requestMatchers("/api/v1/university-admission-methods/**").permitAll()
 
 
 

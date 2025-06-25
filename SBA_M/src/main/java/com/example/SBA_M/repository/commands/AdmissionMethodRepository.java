@@ -14,5 +14,6 @@ import java.util.Optional;
 @Repository
 public interface AdmissionMethodRepository extends JpaRepository<AdmissionMethod, Integer> {
     List<AdmissionMethod> findAllByIdInAndStatus(List<Integer> ids, Status status);
+    Optional<AdmissionMethod> findByIdAndStatus(Integer id, Status status);
 
 }
