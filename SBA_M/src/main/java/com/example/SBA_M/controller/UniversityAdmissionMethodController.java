@@ -1,15 +1,15 @@
 package com.example.SBA_M.controller;
 
 import com.example.SBA_M.dto.request.UniversityMethodRequest;
-import com.example.SBA_M.dto.response.ApiResponse;
-import com.example.SBA_M.dto.response.PageResponse;
-import com.example.SBA_M.dto.response.UniversityAdmissionMethodResponse;
+import com.example.SBA_M.dto.response.*;
 import com.example.SBA_M.service.UniversityAdmissionMethodService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/university-admission-methods")
@@ -80,4 +80,31 @@ public class UniversityAdmissionMethodController {
                 .message("University admission method deleted successfully")
                 .build();
     }
+
+    @Operation(summary = "Get list of schools using a specific admission method (latest year only)")
+    @GetMapping("/methods/{methodId}/schools")
+    public ApiResponse<List<UniversityAdmissionMethodSummaryResponse>> getSchoolsByMethod(
+            @PathVariable Integer methodId
+    ) {
+        List<UniversityAdmissionMethodSummaryResponse> result = universityAdmissionMethodService.getSchoolsByMethod(methodId);
+        return ApiResponse.<List<UniversityAdmissionMethodSummaryResponse>>builder()
+                .code(1000)
+                .message("Schools using the method fetched successfully")
+                .result(result)
+                .build();
+    }
+
+    @Operation(summary = "Get all admission methods of a school (latest year only)")
+    @GetMapping("/schools/{universityId}/methods")
+    public ApiResponse<UniversityAdmissionMethodDetailResponse> getMethodsBySchool(
+            @PathVariable Integer universityId
+    ) {
+        UniversityAdmissionMethodDetailResponse result = universityAdmissionMethodService.getMethodsBySchool(universityId);
+        return ApiResponse.<UniversityAdmissionMethodDetailResponse>builder()
+                .code(1000)
+                .message("Methods of the school fetched successfully")
+                .result(result)
+                .build();
+    }
+
 }

@@ -90,7 +90,7 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
         entity.setUniversity(university);
         entity.setMajor(major);
         entity.setAdmissionMethods(methods);
-        entity.setYear(request.getYear());
+        entity.setUniversityMajorName(request.getUniversityMajorName());
         entity.setScore(request.getScores());
         entity.setQuota(request.getQuota());
         entity.setNotes(request.getNotes());
@@ -125,7 +125,7 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
         existing.setScore(request.getScores());
         existing.setQuota(request.getQuota());
         existing.setNotes(request.getNotes());
-        existing.setYear(request.getYear());
+        existing.setUniversityMajorName(request.getUniversityMajorName());
 
         UniversityMajor saved = universityMajorRepository.save(existing);
         universityMajorProducer.sendCreateEvents(saved);

@@ -36,12 +36,11 @@ public class UniversityMajorProducer {
                         university.getId(),
                         university.getName(),
                         major.getId(),
-                        major.getName(),
+                        um.getUniversityMajorName(),
                         method.getId(),
                         method.getName(),
                         combo.getId(),
                         combo.getName(),
-                        um.getYear(),
                         um.getScore(),
                         um.getNotes(),
                         um.getStatus()

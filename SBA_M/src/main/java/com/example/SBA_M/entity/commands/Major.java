@@ -19,10 +19,6 @@ public class Major extends AbstractEntity<Long> {
     @Column(length = 20, unique = true)
     private String code;
 
-    @ManyToOne
-    @JoinColumn(name = "major_parent_id", nullable = true)
-    private Major majorParent;
-
     @Column(length = 100)
     private String degree;
 

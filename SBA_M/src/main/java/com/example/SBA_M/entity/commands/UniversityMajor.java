@@ -34,9 +34,9 @@ public class UniversityMajor extends AbstractEntity<Integer> {
     )
     private List<AdmissionMethod> admissionMethods;
 
+    @Column(name = "university_major_name", nullable = false, length = 255)
+    private String universityMajorName;
 
-    @Column(nullable = false)
-    private Integer year;
 
     @Column
     private Double score;

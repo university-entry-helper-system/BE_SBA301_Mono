@@ -33,8 +33,6 @@ public class MajorServiceImpl implements MajorService {
     public MajorResponse createMajor(MajorRequest request) {
         log.info("Creating new major with name: {}", request.getName());
 
-        Major parent = majorRepository.findById(request.getMajorParentId()).orElse(null);
-
         List<SubjectCombination> subjectCombinations = List.of();
         if (request.getSubjectCombinationIds() != null && !request.getSubjectCombinationIds().isEmpty()) {
             subjectCombinations = subjectCombinationRepository.findAllById(request.getSubjectCombinationIds());
@@ -48,7 +46,6 @@ public class MajorServiceImpl implements MajorService {
         major.setCode(request.getCode());
         major.setDegree(request.getDegree());
         major.setDescription(request.getDescription());
-        major.setMajorParent(parent);
         major.setSubjectCombinations(subjectCombinations);
         major.setStatus(Status.ACTIVE);
         major = majorRepository.save(major);
@@ -81,10 +78,6 @@ public class MajorServiceImpl implements MajorService {
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MAJOR_NOT_FOUND));
 
-        Major parent = majorRepository.findById(request.getMajorParentId())
-                    .orElse(null);
-
-
         List<SubjectCombination> subjectCombinations = List.of();
         if (request.getSubjectCombinationIds() != null && !request.getSubjectCombinationIds().isEmpty()) {
             subjectCombinations = subjectCombinationRepository.findAllById(request.getSubjectCombinationIds());
@@ -97,7 +90,6 @@ public class MajorServiceImpl implements MajorService {
         major.setCode(request.getCode());
         major.setDegree(request.getDegree());
         major.setDescription(request.getDescription());
-        major.setMajorParent(parent);
         major.setSubjectCombinations(subjectCombinations);
 
         major = majorRepository.save(major);
@@ -130,11 +122,6 @@ public class MajorServiceImpl implements MajorService {
                                         .name(sc.getName())
                                         .build())
                                 .collect(Collectors.toList()) : List.of())
-                .majorParent(major.getMajorParent() != null ?
-                        MajorParentResponse.builder()
-                                .id(major.getMajorParent().getId())
-                                .name(major.getMajorParent().getName())
-                                .build() : null)
                 .build();
     }
 }

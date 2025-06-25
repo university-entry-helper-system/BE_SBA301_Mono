@@ -2,7 +2,11 @@ package com.example.SBA_M.service;
 
 import com.example.SBA_M.dto.request.UniversityMethodRequest;
 import com.example.SBA_M.dto.response.PageResponse;
+import com.example.SBA_M.dto.response.UniversityAdmissionMethodDetailResponse;
 import com.example.SBA_M.dto.response.UniversityAdmissionMethodResponse;
+import com.example.SBA_M.dto.response.UniversityAdmissionMethodSummaryResponse;
+
+import java.util.List;
 
 public interface UniversityAdmissionMethodService {
     PageResponse<UniversityAdmissionMethodResponse> getAll(int page, int size);
@@ -14,4 +18,8 @@ public interface UniversityAdmissionMethodService {
     UniversityAdmissionMethodResponse update(Integer id, UniversityMethodRequest request);
 
     void delete(Integer id);
+
+    List<UniversityAdmissionMethodSummaryResponse> getSchoolsByMethod(Integer methodId);
+
+    UniversityAdmissionMethodDetailResponse getMethodsBySchool(Integer universityId);
 }
