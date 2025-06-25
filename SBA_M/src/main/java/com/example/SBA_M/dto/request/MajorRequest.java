@@ -6,17 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UniversityMethodRequest {
-    private Integer universityId;
-    private Integer admissionMethodId;
-    private Integer year;
-    private String notes;
-    private String conditions;
-    private String regulations;
-    private String admissionTime;
+public class MajorRequest {
+     String name;
+     String code;
+     Long majorParentId;
+     String degree;
+     String description;
+     List<Long> subjectCombinationIds;
 }
-

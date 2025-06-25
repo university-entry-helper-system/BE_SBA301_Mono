@@ -1,7 +1,6 @@
 package com.example.SBA_M.service.messaging.consumer;
 
 import com.example.SBA_M.entity.queries.AdmissionEntriesDocument;
-import com.example.SBA_M.event.UniversityMajorEvent;
 import com.example.SBA_M.event.UniversityMajorEventBatch;
 import com.example.SBA_M.repository.queries.UniversityMajorReadRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +30,6 @@ public class UniversityMajorConsumer {
                     doc.setMethodName(event.getMethodName());
                     doc.setSubjectCombinationId(event.getSubjectCombinationId());
                     doc.setSubjectCombination(event.getSubjectCombination());
-                    doc.setYear(event.getYear());
                     doc.setScore(event.getScore());
                     doc.setNote(event.getNote());
                     doc.setStatus(event.getStatus());

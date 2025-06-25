@@ -1,4 +1,4 @@
-package com.example.SBA_M.dto.request;
+package com.example.SBA_M.dto.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -9,14 +9,12 @@ import lombok.experimental.FieldDefaults;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class UniversityMethodRequest {
-    private Integer universityId;
-    private Integer admissionMethodId;
+public class AdmissionMethodDetail {
+    private Integer methodId;
+    private String methodName;
     private Integer year;
     private String notes;
     private String conditions;
     private String regulations;
     private String admissionTime;
 }
-

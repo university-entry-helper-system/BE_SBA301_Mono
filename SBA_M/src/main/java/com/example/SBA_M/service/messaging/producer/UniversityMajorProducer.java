@@ -21,7 +21,7 @@ public class UniversityMajorProducer {
     public void sendCreateEvents(UniversityMajor um) {
         var university = um.getUniversity();
         var major = um.getMajor();
-        var subjectCombinations = major.getSubjectCombinations();
+        var subjectCombinations = um.getSubjectCombinations();
         var admissionMethods = um.getAdmissionMethods();
 
         if (subjectCombinations == null || admissionMethods == null) return;
@@ -36,12 +36,11 @@ public class UniversityMajorProducer {
                         university.getId(),
                         university.getName(),
                         major.getId(),
-                        major.getName(),
+                        um.getUniversityMajorName(),
                         method.getId(),
                         method.getName(),
                         combo.getId(),
                         combo.getName(),
-                        um.getYear(),
                         um.getScore(),
                         um.getNotes(),
                         um.getStatus()

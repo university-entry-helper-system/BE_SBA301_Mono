@@ -1,17 +1,20 @@
 package com.example.SBA_M.dto.response;
 
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdmissionMethodResponse {
-    private Integer id;
-    private String name;
-    private String description;
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class MajorResponse {
+    Long id;
+    String name;
 }

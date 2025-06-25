@@ -1,5 +1,6 @@
 package com.example.SBA_M.entity.queries;
 
+import com.example.SBA_M.entity.commands.Province;
 import lombok.*;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -30,7 +31,7 @@ public class UniSearch extends AbstractElasticsearchDocument<Integer> {
     private Integer foundingYear;
 
     @Field(type = FieldType.Keyword)
-    private String province;
+    private Province province;
 
     @Field(type = FieldType.Text)
     private String address;

@@ -23,7 +23,7 @@ public class SubjectCombination extends AbstractEntity<Long> {
     private String description;
 
     @ManyToMany(mappedBy = "subjectCombinations")
-    private List<Major> majors;
+    private List<UniversityMajor> majors;
 
     @ManyToMany
     @JoinTable(

@@ -19,7 +19,7 @@ public class UniversityEvent extends AbstractCreatedEvent<Integer> {
     private String shortName;
     private String logoUrl;
     private Integer foundingYear;
-    private String province;
+    private Integer province;
     private String address;
     private String email;
     private String phone;
@@ -34,7 +34,7 @@ public class UniversityEvent extends AbstractCreatedEvent<Integer> {
             String shortName,
             String logoUrl,
             Integer foundingYear,
-            String province,
+            Integer province,
             String address,
             String email,
             String phone,

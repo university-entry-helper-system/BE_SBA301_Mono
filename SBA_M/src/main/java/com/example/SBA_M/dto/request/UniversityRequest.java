@@ -13,7 +13,7 @@ public class UniversityRequest {
     private String shortName;
     private String logoUrl;
     private Integer foundingYear;
-    private String province;
+    private Integer provinceId;
     private String type;
     private String address;
     private String email;

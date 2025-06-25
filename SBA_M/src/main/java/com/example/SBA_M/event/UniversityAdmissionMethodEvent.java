@@ -6,25 +6,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class UniversityMajorEvent {
-    private String id;
-
+@AllArgsConstructor
+public class UniversityAdmissionMethodEvent {
+    private Integer id;
     private Integer universityId;
     private String universityName;
 
-    private Long majorId;
-    private String majorName;
+
 
     private Integer methodId;
     private String methodName;
 
-    private Long subjectCombinationId;
-    private String subjectCombination;
+    private Integer year;
+    private String notes;
+    private String conditions;
+    private String regulations;
+    private String admissionTime;
 
-    private Double score;
-    private String note;
     private Status status;
 }
-
