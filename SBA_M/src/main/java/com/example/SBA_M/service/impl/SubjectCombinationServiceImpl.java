@@ -8,7 +8,7 @@ import com.example.SBA_M.entity.commands.SubjectCombination;
 import com.example.SBA_M.exception.AppException;
 import com.example.SBA_M.exception.ErrorCode;
 import com.example.SBA_M.repository.commands.ExamSubjectRepository;
-import com.example.SBA_M.repository.commands.SubjectCombinationRepostiory;
+import com.example.SBA_M.repository.commands.SubjectCombinationRepository;
 import com.example.SBA_M.service.SubjectCombinationService;
 import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SubjectCombinationServiceImpl implements SubjectCombinationService {
 
-    private final SubjectCombinationRepostiory subjectCombinationRepository;
+    private final SubjectCombinationRepository subjectCombinationRepository;
     private final ExamSubjectRepository examSubjectRepository;
 
     @Override

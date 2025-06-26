@@ -1,9 +1,7 @@
 package com.example.SBA_M.controller;
 
 import com.example.SBA_M.dto.request.UniversityMajorRequest;
-import com.example.SBA_M.dto.response.ApiResponse;
-import com.example.SBA_M.dto.response.PageResponse;
-import com.example.SBA_M.dto.response.UniversityMajorResponse;
+import com.example.SBA_M.dto.response.*;
 import com.example.SBA_M.dto.response.major_search_response.MajorAdmissionResponse;
 import com.example.SBA_M.dto.response.sub_combine_search_package.SubjectCombinationResponse;
 import com.example.SBA_M.dto.response.tuition_search_response.AdmissionUniversityTuitionResponse;
@@ -14,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -125,5 +124,52 @@ public class UniversityMajorController {
                 .message("Admission data grouped by subject combination fetched successfully")
                 .result(response)
                 .build();
+    }
+
+    @Operation(summary = "Search university majors by subject combination")
+    @GetMapping("/search/subject-combination/{subjectCombinationId}")
+    public ApiResponse<List<UniversitySubjectCombinationSearchResponse>> searchBySubjectCombination(
+            @PathVariable Long subjectCombinationId,
+            @RequestParam(required = false) Long majorId,
+            @RequestParam(required = false) String province
+    ) {
+        try {
+        List<UniversitySubjectCombinationSearchResponse> results = universityMajorService.searchBySubjectCombination(subjectCombinationId, majorId, province);
+        return ApiResponse.<List<UniversitySubjectCombinationSearchResponse>>builder()
+                .code(1000)
+                .message("Search results by subject combination fetched successfully")
+                .result(results)
+                .build();
+    } catch (IOException ex){
+        return ApiResponse.<List<UniversitySubjectCombinationSearchResponse>>builder()
+                .code(5000)
+                .message("Error occurred while searching by major: " + ex.getMessage())
+                .result(null)
+                .build();
+    }
+    }
+
+    @Operation(summary = "Search university majors by major")
+    @GetMapping("/search/major/{majorId}")
+    public ApiResponse<List<UniversityMajorSearchResponse>> searchByMajor(
+            @PathVariable Long majorId,
+            @RequestParam(required = false) String province,
+            @RequestParam(required = false) String method,
+            @RequestParam(required = false) Long subjectCombinationId
+    ) {
+        try {
+            List<UniversityMajorSearchResponse> results = universityMajorService.searchByMajor(majorId, province, method, subjectCombinationId);
+            return ApiResponse.<List<UniversityMajorSearchResponse>>builder()
+                    .code(1000)
+                    .message("Search results by major fetched successfully")
+                    .result(results)
+                    .build();
+        } catch (IOException ex){
+            return ApiResponse.<List<UniversityMajorSearchResponse>>builder()
+                    .code(5000)
+                    .message("Error occurred while searching by major: " + ex.getMessage())
+                    .result(null)
+                    .build();
+        }
     }
 }

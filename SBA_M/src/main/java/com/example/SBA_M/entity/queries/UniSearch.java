@@ -29,7 +29,7 @@ public class UniSearch extends AbstractElasticsearchDocument<Integer> {
 
     @Field(type = FieldType.Integer)
     private Integer foundingYear;
-
+    
     @Field(type = FieldType.Keyword)
     private Province province;
 
