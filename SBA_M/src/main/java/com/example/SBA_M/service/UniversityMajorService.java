@@ -3,9 +3,15 @@ package com.example.SBA_M.service;
 import com.example.SBA_M.dto.request.UniversityMajorRequest;
 import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.dto.response.UniversityMajorResponse;
+import com.example.SBA_M.dto.response.UniversityMajorSearchResponse;
+import com.example.SBA_M.dto.response.UniversitySubjectCombinationSearchResponse;
 import com.example.SBA_M.dto.response.major_search_response.MajorAdmissionResponse;
 import com.example.SBA_M.dto.response.sub_combine_search_package.SubjectCombinationResponse;
 import com.example.SBA_M.dto.response.tuition_search_response.AdmissionUniversityTuitionResponse;
+import org.springframework.lang.Nullable;
+
+import java.io.IOException;
+import java.util.List;
 
 
 public interface UniversityMajorService {
@@ -24,4 +30,10 @@ public interface UniversityMajorService {
     MajorAdmissionResponse getMajorAdmissionByUniversityAndMajor(Integer universityId, Long majorId);
 
     SubjectCombinationResponse getSubjectCombinationAdmission(Integer universityId, Long subjectCombinationId);
+
+    List<UniversitySubjectCombinationSearchResponse> searchBySubjectCombination (
+            Long subjectCombinationId, @Nullable Long majorId, @Nullable String province) throws IOException;
+
+    List<UniversityMajorSearchResponse> searchByMajor (
+            Long majorId, @Nullable String province, @Nullable String method, @Nullable Long subjectCombinationId) throws IOException;
 }

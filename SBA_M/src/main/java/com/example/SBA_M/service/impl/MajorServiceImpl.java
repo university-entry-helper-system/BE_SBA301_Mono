@@ -1,15 +1,12 @@
 package com.example.SBA_M.service.impl;
 
 import com.example.SBA_M.dto.request.MajorRequest;
-import com.example.SBA_M.dto.response.MajorParentResponse;
 import com.example.SBA_M.dto.response.MajorResponse;
-import com.example.SBA_M.dto.response.SubjectCombinationResponse;
 import com.example.SBA_M.entity.commands.Major;
-import com.example.SBA_M.entity.commands.SubjectCombination;
 import com.example.SBA_M.exception.AppException;
 import com.example.SBA_M.exception.ErrorCode;
 import com.example.SBA_M.repository.commands.MajorRepository;
-import com.example.SBA_M.repository.commands.SubjectCombinationRepostiory;
+import com.example.SBA_M.repository.commands.SubjectCombinationRepository;
 import com.example.SBA_M.service.MajorService;
 import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +23,7 @@ import java.util.stream.Collectors;
 public class MajorServiceImpl implements MajorService {
 
     private final MajorRepository majorRepository;
-    private final SubjectCombinationRepostiory subjectCombinationRepository;
+    private final SubjectCombinationRepository subjectCombinationRepository;
 
     @Override
     @Transactional

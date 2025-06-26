@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/SBA_M.iml" filepath="$PROJECT_DIR$/.idea/SBA_M.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/BE_SBA301_Mono.iml" filepath="$PROJECT_DIR$/.idea/BE_SBA301_Mono.iml" />
     </modules>
   </component>
 </project>

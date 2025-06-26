@@ -43,6 +43,7 @@ public enum ErrorCode {
     UNIVERSITY_MAJOR_NOT_FOUND(1023, "University major not found", HttpStatus.NOT_FOUND),
     EXAM_SUBJECT_NOT_FOUND(1024, "Exam subject not found", HttpStatus.NOT_FOUND),
     SUBJECT_COMBINATION_NOT_FOUND(1025, "Subject combination not found", HttpStatus.NOT_FOUND),
+    SEARCH_FAILED(1026, "Search failed", HttpStatus.INTERNAL_SERVER_ERROR),
     ;
     private final int code;
     private final String message;

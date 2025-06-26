@@ -1,23 +1,35 @@
 package com.example.SBA_M.service.messaging.producer;
 
 import com.example.SBA_M.entity.commands.AdmissionMethod;
+import com.example.SBA_M.entity.commands.ExamSubject;
 import com.example.SBA_M.entity.commands.SubjectCombination;
 import com.example.SBA_M.entity.commands.UniversityMajor;
 import com.example.SBA_M.event.UniversityMajorEvent;
 import com.example.SBA_M.event.UniversityMajorEventBatch;
+import com.example.SBA_M.event.UniversityMajorSearchEvent;
+import com.example.SBA_M.dto.response.ComboCountProjection;
+import com.example.SBA_M.repository.commands.UniversityMajorRepository;
+import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UniversityMajorProducer {
     private final KafkaTemplate<String, UniversityMajorEventBatch> kafkaTemplate;
+    private final KafkaTemplate<String, UniversityMajorSearchEvent> kafkaSearchTemplate;
+
+    private final UniversityMajorRepository universityMajorRepository;
+
     public void sendCreateEvents(UniversityMajor um) {
         var university = um.getUniversity();
         var major = um.getMajor();
@@ -52,4 +64,70 @@ public class UniversityMajorProducer {
         kafkaTemplate.send("university-major.bulk-event", new UniversityMajorEventBatch(events));
     }
 
+    public void sendSearchEvent(UniversityMajor universityMajor) {
+        Integer universityId = universityMajor.getUniversity().getId();
+        Long majorId = universityMajor.getMajor().getId();
+        Status status = universityMajor.getStatus();
+
+        // Count by major (only once)
+        int countByMajor = universityMajorRepository
+                .countByUniversityIdAndMajorIdAndStatus(universityId, majorId, status);
+
+        // Get all subject combination IDs
+        List<Long> subjectCombinationIds = universityMajor.getSubjectCombinations().stream()
+                .map(SubjectCombination::getId)
+                .toList();
+
+        // Get count per subjectCombination in 1 query
+        Map<Long, Integer> countByComboMap = universityMajorRepository
+                .countByUniversityIdAndSubjectCombinationIds(universityId, subjectCombinationIds, status)
+                .stream()
+                .collect(Collectors.toMap(
+                        ComboCountProjection::getComboId,
+                        ComboCountProjection::getCount
+                ));
+
+
+        // Group methods by subjectCombination
+        Map<SubjectCombination, List<String>> comboMethodMap = new HashMap<>();
+        for (AdmissionMethod method : universityMajor.getAdmissionMethods()) {
+            for (SubjectCombination combo : universityMajor.getSubjectCombinations()) {
+                comboMethodMap
+                        .computeIfAbsent(combo, c -> new ArrayList<>())
+                        .add(method.getName());
+            }
+        }
+
+        // Send one event per subjectCombination
+        for (Map.Entry<SubjectCombination, List<String>> entry : comboMethodMap.entrySet()) {
+            SubjectCombination combo = entry.getKey();
+            List<String> methodNames = entry.getValue();
+
+            String id = universityId + "-" + majorId + "-" + combo.getId();
+
+            String subjectCombinationName = combo.getName() + ": " +
+                    combo.getExamSubjects().stream()
+                            .map(ExamSubject::getName)
+                            .collect(Collectors.joining(", "));
+
+            int countByCombo = countByComboMap.getOrDefault(combo.getId(), 0);
+
+            UniversityMajorSearchEvent event = new UniversityMajorSearchEvent(
+                    id,
+                    universityId,
+                    universityMajor.getUniversity().getName(),
+                    universityMajor.getUniversity().getProvince().getName(),
+                    majorId,
+                    universityMajor.getMajor().getName(),
+                    combo.getId(),
+                    subjectCombinationName,
+                    methodNames,
+                    countByMajor,
+                    countByCombo,
+                    status
+            );
+
+            kafkaSearchTemplate.send("university-major-search.event", event);
+        }
+    }
 }
