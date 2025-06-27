@@ -1,34 +1,36 @@
 package com.example.SBA_M.service.impl;
 
 import com.example.SBA_M.dto.request.UniversityRequest;
+import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.dto.response.UniversityResponse;
 import com.example.SBA_M.entity.commands.University;
 import com.example.SBA_M.entity.queries.UniversityDocument;
 import com.example.SBA_M.exception.AppException;
 import com.example.SBA_M.exception.ErrorCode;
-import com.example.SBA_M.repository.queries.UniversityReadRepository;
+import com.example.SBA_M.mapper.UniversityMapper;
 import com.example.SBA_M.repository.commands.UniversityRepository;
+import com.example.SBA_M.repository.queries.UniversityReadRepository;
 import com.example.SBA_M.service.UniversityService;
 import com.example.SBA_M.service.messaging.producer.UniversityProducer;
+import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import com.example.SBA_M.dto.response.PageResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
 public class UniversityServiceImpl implements UniversityService {
-    private final UniversityRepository universityRepository;
-    private final UniversityProducer universityProducer;
-    private final UniversityReadRepository universityReadRepository;
 
+    private final UniversityRepository universityRepository;
+    private final UniversityReadRepository universityReadRepository;
+    private final UniversityProducer universityProducer;
+    private final UniversityMapper universityMapper;
 
     @Override
     public PageResponse<University> getAllUniversities(int page, int size) {
@@ -49,57 +51,57 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-//    @PreAuthorize("hasRole('ADMIN')")
     public UniversityDocument getUniversityById(Integer id) {
-        return universityReadRepository.findById(id).orElseThrow(() -> new RuntimeException("University not found with id: " + id));
+        return universityReadRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
     }
 
     @Override
-//    @PreAuthorize("hasRole('ADMIN')")
-    public UniversityResponse createUniversity(UniversityRequest university) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !authentication.isAuthenticated() || authentication.getName() == null) {
-                throw new AppException(ErrorCode.UNAUTHENTICATED);
-            }
-            String username = authentication.getName();
-            return universityProducer.createUniversity(university, username);
-        } catch (AuthenticationException | AppException ex) {
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
-        }
+    public UniversityResponse createUniversity(UniversityRequest universityRequest) {
+        String username = getCurrentUsername();
+
+        University university = universityMapper.toEntity(universityRequest, username);
+        University saved = universityRepository.save(university);
+
+        universityProducer.sendUniversityCreated(saved);
+        return universityMapper.toResponse(saved);
     }
 
     @Override
-//    @PreAuthorize("hasRole('ADMIN')")
     public UniversityResponse updateUniversity(Integer id, UniversityRequest universityRequest) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !authentication.isAuthenticated() || authentication.getName() == null) {
-                throw new AppException(ErrorCode.UNAUTHENTICATED);
-            }
-            String username = authentication.getName();
-            return universityProducer.updateUniversity(id, universityRequest, username);
-        } catch (AuthenticationException | AppException ex) {
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
-        } catch (RuntimeException ex) {
-            throw new AppException(ErrorCode.UNIVERSITY_NOT_FOUND);
-        }
+        String username = getCurrentUsername();
+
+        University university = universityRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
+
+        universityMapper.updateEntityFromRequest(universityRequest, university, username);
+        university.setUpdatedAt(Instant.now());
+        University updated = universityRepository.save(university);
+
+        universityProducer.sendUniversityUpdated(updated);
+        return universityMapper.toResponse(updated);
     }
 
     @Override
-//    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUniversity(Integer id) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !authentication.isAuthenticated() || authentication.getName() == null) {
-                throw new AppException(ErrorCode.UNAUTHENTICATED);
-            }
-            String username = authentication.getName();
-            universityProducer.deleteUniversity(id, username);
-        } catch (AuthenticationException | AppException ex) {
+        String username = getCurrentUsername();
+
+        University university = universityRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
+
+        university.setStatus(Status.DELETED);
+        university.setUpdatedBy(username);
+        university.setUpdatedAt(Instant.now());
+        University deleted = universityRepository.save(university);
+
+        universityProducer.sendUniversityDeleted(deleted);
+    }
+
+    private String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getName() == null) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
-        } catch (RuntimeException ex) {
-            throw new AppException(ErrorCode.UNIVERSITY_NOT_FOUND);
         }
+        return authentication.getName();
     }
 }
