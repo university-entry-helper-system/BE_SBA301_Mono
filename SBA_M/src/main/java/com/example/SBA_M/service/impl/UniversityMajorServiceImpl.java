@@ -50,8 +50,6 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
     private static final String FIELD_PROVINCE = "province";
     private static final String FIELD_METHODS = "methods.keyword";
     private static final String STATUS_ACTIVE = "ACTIVE";
-    private static final String STATUS_DELETED = "DELETED";
-    private static final String UNKNOWN_METHOD_NAME = "Unknown";
     private static final int DEFAULT_MAX_RESULTS = 100;
 
     private final UniversityRepository universityRepository;

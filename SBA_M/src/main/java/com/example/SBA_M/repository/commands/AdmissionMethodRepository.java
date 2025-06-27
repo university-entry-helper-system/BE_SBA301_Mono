@@ -1,7 +1,6 @@
 package com.example.SBA_M.repository.commands;
 
 import com.example.SBA_M.entity.commands.AdmissionMethod;
-import com.example.SBA_M.entity.commands.UniversityMajor;
 import com.example.SBA_M.utils.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface AdmissionMethodRepository extends JpaRepository<AdmissionMethod, Integer> {
     List<AdmissionMethod> findAllByIdInAndStatus(List<Integer> ids, Status status);
-    Optional<AdmissionMethod> findByIdAndStatus(Integer id, Status status);
+    Page<AdmissionMethod> findAllByStatus(Status status, Pageable pageable);
 
+    Optional<AdmissionMethod> findByIdAndStatus(Integer id, Status status);
 }
