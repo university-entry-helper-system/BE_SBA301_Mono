@@ -44,6 +44,7 @@ public enum ErrorCode {
     EXAM_SUBJECT_NOT_FOUND(1024, "Exam subject not found", HttpStatus.NOT_FOUND),
     SUBJECT_COMBINATION_NOT_FOUND(1025, "Subject combination not found", HttpStatus.NOT_FOUND),
     SEARCH_FAILED(1026, "Search failed", HttpStatus.INTERNAL_SERVER_ERROR),
+    PROVINCE_NOT_FOUND(1027, "Province not found", HttpStatus.NOT_FOUND),
     ;
     private final int code;
     private final String message;

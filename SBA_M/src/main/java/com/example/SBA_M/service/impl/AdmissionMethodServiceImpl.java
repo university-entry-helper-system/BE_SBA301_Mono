@@ -4,12 +4,10 @@ import com.example.SBA_M.dto.request.AdmissionMethodRequest;
 import com.example.SBA_M.dto.response.AdmissionMethodResponse;
 import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.entity.commands.AdmissionMethod;
-import com.example.SBA_M.entity.queries.AdmissionMethodDocument;
 import com.example.SBA_M.exception.AppException;
 import com.example.SBA_M.exception.ErrorCode;
 import com.example.SBA_M.mapper.AdmissionMethodMapper;
 import com.example.SBA_M.repository.commands.AdmissionMethodRepository;
-import com.example.SBA_M.repository.queries.AdmissionMethodReadRepository;
 import com.example.SBA_M.service.AdmissionMethodService;
 import com.example.SBA_M.service.messaging.producer.AdmissionMethodProducer;
 import com.example.SBA_M.utils.Status;
@@ -28,20 +26,28 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
 
     private final AdmissionMethodProducer admissionMethodProducer;
     private final AdmissionMethodRepository admissionMethodRepository;
-    private final AdmissionMethodReadRepository admissionMethodReadRepository;
     private final AdmissionMethodMapper admissionMethodMapper;
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public AdmissionMethodResponse createAdmissionMethod(AdmissionMethodRequest request, String username) {
-        AdmissionMethod admissionMethod = admissionMethodProducer.createAdmissionMethod(request, username);
-        return admissionMethodMapper.toResponse(admissionMethod);
+        AdmissionMethod am = new AdmissionMethod();
+        am.setName(request.getName());
+        am.setDescription(request.getDescription());
+        am.setStatus(Status.ACTIVE);
+        am.setCreatedBy(username);
+        am.setUpdatedBy(username);
+        am.setCreatedAt(Instant.now());
+        am.setUpdatedAt(Instant.now());
+        AdmissionMethod saved = admissionMethodRepository.save(am);
+        admissionMethodProducer.sendCreateEvent(saved);
+        return admissionMethodMapper.toResponse(saved);
     }
 
     @Override
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public PageResponse<AdmissionMethodResponse> getAllAdmissionMethods(int page, int size) {
-        Page<AdmissionMethodDocument> methodPage = admissionMethodReadRepository
+        Page<AdmissionMethod> methodPage = admissionMethodRepository
                 .findAllByStatus(Status.ACTIVE, PageRequest.of(page, size));
         return PageResponse.<AdmissionMethodResponse>builder()
                 .page(methodPage.getNumber())
@@ -57,7 +63,7 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     @Override
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public AdmissionMethodResponse getAdmissionMethodById(Integer id) {
-        AdmissionMethodDocument am = admissionMethodReadRepository.findById(id)
+        AdmissionMethod am = admissionMethodRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
         return admissionMethodMapper.toResponse(am);
     }
@@ -65,7 +71,7 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public AdmissionMethodResponse updateAdmissionMethod(Integer id, AdmissionMethodRequest request, String username) {
-        AdmissionMethodDocument amDoc = admissionMethodReadRepository.findById(id)
+        AdmissionMethod amDoc = admissionMethodRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
         AdmissionMethod am = admissionMethodRepository.findById(amDoc.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
@@ -82,7 +88,7 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteAdmissionMethod(Integer id) {
-        AdmissionMethodDocument amDoc = admissionMethodReadRepository.findByIdAndStatus(id, Status.ACTIVE)
+        AdmissionMethod amDoc = admissionMethodRepository.findByIdAndStatus(id, Status.ACTIVE)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
         AdmissionMethod am = admissionMethodRepository.findById(amDoc.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
