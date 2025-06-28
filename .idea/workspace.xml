@@ -76,7 +76,7 @@
       <option name="envFilePaths">
         <option value="$PROJECT_DIR$/SBA_M/.env" />
       </option>
-      <module name="SBA_M" />
+      <module name="backend-service" />
       <selectedOptions>
         <option name="environmentVariables" />
       </selectedOptions>
