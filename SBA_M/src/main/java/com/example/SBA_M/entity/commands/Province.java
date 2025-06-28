@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "universities")
+@Table(name = "province")
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
