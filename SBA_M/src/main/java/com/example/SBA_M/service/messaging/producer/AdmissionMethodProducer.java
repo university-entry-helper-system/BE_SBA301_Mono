@@ -38,14 +38,14 @@ public class AdmissionMethodProducer {
                 am.getUpdatedBy()
         );
     }
-    private void sendUpdatedEvent(AdmissionMethod am) {
+    public void sendUpdatedEvent(AdmissionMethod am) {
         AdmissionMethodUpdatedEvent event =  new AdmissionMethodUpdatedEvent(
                 am.getId(),
                 am.getName()
         );
         kafkaUpdateTemplate.send("am.updated.event", event);
     }
-    private void sendDeletedEvent(AdmissionMethod am) {
+    public void sendDeletedEvent(AdmissionMethod am) {
         AdmissionMethodUpdatedEvent event = new AdmissionMethodUpdatedEvent(
                 am.getId(),
                 am.getName()

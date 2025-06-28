@@ -12,4 +12,5 @@ public interface UniversityMajorSearchRepository extends ElasticsearchRepository
 
     List<UniversityMajorSearch> findByMajorId(Long majorId);
 
+    List<UniversityMajorSearch> findBySubjectCombinationId(Long subjectCombinationId);
 }

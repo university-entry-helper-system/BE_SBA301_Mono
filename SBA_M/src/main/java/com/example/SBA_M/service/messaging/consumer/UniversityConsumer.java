@@ -283,4 +283,5 @@ public class UniversityConsumer {
         universityMajorSearchRepository.saveAll(searchDocs);
     }
 
+
 }

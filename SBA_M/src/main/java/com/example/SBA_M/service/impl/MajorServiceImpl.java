@@ -8,6 +8,7 @@ import com.example.SBA_M.exception.ErrorCode;
 import com.example.SBA_M.repository.commands.MajorRepository;
 import com.example.SBA_M.repository.commands.SubjectCombinationRepository;
 import com.example.SBA_M.service.MajorService;
+import com.example.SBA_M.service.messaging.producer.MajorProducer;
 import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class MajorServiceImpl implements MajorService {
 
     private final MajorRepository majorRepository;
     private final SubjectCombinationRepository subjectCombinationRepository;
+    private final MajorProducer majorProducer;
 
     @Override
     @Transactional
@@ -62,6 +64,7 @@ public class MajorServiceImpl implements MajorService {
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MAJOR_NOT_FOUND));
         major.setName(request.getName());
+        majorProducer.sendMajorUpdatedEvent(id, major.getName());
         major = majorRepository.save(major);
         log.info("Major updated with ID: {}", major.getId());
         return mapToResponse(major);
@@ -74,6 +77,7 @@ public class MajorServiceImpl implements MajorService {
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MAJOR_NOT_FOUND));
         major.setStatus(Status.DELETED);
+        majorProducer.sendMajorDeletedEvent(id);
         majorRepository.save(major);
         log.info("Major deleted with ID: {}", id);
     }

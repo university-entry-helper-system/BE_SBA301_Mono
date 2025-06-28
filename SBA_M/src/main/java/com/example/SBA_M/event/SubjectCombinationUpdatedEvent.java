@@ -12,5 +12,4 @@ import java.util.List;
 public class SubjectCombinationUpdatedEvent {
     private Long subjectCombinationId;
     private String subjectCombination;
-    private List<String> examSubjects;
 }
