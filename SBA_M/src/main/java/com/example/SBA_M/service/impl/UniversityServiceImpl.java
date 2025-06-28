@@ -8,6 +8,8 @@ import com.example.SBA_M.entity.queries.UniversityDocument;
 import com.example.SBA_M.exception.AppException;
 import com.example.SBA_M.exception.ErrorCode;
 import com.example.SBA_M.mapper.UniversityMapper;
+import com.example.SBA_M.repository.commands.ProvinceRepository;
+import com.example.SBA_M.repository.commands.UniversityCategoryRepository;
 import com.example.SBA_M.repository.commands.UniversityRepository;
 import com.example.SBA_M.repository.queries.UniversityReadRepository;
 import com.example.SBA_M.service.UniversityService;
@@ -31,6 +33,8 @@ public class UniversityServiceImpl implements UniversityService {
     private final UniversityReadRepository universityReadRepository;
     private final UniversityProducer universityProducer;
     private final UniversityMapper universityMapper;
+    private final UniversityCategoryRepository universityCategoryRepository;
+    private final ProvinceRepository provinceRepository;
 
     @Override
     public PageResponse<University> getAllUniversities(int page, int size) {
@@ -57,30 +61,76 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public UniversityResponse createUniversity(UniversityRequest universityRequest) {
+    public UniversityResponse createUniversity(UniversityRequest request) {
         String username = getCurrentUsername();
 
-        University university = universityMapper.toEntity(universityRequest, username);
+        University university = new University();
+        university.setName(request.getName());
+        university.setShortName(request.getShortName());
+        university.setLogoUrl(request.getLogoUrl());
+        university.setFoundingYear(request.getFoundingYear());
+        university.setAddress(request.getAddress());
+        university.setEmail(request.getEmail());
+        university.setPhone(request.getPhone());
+        university.setWebsite(request.getWebsite());
+        university.setDescription(request.getDescription());
+
+        university.setCategory(universityCategoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_CATEGORY_NOT_FOUND)));
+
+        university.setProvince(provinceRepository.findById(request.getProvinceId())
+                .orElseThrow(() -> new AppException(ErrorCode.PROVINCE_NOT_FOUND)));
+
+        // Save
         University saved = universityRepository.save(university);
 
+        // Produce Kafka event
         universityProducer.sendUniversityCreated(saved);
+
         return universityMapper.toResponse(saved);
     }
 
     @Override
-    public UniversityResponse updateUniversity(Integer id, UniversityRequest universityRequest) {
+    public UniversityResponse updateUniversity(Integer id, UniversityRequest request) {
         String username = getCurrentUsername();
 
         University university = universityRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
 
-        universityMapper.updateEntityFromRequest(universityRequest, university, username);
+        boolean nameChanged = !university.getName().equals(request.getName());
+        boolean provinceChanged = !university.getProvince().getId().equals(request.getProvinceId());
+
+        university.setName(request.getName());
+        university.setShortName(request.getShortName());
+        university.setLogoUrl(request.getLogoUrl());
+        university.setFoundingYear(request.getFoundingYear());
+        university.setAddress(request.getAddress());
+        university.setEmail(request.getEmail());
+        university.setPhone(request.getPhone());
+        university.setWebsite(request.getWebsite());
+        university.setDescription(request.getDescription());
+
+        university.setCategory(universityCategoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_CATEGORY_NOT_FOUND)));
+
+        university.setProvince(provinceRepository.findById(request.getProvinceId())
+                .orElseThrow(() -> new AppException(ErrorCode.PROVINCE_NOT_FOUND)));
         university.setUpdatedAt(Instant.now());
+
         University updated = universityRepository.save(university);
 
         universityProducer.sendUniversityUpdated(updated);
+
+        if (nameChanged) {
+            universityProducer.sendUpdateEvent(updated);
+        }
+        if (provinceChanged|| nameChanged) {
+            universityProducer.sendUpdateSearchEvent(updated);
+        }
+
         return universityMapper.toResponse(updated);
     }
+
 
     @Override
     public void deleteUniversity(Integer id) {
@@ -93,7 +143,7 @@ public class UniversityServiceImpl implements UniversityService {
         university.setUpdatedBy(username);
         university.setUpdatedAt(Instant.now());
         University deleted = universityRepository.save(university);
-
+        universityProducer.sendUpdateEvent(deleted);
         universityProducer.sendUniversityDeleted(deleted);
     }
 

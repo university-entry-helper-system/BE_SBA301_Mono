@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface UniversityAdmissionMethodReadRepository  extends MongoRepository<UniversityEntriesDocument, Integer> {
     List<UniversityEntriesDocument> findByUniversityIdAndYearAndStatus(Integer universityId, Integer year, Status status);
     List<UniversityEntriesDocument> findByMethodIdAndYearAndStatus(Integer methodId, Integer year, Status status);
+
+    List<UniversityEntriesDocument> findByUniversityId(Integer universityId);
 }

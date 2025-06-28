@@ -8,6 +8,7 @@ import com.example.SBA_M.event.UniversityMajorEvent;
 import com.example.SBA_M.event.UniversityMajorEventBatch;
 import com.example.SBA_M.event.UniversityMajorSearchEvent;
 import com.example.SBA_M.dto.response.ComboCountProjection;
+import com.example.SBA_M.event.UniversityMajorSearchEventBatch;
 import com.example.SBA_M.repository.commands.UniversityMajorRepository;
 import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UniversityMajorProducer {
     private final KafkaTemplate<String, UniversityMajorEventBatch> kafkaTemplate;
-    private final KafkaTemplate<String, UniversityMajorSearchEvent> kafkaSearchTemplate;
+    private final KafkaTemplate<String, UniversityMajorSearchEventBatch> kafkaSearchTemplate;
 
     private final UniversityMajorRepository universityMajorRepository;
 
@@ -98,6 +99,7 @@ public class UniversityMajorProducer {
             }
         }
 
+        List<UniversityMajorSearchEvent> events = new ArrayList<>();
         // Send one event per subjectCombination
         for (Map.Entry<SubjectCombination, List<String>> entry : comboMethodMap.entrySet()) {
             SubjectCombination combo = entry.getKey();
@@ -126,8 +128,9 @@ public class UniversityMajorProducer {
                     countByCombo,
                     status
             );
-
-            kafkaSearchTemplate.send("university-major-search.event", event);
+            events.add(event);
         }
+        kafkaSearchTemplate.send("university-major-search.event", new UniversityMajorSearchEventBatch(events));
+
     }
 }

@@ -232,4 +232,6 @@ public class UniversityConsumer {
             log.error("Error processing university deleted event: {}", e.getMessage(), e);
         }
     }
+
+
 }
