@@ -2,7 +2,9 @@ package com.example.SBA_M.controller;
 
 import com.example.SBA_M.dto.request.UniversityRequest;
 import com.example.SBA_M.dto.response.ApiResponse;
+import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.dto.response.UniversityResponse;
+import com.example.SBA_M.entity.commands.University;
 import com.example.SBA_M.entity.queries.UniversityDocument;
 import com.example.SBA_M.service.UniversityService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,6 +63,19 @@ public class UniversityController {
         return ApiResponse.<Void>builder()
                 .code(1003)
                 .message("University deleted successfully")
+                .build();
+    }
+
+    @Operation(summary = "Get all universities")
+    @GetMapping
+    public ApiResponse<PageResponse<University>> getAllUniversities(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PageResponse<University> result = universityService.getAllUniversities(page, size);
+        return ApiResponse.<PageResponse<University>>builder()
+                .code(1000)
+                .message("Universities fetched successfully")
+                .result(result)
                 .build();
     }
 }
