@@ -1,14 +1,21 @@
 package com.example.SBA_M.entity.queries;
 
 import com.example.SBA_M.utils.Status;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.*;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Document(indexName = "university_major_search")
+@Setting(settingPath = "/elasticsearch/university-settings.json")
 public class UniversityMajorSearch {
 
     @Id
@@ -40,9 +47,6 @@ public class UniversityMajorSearch {
 
     @Field(type = FieldType.Integer)
     private Integer universityMajorCountBySubjectCombination; // By subject combo
-
-    @Field(type = FieldType.Keyword)
-    private List<String> methods; // e.g. ["Exam", "Talent", "Direct"]
 
     @Field(type = FieldType.Boolean)
     private Status status;

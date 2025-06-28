@@ -11,4 +11,12 @@ public interface UniversityMajorReadRepository extends MongoRepository<Admission
     List<AdmissionEntriesDocument> findByUniversityIdAndStatus(Integer universityId, Status status);
     List<AdmissionEntriesDocument> findByUniversityIdAndMajorIdAndStatus(Integer universityId, Long majorId, Status status);
     List<AdmissionEntriesDocument> findByUniversityIdAndSubjectCombinationIdAndStatus(Integer universityId, Long subjectCombinationId, Status status);
+
+    List<AdmissionEntriesDocument> findByUniversityId(Integer universityId);
+
+    List<AdmissionEntriesDocument> findByMethodId(Integer methodId);
+
+    List<AdmissionEntriesDocument> findByMajorId(Long majorId);
+
+    List<AdmissionEntriesDocument> findBySubjectCombinationId(Long subjectCombinationId);
 }

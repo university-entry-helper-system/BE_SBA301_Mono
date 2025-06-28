@@ -1,7 +1,11 @@
 package com.example.SBA_M.service.messaging.consumer;
 
 import com.example.SBA_M.entity.queries.AdmissionEntriesDocument;
+import com.example.SBA_M.entity.queries.UniversityMajorSearch;
 import com.example.SBA_M.event.UniversityMajorEventBatch;
+import com.example.SBA_M.event.UniversityMajorSearchEventBatch;
+import com.example.SBA_M.repository.elasticsearch.UniversityMajorSearchRepository;
+import com.example.SBA_M.repository.queries.UniversityAdmissionMethodReadRepository;
 import com.example.SBA_M.repository.queries.UniversityMajorReadRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +19,8 @@ import java.util.List;
 @Slf4j
 public class UniversityMajorConsumer {
     private final UniversityMajorReadRepository universityMajorReadRepository;
+    private final UniversityMajorSearchRepository universityMajorSearchRepository;
+    private final UniversityAdmissionMethodReadRepository universityAdmissionMethodReadRepository;
 
     @KafkaListener(topics = "university-major.bulk-event", groupId = "sba-group")
     public void consume(UniversityMajorEventBatch batch) {
@@ -39,4 +45,30 @@ public class UniversityMajorConsumer {
 
         universityMajorReadRepository.saveAll(documents);
     }
+
+    @KafkaListener(topics = "university-major-search.event", groupId = "sba-search-group")
+    public void consume(UniversityMajorSearchEventBatch event) {
+        List<UniversityMajorSearch> documents = event.getEvents().stream()
+                .map(e -> {
+                    UniversityMajorSearch document = new UniversityMajorSearch();
+                    document.setId(e.getId());
+                    document.setUniversityId(e.getUniversityId());
+                    document.setUniversityName(e.getUniversityName());
+                    document.setProvince(e.getProvince());
+                    document.setMajorId(e.getMajorId());
+                    document.setMajorName(e.getMajorName());
+                    document.setSubjectCombinationId(e.getSubjectCombinationId());
+                    document.setSubjectCombinationName(e.getSubjectCombinationName());
+                    document.setUniversityMajorCountByMajor(e.getUniversityMajorCountByMajor());
+                    document.setUniversityMajorCountBySubjectCombination(e.getUniversityMajorCountBySubjectCombination());
+                    document.setStatus(e.getStatus());
+                    return document;
+                })
+                .toList();
+
+
+        universityMajorSearchRepository.saveAll(documents);
+    }
+
 }
+

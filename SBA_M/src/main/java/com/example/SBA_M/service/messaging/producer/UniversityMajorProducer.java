@@ -8,6 +8,7 @@ import com.example.SBA_M.event.UniversityMajorEvent;
 import com.example.SBA_M.event.UniversityMajorEventBatch;
 import com.example.SBA_M.event.UniversityMajorSearchEvent;
 import com.example.SBA_M.dto.response.ComboCountProjection;
+import com.example.SBA_M.event.UniversityMajorSearchEventBatch;
 import com.example.SBA_M.repository.commands.UniversityMajorRepository;
 import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UniversityMajorProducer {
     private final KafkaTemplate<String, UniversityMajorEventBatch> kafkaTemplate;
-    private final KafkaTemplate<String, UniversityMajorSearchEvent> kafkaSearchTemplate;
+    private final KafkaTemplate<String, UniversityMajorSearchEventBatch> kafkaSearchTemplate;
 
     private final UniversityMajorRepository universityMajorRepository;
 
@@ -88,27 +89,13 @@ public class UniversityMajorProducer {
                 ));
 
 
-        // Group methods by subjectCombination
-        Map<SubjectCombination, List<String>> comboMethodMap = new HashMap<>();
-        for (AdmissionMethod method : universityMajor.getAdmissionMethods()) {
-            for (SubjectCombination combo : universityMajor.getSubjectCombinations()) {
-                comboMethodMap
-                        .computeIfAbsent(combo, c -> new ArrayList<>())
-                        .add(method.getName());
-            }
-        }
 
+        List<UniversityMajorSearchEvent> events = new ArrayList<>();
         // Send one event per subjectCombination
-        for (Map.Entry<SubjectCombination, List<String>> entry : comboMethodMap.entrySet()) {
-            SubjectCombination combo = entry.getKey();
-            List<String> methodNames = entry.getValue();
+        for (SubjectCombination combo : universityMajor.getSubjectCombinations()) {
 
             String id = universityId + "-" + majorId + "-" + combo.getId();
 
-            String subjectCombinationName = combo.getName() + ": " +
-                    combo.getExamSubjects().stream()
-                            .map(ExamSubject::getName)
-                            .collect(Collectors.joining(", "));
 
             int countByCombo = countByComboMap.getOrDefault(combo.getId(), 0);
 
@@ -120,14 +107,14 @@ public class UniversityMajorProducer {
                     majorId,
                     universityMajor.getMajor().getName(),
                     combo.getId(),
-                    subjectCombinationName,
-                    methodNames,
+                    combo.getName(),
                     countByMajor,
                     countByCombo,
                     status
             );
-
-            kafkaSearchTemplate.send("university-major-search.event", event);
+            events.add(event);
         }
+        kafkaSearchTemplate.send("university-major-search.event", new UniversityMajorSearchEventBatch(events));
+
     }
 }

@@ -10,6 +10,7 @@ import com.example.SBA_M.exception.ErrorCode;
 import com.example.SBA_M.repository.commands.ExamSubjectRepository;
 import com.example.SBA_M.repository.commands.SubjectCombinationRepository;
 import com.example.SBA_M.service.SubjectCombinationService;
+import com.example.SBA_M.service.messaging.producer.SubjectCombinationProduce;
 import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class SubjectCombinationServiceImpl implements SubjectCombinationService 
 
     private final SubjectCombinationRepository subjectCombinationRepository;
     private final ExamSubjectRepository examSubjectRepository;
+    private final SubjectCombinationProduce subjectCombinationProduce;
 
     @Override
     @Transactional
@@ -87,6 +89,8 @@ public class SubjectCombinationServiceImpl implements SubjectCombinationService 
         existingCombination.setExamSubjects(examSubjects);
 
         // Save changes
+        existingCombination.setStatus(Status.ACTIVE);
+        subjectCombinationProduce.sendSubjectCombinationUpdatedEvent(id, existingCombination.getName());
         SubjectCombination updatedCombination = subjectCombinationRepository.save(existingCombination);
         log.info("Subject combination updated with ID: {}", updatedCombination.getId());
 
@@ -102,7 +106,7 @@ public class SubjectCombinationServiceImpl implements SubjectCombinationService 
         SubjectCombination combination = findSubjectCombinationById(id);
         combination.setStatus(Status.DELETED);
         subjectCombinationRepository.save(combination);
-
+        subjectCombinationProduce.sendSubjectCombinationDeletedEvent(id);
         log.info("Subject combination deleted with ID: {}", id);
     }
 

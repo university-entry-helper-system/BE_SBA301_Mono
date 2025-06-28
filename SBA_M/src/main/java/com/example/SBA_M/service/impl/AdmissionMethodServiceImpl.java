@@ -82,6 +82,7 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
         am.setUpdatedAt(Instant.now());
         AdmissionMethod updated = admissionMethodRepository.save(am);
         admissionMethodProducer.sendUpdateEvent(updated);
+        admissionMethodProducer.sendUpdatedEvent(updated);
         return admissionMethodMapper.toResponse(updated);
     }
 
@@ -94,6 +95,7 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
         am.setStatus(Status.DELETED);
         admissionMethodProducer.sendDeleteEvent(am);
+        admissionMethodProducer.sendDeletedEvent(am);
         admissionMethodRepository.save(am);
     }
 }
