@@ -10,4 +10,6 @@ import java.util.List;
 public interface UniversityMajorSearchRepository extends ElasticsearchRepository<UniversityMajorSearch, String> {
     List<UniversityMajorSearch> findByUniversityId(Integer universityId);
 
+    List<UniversityMajorSearch> findByMajorId(Long majorId);
+
 }

@@ -14,5 +14,4 @@ import java.util.List;
 public class UniversityMajorSearchResponse {
     private String universityName;
     private Integer universityMajorCountByMajor;
-    private List<String> methods;
 }

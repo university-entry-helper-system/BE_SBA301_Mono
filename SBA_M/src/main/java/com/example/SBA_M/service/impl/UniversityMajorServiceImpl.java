@@ -48,7 +48,6 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
     private static final String FIELD_MAJOR_ID = "majorId";
     private static final String FIELD_STATUS = "status";
     private static final String FIELD_PROVINCE = "province";
-    private static final String FIELD_METHODS = "methods.keyword";
     private static final String STATUS_ACTIVE = "ACTIVE";
     private static final int DEFAULT_MAX_RESULTS = 100;
 
@@ -404,10 +403,6 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
             boolQuery.filter(f -> f.term(t -> t.field(FIELD_PROVINCE).value(province.trim())));
         }
 
-        if (isValidString(method)) {
-            boolQuery.filter(f -> f.term(t -> t.field(FIELD_METHODS).value(method.trim())));
-        }
-
         if (subjectCombinationId != null) {
             boolQuery.filter(f -> f.term(t -> t.field(FIELD_SUBJECT_COMBINATION_ID).value(subjectCombinationId)));
         }
@@ -421,8 +416,7 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
                     }
                     return new UniversityMajorSearchResponse(
                             doc.getUniversityName(),
-                            doc.getUniversityMajorCountByMajor(),
-                            doc.getMethods() != null ? doc.getMethods() : Collections.emptyList());
+                            doc.getUniversityMajorCountByMajor());
                 })
                 .filter(Objects::nonNull)
                 .toList();

@@ -1,15 +1,12 @@
 package com.example.SBA_M.service.messaging.consumer;
 
 import com.example.SBA_M.entity.queries.AdmissionEntriesDocument;
-import com.example.SBA_M.entity.queries.UniversityEntriesDocument;
 import com.example.SBA_M.entity.queries.UniversityMajorSearch;
 import com.example.SBA_M.event.UniversityMajorEventBatch;
 import com.example.SBA_M.event.UniversityMajorSearchEventBatch;
-import com.example.SBA_M.event.UniversityUpdatedEvent;
 import com.example.SBA_M.repository.elasticsearch.UniversityMajorSearchRepository;
 import com.example.SBA_M.repository.queries.UniversityAdmissionMethodReadRepository;
 import com.example.SBA_M.repository.queries.UniversityMajorReadRepository;
-import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -62,7 +59,6 @@ public class UniversityMajorConsumer {
                     document.setMajorName(e.getMajorName());
                     document.setSubjectCombinationId(e.getSubjectCombinationId());
                     document.setSubjectCombinationName(e.getSubjectCombinationName());
-                    document.setMethods(e.getMethods());
                     document.setUniversityMajorCountByMajor(e.getUniversityMajorCountByMajor());
                     document.setUniversityMajorCountBySubjectCombination(e.getUniversityMajorCountBySubjectCombination());
                     document.setStatus(e.getStatus());
@@ -74,47 +70,5 @@ public class UniversityMajorConsumer {
         universityMajorSearchRepository.saveAll(documents);
     }
 
-    @KafkaListener(topics = "university.updated.event", groupId = "sba-search-group")
-    public void consumeUniversityUpdate(UniversityUpdatedEvent event) {
-        // 1. Update MongoDB Admission Entries
-        List<AdmissionEntriesDocument> admissionEntries = universityMajorReadRepository.findByUniversityId(event.getUniversityId());
-        admissionEntries.forEach(doc -> doc.setUniversityName(event.getUniversityName()));
-        universityMajorReadRepository.saveAll(admissionEntries);
-
-        // 2. Update MongoDB University Entries
-        List<UniversityEntriesDocument> universityEntries = universityAdmissionMethodReadRepository.findByUniversityId(event.getUniversityId());
-        universityEntries.forEach(doc -> doc.setUniversityName(event.getUniversityName()));
-        universityAdmissionMethodReadRepository.saveAll(universityEntries);
-
-    }
-
-
-    @KafkaListener(topics = "university.deleted.event", groupId = "sba-search-group")
-    public void consumeUniversityDelete(UniversityUpdatedEvent event) {
-        // 1. Delete from MongoDB Admission Entries
-        List<AdmissionEntriesDocument> admissionEntries = universityMajorReadRepository.findByUniversityId(event.getUniversityId());
-        admissionEntries.forEach((doc) -> doc.setStatus(Status.DELETED)); // Assuming you want to mark as deleted
-        universityMajorReadRepository.saveAll(admissionEntries);
-
-        // 2. Delete from MongoDB University Entries
-        List<UniversityEntriesDocument> universityEntries = universityAdmissionMethodReadRepository.findByUniversityId(event.getUniversityId());
-        universityEntries.forEach((doc) -> doc.setStatus(Status.DELETED)); // Assuming you want to mark as deleted
-        universityAdmissionMethodReadRepository.saveAll(universityEntries);
-
-        // 3. Delete from Elasticsearch University Major Search
-        List<UniversityMajorSearch> searchDocs = universityMajorSearchRepository.findByUniversityId(event.getUniversityId());
-        searchDocs.forEach((doc) -> doc.setStatus(Status.DELETED)); // Assuming you want to mark as deleteduniversityMajorSearchRepository.saveAll(searchDocs);
-    }
-
-    @KafkaListener(topics = "university-major.updated.search.event", groupId = "sba-search-group")
-    public void consumeUniversityMajorUpdateSearch(UniversityUpdatedEvent event) {
-        // Update Elasticsearch University Major Search
-        List<UniversityMajorSearch> searchDocs = universityMajorSearchRepository.findByUniversityId(event.getUniversityId());
-        searchDocs.forEach(doc -> {
-            doc.setUniversityName(event.getUniversityName());
-            doc.setProvince(event.getProvince()); // Assuming province name is included in the event
-        });
-        universityMajorSearchRepository.saveAll(searchDocs);
-    }
 }
 

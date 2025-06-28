@@ -14,4 +14,6 @@ public interface UniversityAdmissionMethodReadRepository  extends MongoRepositor
     List<UniversityEntriesDocument> findByMethodIdAndYearAndStatus(Integer methodId, Integer year, Status status);
 
     List<UniversityEntriesDocument> findByUniversityId(Integer universityId);
+
+    List<UniversityEntriesDocument> findByMethodId(Integer methodId);
 }

@@ -48,9 +48,6 @@ public class UniversityMajorSearch {
     @Field(type = FieldType.Integer)
     private Integer universityMajorCountBySubjectCombination; // By subject combo
 
-    @Field(type = FieldType.Keyword)
-    private List<String> methods; // e.g. ["Exam", "Talent", "Direct"]
-
     @Field(type = FieldType.Boolean)
     private Status status;
 }

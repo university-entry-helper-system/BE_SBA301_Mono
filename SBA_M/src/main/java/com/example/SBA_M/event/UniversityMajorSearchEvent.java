@@ -19,7 +19,6 @@ public class UniversityMajorSearchEvent {
     private String majorName;
     private Long subjectCombinationId;
     private String subjectCombinationName;
-    private List<String> methods;
     private Integer universityMajorCountByMajor;
     private Integer universityMajorCountBySubjectCombination;
     private Status status;

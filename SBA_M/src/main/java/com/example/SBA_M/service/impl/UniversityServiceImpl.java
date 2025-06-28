@@ -143,7 +143,7 @@ public class UniversityServiceImpl implements UniversityService {
         university.setUpdatedBy(username);
         university.setUpdatedAt(Instant.now());
         University deleted = universityRepository.save(university);
-        universityProducer.sendUpdateEvent(deleted);
+        universityProducer.sendDeleteEvent(deleted.getId());;
         universityProducer.sendUniversityDeleted(deleted);
     }
 

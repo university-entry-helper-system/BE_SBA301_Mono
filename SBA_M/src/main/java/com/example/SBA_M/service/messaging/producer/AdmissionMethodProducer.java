@@ -1,7 +1,8 @@
 package com.example.SBA_M.service.messaging.producer;
 
 import com.example.SBA_M.entity.commands.AdmissionMethod;
-import com.example.SBA_M.event.AdmissionMethodCreatedEvent;
+import com.example.SBA_M.event.AdmissionMethodEvent;
+import com.example.SBA_M.event.AdmissionMethodUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AdmissionMethodProducer {
 
-    private final KafkaTemplate<String, AdmissionMethodCreatedEvent> kafkaTemplate;
+    private final KafkaTemplate<String, AdmissionMethodEvent> kafkaTemplate;
+    private final KafkaTemplate<String, AdmissionMethodUpdatedEvent> kafkaUpdateTemplate;
 
     public void sendCreateEvent(AdmissionMethod am) {
         kafkaTemplate.send("am.created", buildEvent(am));
@@ -24,8 +26,8 @@ public class AdmissionMethodProducer {
         kafkaTemplate.send("am.deleted", buildEvent(am));
     }
 
-    private AdmissionMethodCreatedEvent buildEvent(AdmissionMethod am) {
-        return new AdmissionMethodCreatedEvent(
+    private AdmissionMethodEvent buildEvent(AdmissionMethod am) {
+        return new AdmissionMethodEvent(
                 am.getId(),
                 am.getName(),
                 am.getDescription(),
@@ -35,5 +37,19 @@ public class AdmissionMethodProducer {
                 am.getUpdatedAt(),
                 am.getUpdatedBy()
         );
+    }
+    private void sendUpdatedEvent(AdmissionMethod am) {
+        AdmissionMethodUpdatedEvent event =  new AdmissionMethodUpdatedEvent(
+                am.getId(),
+                am.getName()
+        );
+        kafkaUpdateTemplate.send("am.updated.event", event);
+    }
+    private void sendDeletedEvent(AdmissionMethod am) {
+        AdmissionMethodUpdatedEvent event = new AdmissionMethodUpdatedEvent(
+                am.getId(),
+                am.getName()
+        );
+        kafkaUpdateTemplate.send("am.deleted.event", event);
     }
 }

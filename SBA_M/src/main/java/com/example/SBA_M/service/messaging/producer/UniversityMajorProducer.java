@@ -89,28 +89,13 @@ public class UniversityMajorProducer {
                 ));
 
 
-        // Group methods by subjectCombination
-        Map<SubjectCombination, List<String>> comboMethodMap = new HashMap<>();
-        for (AdmissionMethod method : universityMajor.getAdmissionMethods()) {
-            for (SubjectCombination combo : universityMajor.getSubjectCombinations()) {
-                comboMethodMap
-                        .computeIfAbsent(combo, c -> new ArrayList<>())
-                        .add(method.getName());
-            }
-        }
 
         List<UniversityMajorSearchEvent> events = new ArrayList<>();
         // Send one event per subjectCombination
-        for (Map.Entry<SubjectCombination, List<String>> entry : comboMethodMap.entrySet()) {
-            SubjectCombination combo = entry.getKey();
-            List<String> methodNames = entry.getValue();
+        for (SubjectCombination combo : universityMajor.getSubjectCombinations()) {
 
             String id = universityId + "-" + majorId + "-" + combo.getId();
 
-            String subjectCombinationName = combo.getName() + ": " +
-                    combo.getExamSubjects().stream()
-                            .map(ExamSubject::getName)
-                            .collect(Collectors.joining(", "));
 
             int countByCombo = countByComboMap.getOrDefault(combo.getId(), 0);
 
@@ -122,8 +107,7 @@ public class UniversityMajorProducer {
                     majorId,
                     universityMajor.getMajor().getName(),
                     combo.getId(),
-                    subjectCombinationName,
-                    methodNames,
+                    combo.getName(),
                     countByMajor,
                     countByCombo,
                     status
