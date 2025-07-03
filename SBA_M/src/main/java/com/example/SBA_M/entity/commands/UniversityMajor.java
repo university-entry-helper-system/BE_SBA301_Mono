@@ -34,9 +34,9 @@ public class UniversityMajor extends AbstractEntity<Integer> {
     )
     private List<AdmissionMethod> admissionMethods;
 
+    @Column(name = "university_major_name", nullable = false, length = 255)
+    private String universityMajorName;
 
-    @Column(nullable = false)
-    private Integer year;
 
     @Column
     private Double score;
@@ -46,4 +46,12 @@ public class UniversityMajor extends AbstractEntity<Integer> {
 
     @Column(columnDefinition = "TEXT")
     private String notes;
+
+    @ManyToMany
+    @JoinTable(
+            name = "major_subject_combinations",
+            joinColumns = @JoinColumn(name = "university_major_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_combination_id")
+    )
+    private List<SubjectCombination> subjectCombinations;
 }

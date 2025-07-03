@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class MajorCreatedEvent extends AbstractCreatedEvent<Integer>{
+public class MajorEvent extends AbstractCreatedEvent<Integer>{
     private String name;
     private String code;
     private String majorGroup;

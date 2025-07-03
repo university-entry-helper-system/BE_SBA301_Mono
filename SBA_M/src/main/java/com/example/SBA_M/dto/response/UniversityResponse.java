@@ -1,5 +1,6 @@
 package com.example.SBA_M.dto.response;
 
+import com.example.SBA_M.entity.commands.Province;
 import com.example.SBA_M.utils.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +20,7 @@ public class UniversityResponse {
     private String shortName;
     private String logoUrl;
     private Integer foundingYear;
-    private String province;
+    private Province province;
     private String address;
     private String email;
     private String phone;

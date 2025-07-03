@@ -17,7 +17,7 @@ public class UniversityMajorRequest {
 
     private Long majorId;         // Required for create
 
-    private Integer year;
+    private String universityMajorName;
 
     private Integer quota;
 

@@ -1,5 +1,6 @@
 package com.example.SBA_M.exception;
 
+import com.example.SBA_M.dto.response.ApiResponse;
 import com.example.SBA_M.dto.response.MessageResponse;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import jakarta.validation.ConstraintViolationException;
@@ -27,6 +28,18 @@ public class GlobalExceptionHandler {
                 .body(new MessageResponse("Too many requests. Please try again later."));
     }
 
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<ApiResponse> handleAppException(AppException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .build();
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -51,12 +64,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
-    @ExceptionHandler(AppException.class)
-    public ResponseEntity<MessageResponse> handleAppException(AppException ex) {
-        log.error("Application error: {}", ex.getMessage());
-        return ResponseEntity.status(ex.getErrorCode().getStatusCode())
-                .body(new MessageResponse(ex.getMessage()));
-    }
+
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<MessageResponse> handleBadCredentials(BadCredentialsException ex) {

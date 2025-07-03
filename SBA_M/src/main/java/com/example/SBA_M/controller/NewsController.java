@@ -1,6 +1,7 @@
 package com.example.SBA_M.controller;
 
 import com.example.SBA_M.dto.request.NewsRequest;
+import com.example.SBA_M.dto.response.ApiResponse;
 import com.example.SBA_M.dto.response.NewsResponse;
 import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.service.NewsService;
@@ -9,9 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @SecurityRequirement(name = "bearerAuth")
 @Slf4j
 public class NewsController {
+
     private final NewsService newsService;
     private final ObjectMapper objectMapper;
 
@@ -28,63 +28,86 @@ public class NewsController {
         this.objectMapper = objectMapper;
     }
 
-    @Operation(summary = "Get paginated news", description = "Retrieve news items with pagination")
+    @Operation(summary = "Get paginated news")
     @GetMapping("/paginated")
-    public ResponseEntity<PageResponse<NewsResponse>> getNewsPaginated(
+    public ApiResponse<PageResponse<NewsResponse>> getNewsPaginated(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(newsService.getNewsPaginated(page, size));
+        PageResponse<NewsResponse> result = newsService.getNewsPaginated(page, size);
+        return ApiResponse.<PageResponse<NewsResponse>>builder()
+                .code(1000)
+                .message("News fetched successfully")
+                .result(result)
+                .build();
     }
 
-    @Operation(summary = "Get news by ID", description = "Retrieve a news item by its ID")
+    @Operation(summary = "Get news by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<NewsResponse> getNewsById(@PathVariable Long id) {
+    public ApiResponse<NewsResponse> getNewsById(@PathVariable Long id) {
         NewsResponse news = newsService.getNewsById(id);
-        return ResponseEntity.ok(news);
+        return ApiResponse.<NewsResponse>builder()
+                .code(1000)
+                .message("News fetched successfully")
+                .result(news)
+                .build();
     }
 
-    @Operation(summary = "Create news with optional image", description = "Create a new news item with optional image upload")
+    @Operation(summary = "Create news with optional image")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createNews(
+    public ApiResponse<?> createNews(
             @RequestParam("news") String newsJson,
             @RequestParam(value = "image", required = false) MultipartFile image) {
-
         try {
-            log.info("Received news request: {}", newsJson);
             NewsRequest newsRequest = objectMapper.readValue(newsJson, NewsRequest.class);
             NewsResponse created = newsService.createNews(newsRequest, image);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+            return ApiResponse.<NewsResponse>builder()
+                    .code(1001)
+                    .message("News created successfully")
+                    .result(created)
+                    .build();
         } catch (Exception e) {
-            log.error("Error processing news creation: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid JSON format or image: " + e.getMessage());
+            log.error("News creation error: {}", e.getMessage(), e);
+            return ApiResponse.builder()
+                    .code(400)
+                    .message("Invalid input: " + e.getMessage())
+                    .build();
         }
     }
 
-    @Operation(summary = "Update a news item", description = "Update an existing news item with the provided request data")
+    @Operation(summary = "Update a news item")
     @PutMapping("/{id}")
-    public ResponseEntity<NewsResponse> updateNews(
+    public ApiResponse<NewsResponse> updateNews(
             @PathVariable Long id,
             @Valid @RequestBody NewsRequest newsRequest) {
         NewsResponse updated = newsService.updateNews(id, newsRequest);
-        return ResponseEntity.ok(updated);
+        return ApiResponse.<NewsResponse>builder()
+                .code(1002)
+                .message("News updated successfully")
+                .result(updated)
+                .build();
     }
 
-    @Operation(summary = "Delete a news item", description = "Delete a news item by its ID")
+    @Operation(summary = "Delete a news item")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteNews(@PathVariable Long id) {
+    public ApiResponse<Void> deleteNews(@PathVariable Long id) {
         newsService.deleteNews(id);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body("News deleted successfully");
+        return ApiResponse.<Void>builder()
+                .code(1003)
+                .message("News deleted successfully")
+                .build();
     }
 
-    @Operation(summary = "Search news", description = "Search news by content or summary")
+    @Operation(summary = "Search news")
     @GetMapping("/search")
-    public ResponseEntity<PageResponse<NewsResponse>> searchNews(
+    public ApiResponse<PageResponse<NewsResponse>> searchNews(
             @RequestParam String query,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(newsService.searchNews(query, page, size));
+        PageResponse<NewsResponse> result = newsService.searchNews(query, page, size);
+        return ApiResponse.<PageResponse<NewsResponse>>builder()
+                .code(1000)
+                .message("News search successful")
+                .result(result)
+                .build();
     }
 }

@@ -12,15 +12,15 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class AdmissionMethodCreatedEvent extends AbstractCreatedEvent<Integer>{
+public class AdmissionMethodEvent extends AbstractCreatedEvent<Integer>{
     private String name;
     private String description;
 
-    public AdmissionMethodCreatedEvent(Integer id, String name, String description, Status status,
-                                       Instant createdAt,
-                                       String createdBy,
-                                       Instant updatedAt,
-                                       String updatedBy) {
+    public AdmissionMethodEvent(Integer id, String name, String description, Status status,
+                                Instant createdAt,
+                                String createdBy,
+                                Instant updatedAt,
+                                String updatedBy) {
         this.setId(id);
         this.name = name;
         this.description = description;

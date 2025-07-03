@@ -9,6 +9,7 @@ services:
     ports:
       - "8080:8080"
     environment:
+      SPRING_APPLICATION_NAME: SBA_M
       DB_HOST: ep-morning-voice-a12ydsc4-pooler.ap-southeast-1.aws.neon.tech
       DB_PORT: 5432
       DB_NAME: neondb

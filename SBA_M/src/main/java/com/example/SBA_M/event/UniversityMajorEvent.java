@@ -23,7 +23,6 @@ public class UniversityMajorEvent {
     private Long subjectCombinationId;
     private String subjectCombination;
 
-    private Integer year;
     private Double score;
     private String note;
     private Status status;

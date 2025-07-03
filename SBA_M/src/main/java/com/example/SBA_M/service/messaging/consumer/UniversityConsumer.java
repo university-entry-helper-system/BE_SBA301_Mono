@@ -1,19 +1,24 @@
 package com.example.SBA_M.service.messaging.consumer;
 
+import com.example.SBA_M.entity.commands.Province;
 import com.example.SBA_M.entity.commands.UniversityCategory;
-import com.example.SBA_M.entity.queries.UniCategorySearch;
-import com.example.SBA_M.entity.queries.UniSearch;
-import com.example.SBA_M.entity.queries.UniversityCategoryDocument;
-import com.example.SBA_M.entity.queries.UniversityDocument;
+import com.example.SBA_M.entity.queries.*;
 import com.example.SBA_M.event.UniversityEvent;
+import com.example.SBA_M.event.UniversityUpdatedEvent;
 import com.example.SBA_M.repository.commands.UniversityCategoryRepository;
 import com.example.SBA_M.repository.elasticsearch.UniversityCategorySearchRepository;
+import com.example.SBA_M.repository.elasticsearch.UniversityMajorSearchRepository;
 import com.example.SBA_M.repository.elasticsearch.UniversitySearchRepository;
+import com.example.SBA_M.repository.queries.UniversityAdmissionMethodReadRepository;
+import com.example.SBA_M.repository.queries.UniversityMajorReadRepository;
 import com.example.SBA_M.repository.queries.UniversityReadRepository;
+import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -21,8 +26,10 @@ import org.springframework.stereotype.Component;
 public class UniversityConsumer {
     private final UniversityReadRepository universityReadRepository;
     private final UniversityCategoryRepository universityCategoryRepository;
-    private final UniversityCategorySearchRepository universityCategorySearchRepository;
     private final UniversitySearchRepository universitySearchRepository;
+    private final UniversityMajorReadRepository universityMajorReadRepository;
+    private final UniversityAdmissionMethodReadRepository universityAdmissionMethodReadRepository;
+    private final UniversityMajorSearchRepository universityMajorSearchRepository;
 
     @KafkaListener(topics = "uni.created", groupId = "sba-group")
     public void consume(UniversityEvent event) {
@@ -33,6 +40,7 @@ public class UniversityConsumer {
                     .findById(event.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("Category not found with ID: " + event.getCategoryId()));
 
+            Province province = new Province();
             // Save to MongoDB
             UniversityCategoryDocument categoryDoc = new UniversityCategoryDocument(
                     category.getId(),
@@ -52,7 +60,7 @@ public class UniversityConsumer {
                     event.getShortName(),
                     event.getLogoUrl(),
                     event.getFoundingYear(),
-                    event.getProvince(),
+                    province,
                     event.getAddress(),
                     event.getEmail(),
                     event.getPhone(),
@@ -73,6 +81,7 @@ public class UniversityConsumer {
                     .name(category.getName())
                     .description(category.getDescription())
                     .build();
+            Province provinceSearch = new Province();
 
             // Set the fields from AbstractElasticsearchDocument
             uniCategorySearch.setId(category.getId());
@@ -88,7 +97,7 @@ public class UniversityConsumer {
                     .shortName(event.getShortName())
                     .logoUrl(event.getLogoUrl())
                     .foundingYear(event.getFoundingYear())
-                    .province(event.getProvince())
+                    .province(provinceSearch)
                     .address(event.getAddress())
                     .email(event.getEmail())
                     .phone(event.getPhone())
@@ -133,6 +142,7 @@ public class UniversityConsumer {
                     category.getUpdatedAt(),
                     category.getUpdatedBy()
             );
+            Province provinceDoc = new Province();
 
             // Update fields
             existingDoc.setCategory(categoryDoc);
@@ -140,7 +150,7 @@ public class UniversityConsumer {
             existingDoc.setShortName(event.getShortName());
             existingDoc.setLogoUrl(event.getLogoUrl());
             existingDoc.setFoundingYear(event.getFoundingYear());
-            existingDoc.setProvince(event.getProvince());
+            existingDoc.setProvince(provinceDoc);
             existingDoc.setAddress(event.getAddress());
             existingDoc.setEmail(event.getEmail());
             existingDoc.setPhone(event.getPhone());
@@ -169,13 +179,15 @@ public class UniversityConsumer {
             uniCategorySearch.setUpdatedAt(category.getUpdatedAt());
             uniCategorySearch.setUpdatedBy(category.getUpdatedBy());
 
+            Province provinceSearch = new Province();
+
             // Update search fields
             existingSearch.setCategory(uniCategorySearch);
             existingSearch.setName(event.getName());
             existingSearch.setShortName(event.getShortName());
             existingSearch.setLogoUrl(event.getLogoUrl());
             existingSearch.setFoundingYear(event.getFoundingYear());
-            existingSearch.setProvince(event.getProvince());
+            existingSearch.setProvince(provinceSearch);
             existingSearch.setAddress(event.getAddress());
             existingSearch.setEmail(event.getEmail());
             existingSearch.setPhone(event.getPhone());
@@ -227,4 +239,49 @@ public class UniversityConsumer {
             log.error("Error processing university deleted event: {}", e.getMessage(), e);
         }
     }
+
+    @KafkaListener(topics = "university.updated.event", groupId = "sba-search-group")
+    public void consumeUniversityUpdate(UniversityUpdatedEvent event) {
+        // 1. Update MongoDB Admission Entries
+        List<AdmissionEntriesDocument> admissionEntries = universityMajorReadRepository.findByUniversityId(event.getUniversityId());
+        admissionEntries.forEach(doc -> doc.setUniversityName(event.getUniversityName()));
+        universityMajorReadRepository.saveAll(admissionEntries);
+
+        // 2. Update MongoDB University Entries
+        List<UniversityEntriesDocument> universityEntries = universityAdmissionMethodReadRepository.findByUniversityId(event.getUniversityId());
+        universityEntries.forEach(doc -> doc.setUniversityName(event.getUniversityName()));
+        universityAdmissionMethodReadRepository.saveAll(universityEntries);
+
+    }
+
+
+    @KafkaListener(topics = "university.deleted.event", groupId = "sba-search-group")
+    public void consumeUniversityDelete(UniversityUpdatedEvent event) {
+        // 1. Delete from MongoDB Admission Entries
+        List<AdmissionEntriesDocument> admissionEntries = universityMajorReadRepository.findByUniversityId(event.getUniversityId());
+        admissionEntries.forEach((doc) -> doc.setStatus(Status.DELETED)); // Assuming you want to mark as deleted
+        universityMajorReadRepository.saveAll(admissionEntries);
+
+        // 2. Delete from MongoDB University Entries
+        List<UniversityEntriesDocument> universityEntries = universityAdmissionMethodReadRepository.findByUniversityId(event.getUniversityId());
+        universityEntries.forEach((doc) -> doc.setStatus(Status.DELETED)); // Assuming you want to mark as deleted
+        universityAdmissionMethodReadRepository.saveAll(universityEntries);
+
+        // 3. Delete from Elasticsearch University Major Search
+        List<UniversityMajorSearch> searchDocs = universityMajorSearchRepository.findByUniversityId(event.getUniversityId());
+        searchDocs.forEach((doc) -> doc.setStatus(Status.DELETED)); // Assuming you want to mark as deleteduniversityMajorSearchRepository.saveAll(searchDocs);
+    }
+
+    @KafkaListener(topics = "university.updated.search.event", groupId = "sba-search-group")
+    public void consumeUniversityMajorUpdateSearch(UniversityUpdatedEvent event) {
+        // Update Elasticsearch University Major Search
+        List<UniversityMajorSearch> searchDocs = universityMajorSearchRepository.findByUniversityId(event.getUniversityId());
+        searchDocs.forEach(doc -> {
+            doc.setUniversityName(event.getUniversityName());
+            doc.setProvince(event.getProvince()); // Assuming province name is included in the event
+        });
+        universityMajorSearchRepository.saveAll(searchDocs);
+    }
+
+
 }

@@ -26,6 +26,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<elasticsearch.version>8.10.2</elasticsearch.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -122,7 +123,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>software.amazon.awssdk</groupId>
 			<artifactId>s3</artifactId>
