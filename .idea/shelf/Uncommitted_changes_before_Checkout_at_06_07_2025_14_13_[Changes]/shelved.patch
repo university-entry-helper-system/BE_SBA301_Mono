@@ -1,0 +1,17 @@
+Index: SBA_M/src/main/java/com/example/SBA_M/entity/commands/Province.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.SBA_M.entity.commands;\r\n\r\nimport jakarta.persistence.Column;\r\nimport jakarta.persistence.Entity;\r\nimport jakarta.persistence.Table;\r\nimport lombok.AllArgsConstructor;\r\nimport lombok.Data;\r\nimport lombok.EqualsAndHashCode;\r\nimport lombok.NoArgsConstructor;\r\n\r\n@Data\r\n@Entity\r\n@Table(name = \"universities\")\r\n@NoArgsConstructor\r\n@AllArgsConstructor\r\n@EqualsAndHashCode(callSuper = true)\r\npublic class Province extends AbstractEntity<Integer>{\r\n\r\n    @Column(nullable = false, unique = true, length = 100)\r\n    private String name;\r\n    @Column(length = 100)\r\n    private String region; // e.g., \"North\", \"South\", \"East\", \"West\"\r\n}\r\n
+===================================================================
+diff --git a/SBA_M/src/main/java/com/example/SBA_M/entity/commands/Province.java b/SBA_M/src/main/java/com/example/SBA_M/entity/commands/Province.java
+--- a/SBA_M/src/main/java/com/example/SBA_M/entity/commands/Province.java	(revision 7c159ccae14359729d3af34de8714e7b91e5ae8b)
++++ b/SBA_M/src/main/java/com/example/SBA_M/entity/commands/Province.java	(date 1751133680736)
+@@ -10,7 +10,7 @@
+ 
+ @Data
+ @Entity
+-@Table(name = "universities")
++@Table(name = "province")
+ @NoArgsConstructor
+ @AllArgsConstructor
+ @EqualsAndHashCode(callSuper = true)

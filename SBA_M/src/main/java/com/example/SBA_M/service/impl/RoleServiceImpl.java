@@ -1,5 +1,6 @@
 package com.example.SBA_M.service.impl;
 
+import com.example.SBA_M.dto.response.RoleResponse;
 import com.example.SBA_M.entity.commands.Role;
 import com.example.SBA_M.repository.commands.RoleRepository;
 import com.example.SBA_M.service.RoleService;
@@ -8,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,31 +19,37 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Role> getAllRoles() {
-        return roleRepository.findAll();
+    public List<RoleResponse> getAllRoles() {
+        List<Role> roles = roleRepository.findAll();
+        return roles.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
-
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public Role getRoleById(Integer id) {
-        return roleRepository.findById(id)
+    public RoleResponse getRoleById(Integer id) {
+        Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Role not found with ID: " + id));
+        return toResponse(role);
+    }
+
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public RoleResponse saveRole(Role role) {
+        Role savedRole = roleRepository.save(role);
+        return toResponse(savedRole);
     }
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public Role saveRole(Role role) {
-        // Có thể thêm logic kiểm tra trùng tên role tại đây
-        return roleRepository.save(role);
-    }
-
-    @Override
-    @PreAuthorize("hasRole('ADMIN')")
-    public Role updateRole(Integer id, Role role) {
-        Role existingRole = getRoleById(id); // Sử dụng phương thức getRoleById đã có quyền
+    public RoleResponse updateRole(Integer id, Role role) {
+        Role existingRole = roleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Role not found with ID: " + id));
         existingRole.setName(role.getName());
         existingRole.setDescription(role.getDescription());
-        return roleRepository.save(existingRole);
+        Role updatedRole = roleRepository.save(existingRole);
+        return toResponse(updatedRole);
     }
 
     @Override
@@ -51,5 +59,11 @@ public class RoleServiceImpl implements RoleService {
             throw new RuntimeException("Role not found with ID: " + id);
         }
         roleRepository.deleteById(id);
+    }
+    private RoleResponse toResponse(Role role) {
+        RoleResponse response = new RoleResponse();
+        response.setId(role.getId());
+        response.setName(role.getName().toString());
+        return response;
     }
 }
