@@ -1,25 +1,39 @@
 package com.example.SBA_M.dto.response;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import com.example.SBA_M.utils.ConsultationStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.util.UUID;
-
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ConsultationResponse {
+
     private Long id;
-    private UUID accountId;
-    private UUID consultantId;
+
+    private SimpleAccountResponse sender;
+
+    private SimpleAccountResponse consultant;
+
     private String title;
+
     private String content;
+
+    private String answer;
+
+    private ConsultationStatus consultationsStatus;
+
+    private Instant sentAt;
+
+    private Instant senderUpdatedAt;
+
+    private Instant consultantUpdatedAt;
+
+    private Instant answeredAt;
+
     private String resolutionNotes;
-    private String status;
-    private Instant createdAt;
-    private String createdBy;
-    private Instant updatedAt;
-    private String updatedBy;
 }

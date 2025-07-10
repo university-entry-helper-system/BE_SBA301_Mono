@@ -7,6 +7,4 @@ public enum Status {
     DELETED,
     @JsonProperty("active")
     ACTIVE,
-    @JsonProperty("pending")
-    PENDING
 }

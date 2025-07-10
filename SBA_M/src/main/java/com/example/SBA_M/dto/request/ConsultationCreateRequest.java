@@ -12,10 +12,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ConsultationCreateRequest {
     @NotNull(message = "Sender ID is required.")
-    private UUID sender;
+    private UUID user;
 
     @NotNull(message = "Receiver ID is required.")
-    private UUID receiver;
+    private UUID consultant;
 
     @NotBlank(message = "Title is required.")
     @Size(max = 255, message = "Title must not exceed 255 characters.")
