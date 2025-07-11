@@ -1,9 +1,9 @@
 package com.example.SBA_M.entity.commands;
 
+import com.example.SBA_M.utils.ConsultationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
@@ -13,8 +13,11 @@ import java.time.Instant;
 @Table(name = "consultations")
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class Consultation extends AbstractEntity<Long> {
+public class Consultation {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
@@ -33,18 +36,24 @@ public class Consultation extends AbstractEntity<Long> {
     @Column(columnDefinition = "TEXT")
     private String answer;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private String consultationsStatus = "Pending";
+    private ConsultationStatus consultationsStatus;
 
     @Column(name = "sent_at")
     private Instant sentAt;
 
+    @Column(name = "sender_update_at")
+    private Instant senderUpdatedAt;
+
+    @Column(name = "consultant_update_at")
+    private Instant consultantUpdatedAt;
+
     @Column(name = "answered_at")
     private Instant answeredAt;
-
-    @Column
-    private Integer rating;
 
     @Column(name = "resolution_notes", columnDefinition = "TEXT")
     private String resolutionNotes;
 }
+
+

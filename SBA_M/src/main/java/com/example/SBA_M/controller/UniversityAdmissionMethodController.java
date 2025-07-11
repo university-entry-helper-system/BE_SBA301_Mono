@@ -20,6 +20,7 @@ public class UniversityAdmissionMethodController {
     private final UniversityAdmissionMethodService universityAdmissionMethodService;
 
     @Operation(summary = "Get all university admission methods (paginated)")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     public ApiResponse<PageResponse<UniversityAdmissionMethodResponse>> getAllUniversityAdmissionMethods(
             @RequestParam(defaultValue = "0") int page,
@@ -34,6 +35,7 @@ public class UniversityAdmissionMethodController {
     }
 
     @Operation(summary = "Get university admission method by ID")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{id}")
     public ApiResponse<UniversityAdmissionMethodResponse> getById(@PathVariable Integer id) {
         UniversityAdmissionMethodResponse response = universityAdmissionMethodService.getById(id);
@@ -45,6 +47,7 @@ public class UniversityAdmissionMethodController {
     }
 
     @Operation(summary = "Create a new university admission method")
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ApiResponse<UniversityAdmissionMethodResponse> create(
             @Valid @RequestBody UniversityMethodRequest request
@@ -58,6 +61,7 @@ public class UniversityAdmissionMethodController {
     }
 
     @Operation(summary = "Update a university admission method")
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
     public ApiResponse<UniversityAdmissionMethodResponse> update(
             @PathVariable Integer id,
@@ -72,6 +76,7 @@ public class UniversityAdmissionMethodController {
     }
 
     @Operation(summary = "Delete a university admission method")
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> delete(@PathVariable Integer id) {
         universityAdmissionMethodService.delete(id);

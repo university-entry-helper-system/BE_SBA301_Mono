@@ -18,12 +18,12 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/university-majors")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
 public class UniversityMajorController {
 
     private final UniversityMajorService universityMajorService;
 
     @Operation(summary = "Get all university majors (paginated)")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     public ApiResponse<PageResponse<UniversityMajorResponse>> getAllUniversityMajors(
             @RequestParam(defaultValue = "0") int page,
@@ -38,6 +38,7 @@ public class UniversityMajorController {
     }
 
     @Operation(summary = "Get university major by ID")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{id}")
     public ApiResponse<UniversityMajorResponse> getUniversityMajorById(@PathVariable Integer id) {
         UniversityMajorResponse response = universityMajorService.getUniversityMajorById(id);
@@ -49,6 +50,7 @@ public class UniversityMajorController {
     }
 
     @Operation(summary = "Create a new university major")
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ApiResponse<UniversityMajorResponse> createUniversityMajor(
             @Valid @RequestBody UniversityMajorRequest request
@@ -62,6 +64,7 @@ public class UniversityMajorController {
     }
 
     @Operation(summary = "Update a university major")
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
     public ApiResponse<UniversityMajorResponse> updateUniversityMajor(
             @PathVariable Integer id,
@@ -76,6 +79,7 @@ public class UniversityMajorController {
     }
 
     @Operation(summary = "Delete a university major")
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteUniversityMajor(@PathVariable Integer id) {
         universityMajorService.deleteUniversityMajor(id);
@@ -84,7 +88,7 @@ public class UniversityMajorController {
                 .message("University major deleted successfully")
                 .build();
     }
-
+ //no jwt
     @Operation(summary = "Get grouped admissions by university")
     @GetMapping("/admissions/university/{universityId}")
     public ApiResponse<AdmissionUniversityTuitionResponse> getUniversityAdmissionYears(
@@ -134,19 +138,19 @@ public class UniversityMajorController {
             @RequestParam(required = false) String province
     ) {
         try {
-        List<UniversitySubjectCombinationSearchResponse> results = universityMajorService.searchBySubjectCombination(subjectCombinationId, majorId, province);
-        return ApiResponse.<List<UniversitySubjectCombinationSearchResponse>>builder()
-                .code(1000)
-                .message("Search results by subject combination fetched successfully")
-                .result(results)
-                .build();
-    } catch (IOException ex){
-        return ApiResponse.<List<UniversitySubjectCombinationSearchResponse>>builder()
-                .code(5000)
-                .message("Error occurred while searching by major: " + ex.getMessage())
-                .result(null)
-                .build();
-    }
+            List<UniversitySubjectCombinationSearchResponse> results = universityMajorService.searchBySubjectCombination(subjectCombinationId, majorId, province);
+            return ApiResponse.<List<UniversitySubjectCombinationSearchResponse>>builder()
+                    .code(1000)
+                    .message("Search results by subject combination fetched successfully")
+                    .result(results)
+                    .build();
+        } catch (IOException ex) {
+            return ApiResponse.<List<UniversitySubjectCombinationSearchResponse>>builder()
+                    .code(5000)
+                    .message("Error occurred while searching by major: " + ex.getMessage())
+                    .result(null)
+                    .build();
+        }
     }
 
     @Operation(summary = "Search university majors by major")
@@ -164,7 +168,7 @@ public class UniversityMajorController {
                     .message("Search results by major fetched successfully")
                     .result(results)
                     .build();
-        } catch (IOException ex){
+        } catch (IOException ex) {
             return ApiResponse.<List<UniversityMajorSearchResponse>>builder()
                     .code(5000)
                     .message("Error occurred while searching by major: " + ex.getMessage())

@@ -30,9 +30,6 @@ public class ConsultantProfile {
     @Column(name = "current_pending_requests")
     private Integer currentPendingRequests = 0;
 
-    @Column(name = "is_active")
-    private Boolean isActive = true;
-
     @OneToOne
     @JoinColumn(name = "id", referencedColumnName = "id")
     private Account account;
