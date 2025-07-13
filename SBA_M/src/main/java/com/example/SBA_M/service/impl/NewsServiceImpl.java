@@ -118,7 +118,7 @@ public class NewsServiceImpl implements NewsService {
                 .build();
     }
     @Override
-    public NewsResponse createNews(NewsRequest request, MultipartFile image) {
+    public NewsResponse createNews(NewsRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.isAuthenticated() || authentication.getName() == null) {
@@ -127,7 +127,8 @@ public class NewsServiceImpl implements NewsService {
             String username = authentication.getName();
 
             log.info("Creating news with title: {}", request.getTitle());
-            return newsProducer.createNews(request, image,  username);
+            // Sử dụng image từ request
+            return newsProducer.createNews(request, request.getImage(), username);
         } catch (AppException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -146,7 +147,7 @@ public class NewsServiceImpl implements NewsService {
             String username = authentication.getName();
 
             log.info("Updating news with ID: {}", id);
-            return newsProducer.updateNews(id, request, username);
+            return newsProducer.updateNews(id, request, request.getImage(), username);
         } catch (AppException ex) {
             throw ex;
         } catch (Exception ex) {

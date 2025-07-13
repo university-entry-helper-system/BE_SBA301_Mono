@@ -35,6 +35,8 @@ public class NewsProducer {
         String presignedImageUrl = null;
         if (image != null && !image.isEmpty()) {
             presignedImageUrl = minioService.uploadFileAndGetPresignedUrl(image);
+        } else if (request.getImageUrl() != null && !request.getImageUrl().isEmpty()) {
+            presignedImageUrl = request.getImageUrl();
         }
         News news = new News();
         news.setTitle(request.getTitle());
@@ -82,15 +84,24 @@ public class NewsProducer {
         return mapToResponse(savedNews);
     }
 
-    public NewsResponse updateNews(Long id, NewsRequest request, String username) {
+    public NewsResponse updateNews(Long id, NewsRequest request, MultipartFile image, String username) {
         News existingNews = newsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("News not found with id: " + id));
         University university = universityRepository.findById(request.getUniversityId()).orElseThrow(
                 () -> new RuntimeException("University not found with id: " + request.getUniversityId()));
+        
+        // Handle image upload if provided
+        String imageUrl = existingNews.getImageUrl(); // Keep existing image by default
+        if (image != null && !image.isEmpty()) {
+            imageUrl = minioService.uploadFileAndGetPresignedUrl(image);
+        } else if (request.getImageUrl() != null && !request.getImageUrl().isEmpty()) {
+            imageUrl = request.getImageUrl(); // Use imageUrl from request if no new image
+        }
+        
         existingNews.setTitle(request.getTitle());
         existingNews.setContent(request.getContent());
         existingNews.setSummary(request.getSummary());
-        existingNews.setImageUrl(request.getImageUrl());
+        existingNews.setImageUrl(imageUrl);
         existingNews.setCategory(request.getCategory());
         existingNews.setUniversity(university);
         existingNews.setNewStatus(request.getNewsStatus());

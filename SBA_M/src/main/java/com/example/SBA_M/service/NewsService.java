@@ -28,7 +28,7 @@ public interface NewsService {
     /**
      * Create a new news item
      */
-     NewsResponse createNews(NewsRequest request, MultipartFile image);
+     NewsResponse createNews(NewsRequest request);
 
     /**
      * Update an existing news item

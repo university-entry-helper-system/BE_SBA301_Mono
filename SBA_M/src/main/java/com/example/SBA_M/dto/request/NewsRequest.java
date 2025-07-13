@@ -3,6 +3,7 @@ package com.example.SBA_M.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -36,4 +37,6 @@ public class NewsRequest {
     private String newsStatus = "Published";
 
     private Instant publishedAt;
+
+    private MultipartFile image;
 }
