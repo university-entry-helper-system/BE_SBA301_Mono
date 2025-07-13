@@ -67,11 +67,11 @@ public class UniversityController {
 
     @Operation(summary = "Get all universities")
     @GetMapping
-    public ApiResponse<PageResponse<University>> getAllUniversities(
+    public ApiResponse<PageResponse<UniversityResponse>> getAllUniversities(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        PageResponse<University> result = universityService.getAllUniversities(page, size);
-        return ApiResponse.<PageResponse<University>>builder()
+        PageResponse<UniversityResponse> result = universityService.getAllUniversities(page, size);
+        return ApiResponse.<PageResponse<UniversityResponse>>builder()
                 .code(1000)
                 .message("Universities fetched successfully")
                 .result(result)

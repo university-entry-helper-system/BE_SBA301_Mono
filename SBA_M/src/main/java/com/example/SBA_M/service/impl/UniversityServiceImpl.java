@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,15 +38,19 @@ public class UniversityServiceImpl implements UniversityService {
     private final ProvinceRepository provinceRepository;
 
     @Override
-    public PageResponse<University> getAllUniversities(int page, int size) {
+    public PageResponse<UniversityResponse> getAllUniversities(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<University> universityPage = universityRepository.findAll(pageable);
-        return PageResponse.<University>builder()
+        Page<University> universityPage = universityRepository.findByStatus(Status.ACTIVE,pageable);
+        List<UniversityResponse> universityResponses = universityPage.getContent()
+                .stream()
+                .map(universityMapper::toResponse)
+                .toList();
+        return PageResponse.<UniversityResponse>builder()
                 .page(universityPage.getNumber())
                 .size(universityPage.getSize())
                 .totalElements(universityPage.getTotalElements())
                 .totalPages(universityPage.getTotalPages())
-                .items(universityPage.getContent())
+                .items(universityResponses)
                 .build();
     }
 
@@ -74,6 +79,11 @@ public class UniversityServiceImpl implements UniversityService {
         university.setPhone(request.getPhone());
         university.setWebsite(request.getWebsite());
         university.setDescription(request.getDescription());
+        university.setStatus(Status.ACTIVE);
+        university.setCreatedBy(username);
+        university.setCreatedAt(Instant.now());
+        university.setUpdatedBy(username);
+        university.setUpdatedAt(Instant.now());
 
         university.setCategory(universityCategoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_CATEGORY_NOT_FOUND)));
