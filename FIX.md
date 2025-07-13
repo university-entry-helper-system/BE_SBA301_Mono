@@ -313,65 +313,7 @@ Caused by: org.springframework.util.PlaceholderResolutionException: Could not re
 services:
   backend-service:
     environment:
-      # Database
-      SPRING_DATASOURCE_URL: jdbc:postgresql://ep-morning-voice-a12ydsc4-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
-      SPRING_DATASOURCE_USERNAME: neondb_owner
-      SPRING_DATASOURCE_PASSWORD: npg_pJ39SmHTNgiU
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
-
-      # JPA
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: true
-      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
-
-      # JWT
-      JWT_SECRET: hSodUw7fA9PpLVZWpmjeS8cBNbxCxyKOouY3sqA9Dgg=
-      JWT_EXPIRATION: 86400000
-      JWT_ACCESS_TOKEN_EXPIRATION_MS: 1800000
-      JWT_REFRESH_TOKEN_EXPIRATION_MS: 604800000
-
-      # Mail (QUAN TRỌNG - Thường bị thiếu)
-      SPRING_MAIL_HOST: smtp.gmail.com
-      SPRING_MAIL_PORT: 587
-      SPRING_MAIL_USERNAME: nsn15102004@gmail.com
-      SPRING_MAIL_PASSWORD: cbky fiqp xyjc wxie
-      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
-      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: true
-      SPRING_MAIL_TEST_CONNECTION: false
-
-      # App Settings
-      APP_ACTIVATION_CODE_EXPIRATION_MINUTES: 15
-      APP_PASSWORD_RESET_CODE_EXPIRATION_MINUTES: 30
-
-      # Kafka (Chú ý: dùng internal network)
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_KAFKA_PRODUCER_KEY_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
-      SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER: org.springframework.kafka.support.serializer.JsonSerializer
-      SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
-      SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER: org.springframework.kafka.support.serializer.JsonDeserializer
-      SPRING_KAFKA_CONSUMER_GROUP_ID: sba-group
-      SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET: earliest
-      SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES: "*"
-
-      # MongoDB
-      SPRING_DATA_MONGODB_URI: mongodb+srv://phuy61371:12345@cluster0.gebzxrs.mongodb.net/mydatabase?retryWrites=true&w=majority&appName=Cluster0
-      SPRING_DATA_MONGODB_DATABASE: mydatabase
-      SPRING_DATA_MONGODB_DROP_ON_STARTUP: false
-
-      # Elasticsearch (Chú ý: dùng internal network)
-      ELASTICSEARCH_URIS: http://elasticsearch:9200
-      ELASTICSEARCH_USERNAME: robin
-      ELASTICSEARCH_PASSWORD: 12345
-      ELASTICSEARCH_CONNECTION_TIMEOUT: 3s
-      ELASTICSEARCH_SOCKET_TIMEOUT: 5s
-
-      # MinIO (Chú ý: dùng internal network)
-      MINIO_ENDPOINT: http://minio:9000
-      MINIO_ACCESS_KEY: robin
-      MINIO_SECRET_KEY: admin123456
-      MINIO_BUCKET: mybucket
-      MINIO_REGION: us-east-1
+/// .env
 ```
 
 #### Cách 2: Sử dụng .env file
