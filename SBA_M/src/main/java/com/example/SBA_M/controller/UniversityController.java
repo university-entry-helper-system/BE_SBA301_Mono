@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/universities")
-@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class UniversityController {
 
@@ -32,7 +31,7 @@ public class UniversityController {
                 .build();
     }
 
-    @Operation(summary = "Create a new university")
+    @Operation(summary = "Create a new university", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping
     public ApiResponse<UniversityResponse> createUniversity(@Valid @RequestBody UniversityRequest universityRequest) {
         UniversityResponse created = universityService.createUniversity(universityRequest);
@@ -43,7 +42,7 @@ public class UniversityController {
                 .build();
     }
 
-    @Operation(summary = "Update a university")
+    @Operation(summary = "Update a university", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping("/{id}")
     public ApiResponse<UniversityResponse> updateUniversity(
             @PathVariable Integer id,
@@ -56,7 +55,7 @@ public class UniversityController {
                 .build();
     }
 
-    @Operation(summary = "Delete a university")
+    @Operation(summary = "Delete a university", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteUniversity(@PathVariable Integer id) {
         universityService.deleteUniversity(id);
@@ -68,11 +67,11 @@ public class UniversityController {
 
     @Operation(summary = "Get all universities")
     @GetMapping
-    public ApiResponse<PageResponse<University>> getAllUniversities(
+    public ApiResponse<PageResponse<UniversityResponse>> getAllUniversities(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        PageResponse<University> result = universityService.getAllUniversities(page, size);
-        return ApiResponse.<PageResponse<University>>builder()
+        PageResponse<UniversityResponse> result = universityService.getAllUniversities(page, size);
+        return ApiResponse.<PageResponse<UniversityResponse>>builder()
                 .code(1000)
                 .message("Universities fetched successfully")
                 .result(result)

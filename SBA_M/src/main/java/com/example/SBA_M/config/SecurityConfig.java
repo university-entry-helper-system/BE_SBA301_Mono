@@ -80,7 +80,7 @@ public class SecurityConfig {
 
 
                                 // Allow public access to admission APIs
-                        .requestMatchers("/api/v1/admission-methods/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/admission-methods/**").permitAll()
                         // Tất cả các request khác yêu cầu xác thực
                         .anyRequest().authenticated()
                 )

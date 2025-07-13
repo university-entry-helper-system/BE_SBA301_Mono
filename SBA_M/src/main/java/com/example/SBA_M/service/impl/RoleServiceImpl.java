@@ -18,7 +18,6 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public List<RoleResponse> getAllRoles() {
         List<Role> roles = roleRepository.findAll();
         return roles.stream()
@@ -26,7 +25,6 @@ public class RoleServiceImpl implements RoleService {
                 .collect(Collectors.toList());
     }
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public RoleResponse getRoleById(Integer id) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Role not found with ID: " + id));
@@ -35,14 +33,12 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public RoleResponse saveRole(Role role) {
         Role savedRole = roleRepository.save(role);
         return toResponse(savedRole);
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public RoleResponse updateRole(Integer id, Role role) {
         Role existingRole = roleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Role not found with ID: " + id));
@@ -53,7 +49,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public void deleteRole(Integer id) {
         if (!roleRepository.existsById(id)) {
             throw new RuntimeException("Role not found with ID: " + id);

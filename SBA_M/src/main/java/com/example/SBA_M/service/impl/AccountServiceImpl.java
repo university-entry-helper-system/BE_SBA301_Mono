@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,7 +44,6 @@ public class AccountServiceImpl implements AccountService {
     PasswordEncoder passwordEncoder;
     AccountMapper accountMapper;
 
-    @PreAuthorize("hasRole('ADMIN')")
     public AccountResponse createGeneralUser(AccountCreationRequest request) {
         if (accountRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new AppException(ErrorCode.USERNAME_EXISTED);
@@ -59,9 +57,7 @@ public class AccountServiceImpl implements AccountService {
 
         Role userRole = roleRepository.findByName(RoleName.USER)
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
-        Set<Role> roles = new HashSet<>();
-        roles.add(userRole);
-        account.setRoles(roles);
+        account.setRoles(Set.of(userRole));
         account.setStatus(AccountStatus.ACTIVE);
         account.setIsDeleted(false);
         account.setCreatedAt(Instant.now());
@@ -70,7 +66,6 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toAccountResponse(accountRepository.save(account));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     public AccountResponse createAdminUser(AccountCreationRequest request) {
         if (accountRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new AppException(ErrorCode.USERNAME_EXISTED);
@@ -84,9 +79,7 @@ public class AccountServiceImpl implements AccountService {
 
         Role adminRole = roleRepository.findByName(RoleName.ADMIN)
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
-        Set<Role> roles = new HashSet<>();
-        roles.add(adminRole);
-        account.setRoles(roles);
+        account.setRoles(Set.of(adminRole));
         account.setStatus(AccountStatus.ACTIVE);
         account.setIsDeleted(false);
         account.setCreatedAt(Instant.now());
@@ -95,11 +88,9 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toAccountResponse(accountRepository.save(account));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT')")
     public PageResponse<AccountResponse> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Account> accountPage = accountRepository.findAll(pageable);
-        // Sửa lỗi: Thêm <AccountResponse> vào builder()
         return PageResponse.<AccountResponse>builder()
                 .page(accountPage.getNumber())
                 .size(accountPage.getSize())
@@ -111,11 +102,9 @@ public class AccountServiceImpl implements AccountService {
                 .build();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT')")
     public PageResponse<AccountResponse> getUsersBySearch(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Account> accountPage = accountRepository.findByFullNameContainingIgnoreCase(name, pageable);
-        // Sửa lỗi: Thêm <AccountResponse> vào builder()
         return PageResponse.<AccountResponse>builder()
                 .page(accountPage.getNumber())
                 .size(accountPage.getSize())
@@ -127,15 +116,12 @@ public class AccountServiceImpl implements AccountService {
                 .build();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT') or " +
-            "(@accountServiceImpl.isAccountOwner(#accountId) and hasRole('USER'))")
     public AccountResponse getUserById(UUID accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
         return accountMapper.toAccountResponse(account);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(UUID accountId, boolean hardDelete) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
@@ -150,7 +136,6 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     public void restoreUser(UUID accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
@@ -165,7 +150,6 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     public AccountResponse updateUser(UUID accountId, UserUpdateRequest request) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
@@ -176,7 +160,6 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toAccountResponse(accountRepository.save(account));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     public AccountResponse setRoles(UUID accountId, Set<Integer> roleIds) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
@@ -195,8 +178,6 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toAccountResponse(accountRepository.save(account));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT') or " +
-            "(@accountServiceImpl.isAccountOwner(#accountId) and hasRole('USER'))")
     public Set<String> getUserRoles(UUID accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
@@ -205,7 +186,6 @@ public class AccountServiceImpl implements AccountService {
                 .collect(Collectors.toSet());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     public AccountResponse updateStatus(UUID accountId, AccountStatus status) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
@@ -216,7 +196,6 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toAccountResponse(accountRepository.save(account));
     }
 
-    @PreAuthorize("isAuthenticated()")
     public AccountResponse getMyInfo(String username) {
         String currentUsername = getCurrentUsername();
         if (!currentUsername.equals(username)) {
@@ -227,7 +206,6 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toAccountResponse(account);
     }
 
-    @PreAuthorize("isAuthenticated()")
     public void updatePassword(String username, UpdatePasswordRequest request) {
         String currentUsername = getCurrentUsername();
         if (!currentUsername.equals(username)) {
@@ -250,7 +228,6 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
-    @PreAuthorize("isAuthenticated()")
     public AccountResponse updateProfile(String username, UserUpdateRequest request) {
         String currentUsername = getCurrentUsername();
         if (!currentUsername.equals(username)) {

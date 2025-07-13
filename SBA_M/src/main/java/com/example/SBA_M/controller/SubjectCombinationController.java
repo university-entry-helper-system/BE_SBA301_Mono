@@ -6,6 +6,7 @@ import com.example.SBA_M.dto.response.SubjectCombinationResponse;
 import com.example.SBA_M.service.SubjectCombinationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/subject-combinations")
+@RequestMapping("/api/v1/subject-combinations")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Subject Combination Controller", description = "APIs for managing subject combinations")
 public class SubjectCombinationController {
 
     private final SubjectCombinationService subjectCombinationService;
@@ -34,8 +36,7 @@ public class SubjectCombinationController {
 
     @Operation(summary = "Get subject combination by ID")
     @GetMapping("/{id}")
-    public ApiResponse<SubjectCombinationResponse> getSubjectCombinationById(
-            @PathVariable Long id) {
+    public ApiResponse<SubjectCombinationResponse> getSubjectCombinationById(@PathVariable Long id) {
         SubjectCombinationResponse response = subjectCombinationService.getSubjectCombinationById(id);
         return ApiResponse.<SubjectCombinationResponse>builder()
                 .code(1000)
@@ -78,3 +79,4 @@ public class SubjectCombinationController {
                 .build();
     }
 }
+

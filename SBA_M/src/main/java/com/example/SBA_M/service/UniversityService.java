@@ -10,7 +10,7 @@ public interface UniversityService {
     /**
      * Get all universities with pagination
      */
-    PageResponse<University> getAllUniversities(int page, int size);
+    PageResponse<UniversityResponse> getAllUniversities(int page, int size);
 
     /**
      * Save a university entity

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("/api/v1/provinces")
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class ProvinceController {
     private final ProvinceService provinceService;
 
     @Operation(summary = "Create a new province")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<ProvinceResponse> createProvince(@Valid @RequestBody ProvinceResponse request) {
         ProvinceResponse createdProvince = provinceService.createProvince(request);
@@ -33,6 +36,7 @@ public class ProvinceController {
     }
 
     @Operation(summary = "Get province by ID")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ApiResponse<ProvinceResponse> getProvinceById(@PathVariable Integer id) {
         ProvinceResponse province = provinceService.getProvinceById(id);
@@ -44,6 +48,7 @@ public class ProvinceController {
     }
 
     @Operation(summary = "Get all provinces")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ApiResponse<List<ProvinceResponse>> getAllProvinces() {
         List<ProvinceResponse> provinces = provinceService.getAllProvinces();
@@ -55,6 +60,7 @@ public class ProvinceController {
     }
 
     @Operation(summary = "Update a province")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<ProvinceResponse> updateProvince(
             @PathVariable Integer id,
@@ -68,6 +74,7 @@ public class ProvinceController {
     }
 
     @Operation(summary = "Delete a province")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteProvince(@PathVariable Integer id) {
         provinceService.deleteProvince(id);
@@ -77,3 +84,4 @@ public class ProvinceController {
                 .build();
     }
 }
+

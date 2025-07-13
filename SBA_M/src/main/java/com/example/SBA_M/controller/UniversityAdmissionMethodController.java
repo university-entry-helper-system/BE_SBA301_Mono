@@ -11,16 +11,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("api/v1/university-admission-methods")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
+//@SecurityRequirement(name = "bearerAuth") // Default for secured endpoints
 public class UniversityAdmissionMethodController {
 
     private final UniversityAdmissionMethodService universityAdmissionMethodService;
 
+    // ✅ Public access: no login required
     @Operation(summary = "Get all university admission methods (paginated)")
-    @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     public ApiResponse<PageResponse<UniversityAdmissionMethodResponse>> getAllUniversityAdmissionMethods(
             @RequestParam(defaultValue = "0") int page,
@@ -34,8 +35,8 @@ public class UniversityAdmissionMethodController {
                 .build();
     }
 
+    // ✅ Public access
     @Operation(summary = "Get university admission method by ID")
-    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{id}")
     public ApiResponse<UniversityAdmissionMethodResponse> getById(@PathVariable Integer id) {
         UniversityAdmissionMethodResponse response = universityAdmissionMethodService.getById(id);
@@ -46,46 +47,7 @@ public class UniversityAdmissionMethodController {
                 .build();
     }
 
-    @Operation(summary = "Create a new university admission method")
-    @SecurityRequirement(name = "bearerAuth")
-    @PostMapping
-    public ApiResponse<UniversityAdmissionMethodResponse> create(
-            @Valid @RequestBody UniversityMethodRequest request
-    ) {
-        UniversityAdmissionMethodResponse created = universityAdmissionMethodService.create(request);
-        return ApiResponse.<UniversityAdmissionMethodResponse>builder()
-                .code(1001)
-                .message("University admission method created successfully")
-                .result(created)
-                .build();
-    }
-
-    @Operation(summary = "Update a university admission method")
-    @SecurityRequirement(name = "bearerAuth")
-    @PutMapping("/{id}")
-    public ApiResponse<UniversityAdmissionMethodResponse> update(
-            @PathVariable Integer id,
-            @Valid @RequestBody UniversityMethodRequest request
-    ) {
-        UniversityAdmissionMethodResponse updated = universityAdmissionMethodService.update(id, request);
-        return ApiResponse.<UniversityAdmissionMethodResponse>builder()
-                .code(1002)
-                .message("University admission method updated successfully")
-                .result(updated)
-                .build();
-    }
-
-    @Operation(summary = "Delete a university admission method")
-    @SecurityRequirement(name = "bearerAuth")
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> delete(@PathVariable Integer id) {
-        universityAdmissionMethodService.delete(id);
-        return ApiResponse.<Void>builder()
-                .code(1003)
-                .message("University admission method deleted successfully")
-                .build();
-    }
-
+    // ✅ Public access
     @Operation(summary = "Get list of schools using a specific admission method (latest year only)")
     @GetMapping("/methods/{methodId}")
     public ApiResponse<List<UniversityAdmissionMethodSummaryResponse>> getSchoolsByMethod(
@@ -99,6 +61,7 @@ public class UniversityAdmissionMethodController {
                 .build();
     }
 
+    // ✅ Public access
     @Operation(summary = "Get all admission methods of a school (latest year only)")
     @GetMapping("/schools/{universityId}")
     public ApiResponse<UniversityAdmissionMethodDetailResponse> getMethodsBySchool(
@@ -112,4 +75,47 @@ public class UniversityAdmissionMethodController {
                 .build();
     }
 
+    // 🔒 Secured: creation (admin or authenticated role)
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Create a new university admission method")
+    @PostMapping
+    public ApiResponse<UniversityAdmissionMethodResponse> create(
+            @Valid @RequestBody UniversityMethodRequest request
+    ) {
+        UniversityAdmissionMethodResponse created = universityAdmissionMethodService.create(request);
+        return ApiResponse.<UniversityAdmissionMethodResponse>builder()
+                .code(1001)
+                .message("University admission method created successfully")
+                .result(created)
+                .build();
+    }
+
+    // 🔒 Secured: update
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Update a university admission method")
+    @PutMapping("/{id}")
+    public ApiResponse<UniversityAdmissionMethodResponse> update(
+            @PathVariable Integer id,
+            @Valid @RequestBody UniversityMethodRequest request
+    ) {
+        UniversityAdmissionMethodResponse updated = universityAdmissionMethodService.update(id, request);
+        return ApiResponse.<UniversityAdmissionMethodResponse>builder()
+                .code(1002)
+                .message("University admission method updated successfully")
+                .result(updated)
+                .build();
+    }
+
+    // 🔒 Secured: delete
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Delete a university admission method")
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> delete(@PathVariable Integer id) {
+        universityAdmissionMethodService.delete(id);
+        return ApiResponse.<Void>builder()
+                .code(1003)
+                .message("University admission method deleted successfully")
+                .build();
+    }
 }
+

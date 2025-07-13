@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,7 @@ public class AccountController {
 
     AccountService accountService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create general user")
     @PostMapping("/create-user")
     public ApiResponse<AccountResponse> createGeneralUser(@RequestBody @Valid AccountCreationRequest request) {
@@ -40,6 +42,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create admin user")
     @PostMapping("/create-admin")
     public ApiResponse<AccountResponse> createAdminUser(@RequestBody @Valid AccountCreationRequest request) {
@@ -50,6 +53,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT')")
     @Operation(summary = "Get all users")
     @GetMapping
     public ApiResponse<PageResponse<AccountResponse>> getAllUsers(
@@ -62,6 +66,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT')")
     @Operation(summary = "Search users by name")
     @GetMapping("/search")
     public ApiResponse<PageResponse<AccountResponse>> searchUsers(
@@ -75,6 +80,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT') or @accountServiceImpl.isAccountOwner(#accountId)")
     @Operation(summary = "Get user by ID")
     @GetMapping("/{accountId}")
     public ApiResponse<AccountResponse> getUserById(@PathVariable UUID accountId) {
@@ -85,6 +91,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete user")
     @DeleteMapping("/{accountId}")
     public ApiResponse<Void> deleteUser(@PathVariable UUID accountId,
@@ -96,6 +103,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Restore user")
     @PostMapping("/{accountId}/restore")
     public ApiResponse<Void> restoreUser(@PathVariable UUID accountId) {
@@ -106,6 +114,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update user info")
     @PutMapping("/{accountId}")
     public ApiResponse<AccountResponse> updateUser(@PathVariable UUID accountId,
@@ -117,6 +126,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Assign roles")
     @PostMapping("/{accountId}/set-roles")
     public ApiResponse<AccountResponse> setRoles(@PathVariable UUID accountId,
@@ -128,6 +138,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT') or @accountServiceImpl.isAccountOwner(#accountId)")
     @Operation(summary = "Get user roles")
     @GetMapping("/{accountId}/roles")
     public ApiResponse<Set<String>> getUserRoles(@PathVariable UUID accountId) {
@@ -138,6 +149,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update user status")
     @PatchMapping("/{accountId}/status")
     public ApiResponse<AccountResponse> updateUserStatus(@PathVariable UUID accountId,
@@ -149,6 +161,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get current user info")
     @GetMapping("/my-info")
     public ApiResponse<AccountResponse> getMyInfo(@AuthenticationPrincipal UserDetails userDetails) {
@@ -159,6 +172,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Update password")
     @PostMapping("/my-info/update-password")
     public ApiResponse<Void> updateMyPassword(@AuthenticationPrincipal UserDetails userDetails,
@@ -170,6 +184,7 @@ public class AccountController {
                 .build();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Update profile")
     @PutMapping("/my-info/update-profile")
     public ApiResponse<AccountResponse> updateProfile(@AuthenticationPrincipal UserDetails userDetails,
@@ -181,3 +196,4 @@ public class AccountController {
                 .build();
     }
 }
+
