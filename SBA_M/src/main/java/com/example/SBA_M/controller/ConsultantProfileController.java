@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("/api/v1/consultant-profiles")
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class ConsultantProfileController {
     private final ConsultantProfileService consultantProfileService;
 
     @Operation(summary = "Create a consultant profile")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
     @PostMapping
     public ApiResponse<ConsultantProfileResponse> createProfile(
             @Valid @RequestBody ConsultantProfileRequest request
@@ -35,6 +38,7 @@ public class ConsultantProfileController {
     }
 
     @Operation(summary = "Update a consultant profile")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<ConsultantProfileResponse> updateProfile(
             @PathVariable UUID id,
@@ -49,6 +53,7 @@ public class ConsultantProfileController {
     }
 
     @Operation(summary = "Delete a consultant profile")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteProfile(
             @PathVariable UUID id
@@ -61,6 +66,7 @@ public class ConsultantProfileController {
     }
 
     @Operation(summary = "Get a consultant profile by ID")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ApiResponse<ConsultantProfileResponse> getProfileById(
             @PathVariable UUID id
@@ -74,6 +80,7 @@ public class ConsultantProfileController {
     }
 
     @Operation(summary = "Get all consultant profiles (paginated)")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ApiResponse<Page<ConsultantProfileResponse>> getAllProfiles(
             @RequestParam(defaultValue = "0") int page,
@@ -90,6 +97,7 @@ public class ConsultantProfileController {
     }
 
     @Operation(summary = "Search consultant profiles by keyword (bio, etc.)")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN', 'USER')")
     @GetMapping("/search")
     public ApiResponse<Page<ConsultantProfileResponse>> searchProfiles(
             @RequestParam String keyword,
@@ -107,3 +115,4 @@ public class ConsultantProfileController {
                 .build();
     }
 }
+

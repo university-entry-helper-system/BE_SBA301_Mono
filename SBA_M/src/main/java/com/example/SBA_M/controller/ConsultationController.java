@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("/api/v1/consultations")
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class ConsultationController {
     // --------------------------
 
     @Operation(summary = "User creates a new consultation request")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping
     public ApiResponse<ConsultationResponse> createConsultation(
             @Valid @RequestBody ConsultationCreateRequest request
@@ -41,6 +44,7 @@ public class ConsultationController {
     }
 
     @Operation(summary = "User updates their pending consultation")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<ConsultationResponse> updateConsultation(
             @PathVariable Long id,
@@ -54,8 +58,8 @@ public class ConsultationController {
                 .build();
     }
 
-
     @Operation(summary = "User views all their consultations (paginated)")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/user/{userId}")
     public ApiResponse<Page<ConsultationResponse>> getUserConsultations(
             @PathVariable UUID userId,
@@ -73,6 +77,7 @@ public class ConsultationController {
     }
 
     @Operation(summary = "User searches their consultations by keyword")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/user/{userId}/search")
     public ApiResponse<Page<ConsultationResponse>> searchUserConsultations(
             @PathVariable UUID userId,
@@ -95,6 +100,7 @@ public class ConsultationController {
     // --------------------------
 
     @Operation(summary = "Consultant answers a consultation (new answer)")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
     @PostMapping("/consultant/{consultantId}/answer")
     public ApiResponse<ConsultationResponse> answerConsultation(
             @PathVariable UUID consultantId,
@@ -109,6 +115,7 @@ public class ConsultationController {
     }
 
     @Operation(summary = "Consultant updates their answer for a consultation")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
     @PutMapping("/consultant/{consultantId}/answer")
     public ApiResponse<ConsultationResponse> updateConsultantAnswer(
             @PathVariable UUID consultantId,
@@ -122,7 +129,8 @@ public class ConsultationController {
                 .build();
     }
 
-    @Operation(summary = "cancels (soft delete) a consultation")
+    @Operation(summary = "Consultant cancels (soft delete) a consultation")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
     @DeleteMapping("/consultant/{consultationId}")
     public ApiResponse<Void> cancelConsultation(
             @PathVariable Long consultationId
@@ -135,6 +143,7 @@ public class ConsultationController {
     }
 
     @Operation(summary = "Consultant views all their consultations (paginated)")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
     @GetMapping("/consultant/{consultantId}")
     public ApiResponse<Page<ConsultationResponse>> getConsultantConsultations(
             @PathVariable UUID consultantId,
@@ -152,6 +161,7 @@ public class ConsultationController {
     }
 
     @Operation(summary = "Consultant searches consultations by keyword")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
     @GetMapping("/consultant/{consultantId}/search")
     public ApiResponse<Page<ConsultationResponse>> searchConsultantConsultations(
             @PathVariable UUID consultantId,
@@ -169,3 +179,4 @@ public class ConsultationController {
                 .build();
     }
 }
+

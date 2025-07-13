@@ -22,8 +22,7 @@ public class UniversityMajorController {
 
     private final UniversityMajorService universityMajorService;
 
-    @Operation(summary = "Get all university majors (paginated)")
-    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Get all university majors (paginated)", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping
     public ApiResponse<PageResponse<UniversityMajorResponse>> getAllUniversityMajors(
             @RequestParam(defaultValue = "0") int page,
@@ -37,8 +36,7 @@ public class UniversityMajorController {
                 .build();
     }
 
-    @Operation(summary = "Get university major by ID")
-    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Get university major by ID", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/{id}")
     public ApiResponse<UniversityMajorResponse> getUniversityMajorById(@PathVariable Integer id) {
         UniversityMajorResponse response = universityMajorService.getUniversityMajorById(id);
@@ -49,8 +47,7 @@ public class UniversityMajorController {
                 .build();
     }
 
-    @Operation(summary = "Create a new university major")
-    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Create a new university major", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping
     public ApiResponse<UniversityMajorResponse> createUniversityMajor(
             @Valid @RequestBody UniversityMajorRequest request
@@ -63,8 +60,7 @@ public class UniversityMajorController {
                 .build();
     }
 
-    @Operation(summary = "Update a university major")
-    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Update a university major", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping("/{id}")
     public ApiResponse<UniversityMajorResponse> updateUniversityMajor(
             @PathVariable Integer id,
@@ -78,8 +74,7 @@ public class UniversityMajorController {
                 .build();
     }
 
-    @Operation(summary = "Delete a university major")
-    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Delete a university major", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteUniversityMajor(@PathVariable Integer id) {
         universityMajorService.deleteUniversityMajor(id);
@@ -88,7 +83,8 @@ public class UniversityMajorController {
                 .message("University major deleted successfully")
                 .build();
     }
- //no jwt
+
+    // ---------- PUBLIC (NO JWT) ----------
     @Operation(summary = "Get grouped admissions by university")
     @GetMapping("/admissions/university/{universityId}")
     public ApiResponse<AdmissionUniversityTuitionResponse> getUniversityAdmissionYears(
@@ -177,3 +173,4 @@ public class UniversityMajorController {
         }
     }
 }
+

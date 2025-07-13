@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("/api/v1/follows")
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class FollowController {
     private final FollowService followService;
 
     @Operation(summary = "Follow news")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/{accountId}/news/{newsId}")
     public ApiResponse<Void> followNews(
             @PathVariable UUID accountId,
@@ -34,6 +37,7 @@ public class FollowController {
     }
 
     @Operation(summary = "Unfollow news by follow relationship ID")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @DeleteMapping("/{followId}")
     public ApiResponse<Void> unfollowNews(
             @PathVariable Long followId
@@ -46,6 +50,7 @@ public class FollowController {
     }
 
     @Operation(summary = "Check if account is following news")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{accountId}/news/{newsId}/is-following")
     public ApiResponse<Boolean> isFollowing(
             @PathVariable UUID accountId,
@@ -60,6 +65,7 @@ public class FollowController {
     }
 
     @Operation(summary = "Get follower count of an account")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{accountId}/followers/count")
     public ApiResponse<Long> getFollowerCount(
             @PathVariable UUID accountId
@@ -73,6 +79,7 @@ public class FollowController {
     }
 
     @Operation(summary = "Get following count of news")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/news/{newsId}/following/count")
     public ApiResponse<Long> getFollowingCount(
             @PathVariable Long newsId
@@ -86,6 +93,7 @@ public class FollowController {
     }
 
     @Operation(summary = "Get followers of an account")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{accountId}/followers")
     public ApiResponse<Page<AccountResponse>> getFollowers(
             @PathVariable UUID accountId,
@@ -101,6 +109,7 @@ public class FollowController {
     }
 
     @Operation(summary = "Get news followed by an account")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/news/{newsId}/following")
     public ApiResponse<Page<NewsResponse>> getFollowing(
             @PathVariable Long newsId,
@@ -115,3 +124,4 @@ public class FollowController {
                 .build();
     }
 }
+

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/university-categories")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
 public class UniversityCategoryController {
 
     private final UniversityCategoryService categoryService;
@@ -42,7 +41,11 @@ public class UniversityCategoryController {
                 .build();
     }
 
-    @Operation(summary = "Create a new category", description = "Create a new university category from the provided request data")
+    @Operation(
+            summary = "Create a new category",
+            description = "Create a new university category from the provided request data",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
     @PostMapping
     public ApiResponse<UniversityCategoryResponse> createCategory(@Valid @RequestBody UniversityCategoryRequest categoryRequest) {
         return ApiResponse.<UniversityCategoryResponse>builder()
@@ -52,7 +55,11 @@ public class UniversityCategoryController {
                 .build();
     }
 
-    @Operation(summary = "Update a category", description = "Update an existing university category with the provided request data")
+    @Operation(
+            summary = "Update a category",
+            description = "Update an existing university category with the provided request data",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
     @PutMapping("/{id}")
     public ApiResponse<UniversityCategoryResponse> updateCategory(
             @PathVariable Integer id,
@@ -64,7 +71,11 @@ public class UniversityCategoryController {
                 .build();
     }
 
-    @Operation(summary = "Delete a category", description = "Delete a university category by its ID")
+    @Operation(
+            summary = "Delete a category",
+            description = "Delete a university category by its ID",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteCategory(@PathVariable Integer id) {
         categoryService.deleteCategory(id);

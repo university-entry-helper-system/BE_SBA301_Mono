@@ -7,13 +7,14 @@ import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.service.AdmissionMethodService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/admission-methods")
-@SecurityRequirement(name = "bearerAuth")
+//@SecurityRequirement(name = "bearerAuth")
 public class AdmissionMethodController {
 
     private final AdmissionMethodService admissionMethodService;
@@ -46,6 +47,8 @@ public class AdmissionMethodController {
                 .build();
     }
 
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create a new admission method")
     @PostMapping
     public ApiResponse<AdmissionMethodResponse> createAdmissionMethod(@RequestBody AdmissionMethodRequest request) {
@@ -58,6 +61,8 @@ public class AdmissionMethodController {
                 .build();
     }
 
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update an admission method")
     @PutMapping("/{id}")
     public ApiResponse<AdmissionMethodResponse> updateAdmissionMethod(
@@ -72,6 +77,8 @@ public class AdmissionMethodController {
                 .build();
     }
 
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete an admission method (soft delete)")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteAdmissionMethod(@PathVariable Integer id) {
@@ -82,3 +89,4 @@ public class AdmissionMethodController {
                 .build();
     }
 }
+

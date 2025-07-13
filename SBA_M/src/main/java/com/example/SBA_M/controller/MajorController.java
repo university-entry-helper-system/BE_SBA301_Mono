@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("/api/v1/majors")
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class MajorController {
     private final MajorService majorService;
 
     @Operation(summary = "Create a new major")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<MajorResponse> createMajor(@Valid @RequestBody MajorRequest request) {
         MajorResponse createdMajor = majorService.createMajor(request);
@@ -34,6 +37,7 @@ public class MajorController {
     }
 
     @Operation(summary = "Get major by ID")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ApiResponse<MajorResponse> getMajorById(@PathVariable Long id) {
         MajorResponse major = majorService.getMajorById(id);
@@ -45,6 +49,7 @@ public class MajorController {
     }
 
     @Operation(summary = "Get all majors")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ApiResponse<List<MajorResponse>> getAllMajors() {
         List<MajorResponse> majors = majorService.getAllMajors();
@@ -56,6 +61,7 @@ public class MajorController {
     }
 
     @Operation(summary = "Update a major")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<MajorResponse> updateMajor(
             @PathVariable Long id,
@@ -69,6 +75,7 @@ public class MajorController {
     }
 
     @Operation(summary = "Delete a major")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteMajor(@PathVariable Long id) {
         majorService.deleteMajor(id);

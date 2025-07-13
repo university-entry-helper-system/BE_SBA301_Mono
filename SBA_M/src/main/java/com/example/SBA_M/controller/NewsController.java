@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("api/v1/news")
 @SecurityRequirement(name = "bearerAuth")
@@ -29,6 +31,7 @@ public class NewsController {
     }
 
     @Operation(summary = "Get paginated news")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/paginated")
     public ApiResponse<PageResponse<NewsResponse>> getNewsPaginated(
             @RequestParam(defaultValue = "0") int page,
@@ -42,6 +45,7 @@ public class NewsController {
     }
 
     @Operation(summary = "Get news by ID")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ApiResponse<NewsResponse> getNewsById(@PathVariable Long id) {
         NewsResponse news = newsService.getNewsById(id);
@@ -53,6 +57,7 @@ public class NewsController {
     }
 
     @Operation(summary = "Create news with optional image")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<?> createNews(
             @RequestParam("news") String newsJson,
@@ -75,6 +80,7 @@ public class NewsController {
     }
 
     @Operation(summary = "Update a news item")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<NewsResponse> updateNews(
             @PathVariable Long id,
@@ -88,6 +94,7 @@ public class NewsController {
     }
 
     @Operation(summary = "Delete a news item")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteNews(@PathVariable Long id) {
         newsService.deleteNews(id);
@@ -98,6 +105,7 @@ public class NewsController {
     }
 
     @Operation(summary = "Search news")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/search")
     public ApiResponse<PageResponse<NewsResponse>> searchNews(
             @RequestParam String query,
@@ -111,3 +119,4 @@ public class NewsController {
                 .build();
     }
 }
+
