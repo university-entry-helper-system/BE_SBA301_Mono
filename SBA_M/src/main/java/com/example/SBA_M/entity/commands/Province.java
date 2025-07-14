@@ -27,7 +27,4 @@ public class Province extends AbstractEntity<Integer>{
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private Region region;
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private Status status;
 }

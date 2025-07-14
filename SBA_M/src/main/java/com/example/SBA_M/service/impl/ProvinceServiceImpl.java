@@ -46,7 +46,7 @@ public class ProvinceServiceImpl implements ProvinceService {
         Province province = new Province();
         province.setName(provinceResponse.getName());
         province.setDescription(provinceResponse.getDescription());
-        province.setRegion(provinceResponse.getRegion() != null ? com.example.SBA_M.utils.Region.valueOf(provinceResponse.getRegion()) : null);
+        province.setRegion(provinceResponse.getRegion() != null ? com.example.SBA_M.utils.Region.valueOf(provinceResponse.getRegion().toUpperCase()) : null);
         province.setStatus(com.example.SBA_M.utils.Status.ACTIVE);
         province = provinceRepository.save(province);
         return mapToResponse(province);
@@ -61,7 +61,7 @@ public class ProvinceServiceImpl implements ProvinceService {
 
         province.setName(provinceResponse.getName());
         province.setDescription(provinceResponse.getDescription());
-        province.setRegion(provinceResponse.getRegion() != null ? com.example.SBA_M.utils.Region.valueOf(provinceResponse.getRegion()) : null);
+        province.setRegion(provinceResponse.getRegion() != null ? com.example.SBA_M.utils.Region.valueOf(provinceResponse.getRegion().toUpperCase()) : null);
         province = provinceRepository.save(province);
 
         return mapToResponse(province);

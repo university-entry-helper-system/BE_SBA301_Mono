@@ -147,8 +147,38 @@
 - `region`: Vùng miền (Enum: `BAC` - Bắc, `TRUNG` - Trung, `NAM` - Nam)
 - `status`: Trạng thái (Enum: `ACTIVE`, `DELETED`)
 
+**Yêu cầu convert region (FE phải xử lý):**
+
+- **Khi gửi lên API:** Convert tiếng Việt → Enum
+  - `"Bắc"` → `"BAC"`
+  - `"Trung"` → `"TRUNG"`
+  - `"Nam"` → `"NAM"`
+- **Khi nhận từ API:** Convert Enum → tiếng Việt
+  - `"BAC"` → `"Bắc"`
+  - `"TRUNG"` → `"Trung"`
+  - `"NAM"` → `"Nam"`
+
+**Ví dụ code convert (JavaScript):**
+
+```javascript
+// Convert tiếng Việt → Enum (khi gửi lên API)
+const regionToEnum = {
+  Bắc: "BAC",
+  Trung: "TRUNG",
+  Nam: "NAM",
+};
+
+// Convert Enum → tiếng Việt (khi nhận từ API)
+const enumToRegion = {
+  BAC: "Bắc",
+  TRUNG: "Trung",
+  NAM: "Nam",
+};
+```
+
 **Lưu ý:**
 
 - Các API trả về theo format trên.
 - Các lỗi sẽ trả về code khác và message tương ứng.
 - Các API tạo/sửa/xóa chỉ dành cho ADMIN (cần accessToken hợp lệ).
+- FE phải tự xử lý convert region giữa tiếng Việt và Enum.
