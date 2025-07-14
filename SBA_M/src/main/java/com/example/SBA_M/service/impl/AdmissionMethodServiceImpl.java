@@ -14,6 +14,8 @@ import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -44,9 +46,21 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     }
 
     @Override
-    public PageResponse<AdmissionMethodResponse> getAllAdmissionMethods(int page, int size) {
-        Page<AdmissionMethod> methodPage = admissionMethodRepository
-                .findAllByStatus(Status.ACTIVE, PageRequest.of(page, size));
+    public PageResponse<AdmissionMethodResponse> getAllAdmissionMethods(String search, int page, int size, String sort) {
+        Pageable pageable;
+        if (sort != null && !sort.isEmpty()) {
+            String[] sortParams = sort.split(",");
+            String sortField = sortParams[0];
+            Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+            pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        } else {
+            pageable = PageRequest.of(page, size);
+        }
+        Page<AdmissionMethod> methodPage = admissionMethodRepository.findByStatusAndNameContainingIgnoreCase(
+            Status.ACTIVE,
+            search != null ? search : "",
+            pageable
+        );
         return PageResponse.<AdmissionMethodResponse>builder()
                 .page(methodPage.getNumber())
                 .size(methodPage.getSize())
@@ -78,6 +92,15 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
         admissionMethodProducer.sendUpdateEvent(updated);
         admissionMethodProducer.sendUpdatedEvent(updated);
         return admissionMethodMapper.toResponse(updated);
+    }
+
+    @Override
+    public AdmissionMethodResponse updateAdmissionMethodStatus(Integer id, Status status) {
+        AdmissionMethod am = admissionMethodRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
+        am.setStatus(status);
+        am = admissionMethodRepository.save(am);
+        return admissionMethodMapper.toResponse(am);
     }
 
     @Override

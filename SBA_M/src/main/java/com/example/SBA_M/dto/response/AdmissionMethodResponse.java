@@ -14,4 +14,5 @@ public class AdmissionMethodResponse {
     private Integer id;
     private String name;
     private String description;
+    private com.example.SBA_M.utils.Status status;
 }
