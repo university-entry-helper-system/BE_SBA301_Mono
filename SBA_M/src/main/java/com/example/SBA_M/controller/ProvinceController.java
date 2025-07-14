@@ -2,6 +2,7 @@ package com.example.SBA_M.controller;
 
 import com.example.SBA_M.dto.response.ApiResponse;
 import com.example.SBA_M.dto.response.ProvinceResponse;
+import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.service.ProvinceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,12 +48,17 @@ public class ProvinceController {
                 .build();
     }
 
-    @Operation(summary = "Get all provinces")
+    @Operation(summary = "Get all provinces (search, paging, sort)")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
-    public ApiResponse<List<ProvinceResponse>> getAllProvinces() {
-        List<ProvinceResponse> provinces = provinceService.getAllProvinces();
-        return ApiResponse.<List<ProvinceResponse>>builder()
+    public ApiResponse<PageResponse<ProvinceResponse>> getAllProvinces(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", required = false) String sort
+    ) {
+        PageResponse<ProvinceResponse> provinces = provinceService.getAllProvinces(search, page, size, sort);
+        return ApiResponse.<PageResponse<ProvinceResponse>>builder()
                 .code(1000)
                 .message("List of provinces fetched successfully")
                 .result(provinces)

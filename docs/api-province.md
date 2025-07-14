@@ -4,38 +4,49 @@
 
 ---
 
-## 1. Lấy danh sách tỉnh/thành
+## 1. Lấy danh sách tỉnh/thành (có tìm kiếm, phân trang, sắp xếp)
 
 - **Endpoint:** `GET /`
+- **Query params:**
+  - `search`: Tìm kiếm theo tên tỉnh/thành phố (tùy chọn)
+  - `page`: Số trang (mặc định 0)
+  - `size`: Số lượng mỗi trang (mặc định 10)
+  - `sort`: Sắp xếp, ví dụ: `region,asc` hoặc `name,desc` (tùy chọn)
 - **Response:**
 
 ```json
 {
   "code": 1000,
   "message": "List of provinces fetched successfully",
-  "result": [
-    {
-      "id": 1,
-      "name": "Hà Nội",
-      "description": "Thủ đô",
-      "region": "BAC",
-      "status": "ACTIVE"
-    },
-    {
-      "id": 2,
-      "name": "Đà Nẵng",
-      "description": "Thành phố biển",
-      "region": "TRUNG",
-      "status": "ACTIVE"
-    },
-    {
-      "id": 3,
-      "name": "TP. Hồ Chí Minh",
-      "description": "Đô thị lớn nhất",
-      "region": "NAM",
-      "status": "ACTIVE"
-    }
-  ]
+  "result": {
+    "page": 0,
+    "size": 10,
+    "totalElements": 3,
+    "totalPages": 1,
+    "items": [
+      {
+        "id": 1,
+        "name": "Hà Nội",
+        "description": "Thủ đô",
+        "region": "BAC",
+        "status": "ACTIVE"
+      },
+      {
+        "id": 2,
+        "name": "Đà Nẵng",
+        "description": "Thành phố biển",
+        "region": "TRUNG",
+        "status": "ACTIVE"
+      },
+      {
+        "id": 3,
+        "name": "TP. Hồ Chí Minh",
+        "description": "Đô thị lớn nhất",
+        "region": "NAM",
+        "status": "ACTIVE"
+      }
+    ]
+  }
 }
 ```
 
@@ -97,7 +108,17 @@
 
 - **Endpoint:** `PUT /{id}`
 - **Body (JSON):**
-  - Giống như tạo mới
+  - Giống như tạo mới, **có thể thêm trường `status`**
+
+```json
+{
+  "name": "Hà Nội",
+  "description": "Thủ đô",
+  "region": "BAC",
+  "status": "ACTIVE"
+}
+```
+
 - **Response:**
 
 ```json
