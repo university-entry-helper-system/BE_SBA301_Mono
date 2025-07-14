@@ -5,6 +5,7 @@ import com.example.SBA_M.entity.commands.UniversityCategory;
 import com.example.SBA_M.entity.queries.*;
 import com.example.SBA_M.event.UniversityEvent;
 import com.example.SBA_M.event.UniversityUpdatedEvent;
+import com.example.SBA_M.repository.commands.ProvinceRepository;
 import com.example.SBA_M.repository.commands.UniversityCategoryRepository;
 import com.example.SBA_M.repository.elasticsearch.UniversityCategorySearchRepository;
 import com.example.SBA_M.repository.elasticsearch.UniversityMajorSearchRepository;
@@ -26,6 +27,7 @@ import java.util.List;
 public class UniversityConsumer {
     private final UniversityReadRepository universityReadRepository;
     private final UniversityCategoryRepository universityCategoryRepository;
+    private final ProvinceRepository provinceRepository;
     private final UniversitySearchRepository universitySearchRepository;
     private final UniversityMajorReadRepository universityMajorReadRepository;
     private final UniversityAdmissionMethodReadRepository universityAdmissionMethodReadRepository;
@@ -40,7 +42,9 @@ public class UniversityConsumer {
                     .findById(event.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("Category not found with ID: " + event.getCategoryId()));
 
-            Province province = new Province();
+            Province province = provinceRepository
+                    .findById(event.getProvince())
+                    .orElseThrow(() -> new RuntimeException("Province not found with ID: " + event.getProvince()));
             // Save to MongoDB
             UniversityCategoryDocument categoryDoc = new UniversityCategoryDocument(
                     category.getId(),
@@ -81,7 +85,6 @@ public class UniversityConsumer {
                     .name(category.getName())
                     .description(category.getDescription())
                     .build();
-            Province provinceSearch = new Province();
 
             // Set the fields from AbstractElasticsearchDocument
             uniCategorySearch.setId(category.getId());
@@ -97,7 +100,7 @@ public class UniversityConsumer {
                     .shortName(event.getShortName())
                     .logoUrl(event.getLogoUrl())
                     .foundingYear(event.getFoundingYear())
-                    .province(provinceSearch)
+                    .province(province)
                     .address(event.getAddress())
                     .email(event.getEmail())
                     .phone(event.getPhone())
@@ -132,6 +135,10 @@ public class UniversityConsumer {
                     .findById(event.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("Category not found with ID: " + event.getCategoryId()));
 
+            Province province = provinceRepository
+                    .findById(event.getProvince())
+                    .orElseThrow(() -> new RuntimeException("Province not found with ID: " + event.getProvince()));
+
             UniversityCategoryDocument categoryDoc = new UniversityCategoryDocument(
                     category.getId(),
                     category.getName(),
@@ -142,7 +149,6 @@ public class UniversityConsumer {
                     category.getUpdatedAt(),
                     category.getUpdatedBy()
             );
-            Province provinceDoc = new Province();
 
             // Update fields
             existingDoc.setCategory(categoryDoc);
@@ -150,7 +156,7 @@ public class UniversityConsumer {
             existingDoc.setShortName(event.getShortName());
             existingDoc.setLogoUrl(event.getLogoUrl());
             existingDoc.setFoundingYear(event.getFoundingYear());
-            existingDoc.setProvince(provinceDoc);
+            existingDoc.setProvince(province);
             existingDoc.setAddress(event.getAddress());
             existingDoc.setEmail(event.getEmail());
             existingDoc.setPhone(event.getPhone());
@@ -179,15 +185,13 @@ public class UniversityConsumer {
             uniCategorySearch.setUpdatedAt(category.getUpdatedAt());
             uniCategorySearch.setUpdatedBy(category.getUpdatedBy());
 
-            Province provinceSearch = new Province();
-
             // Update search fields
             existingSearch.setCategory(uniCategorySearch);
             existingSearch.setName(event.getName());
             existingSearch.setShortName(event.getShortName());
             existingSearch.setLogoUrl(event.getLogoUrl());
             existingSearch.setFoundingYear(event.getFoundingYear());
-            existingSearch.setProvince(provinceSearch);
+            existingSearch.setProvince(province);
             existingSearch.setAddress(event.getAddress());
             existingSearch.setEmail(event.getEmail());
             existingSearch.setPhone(event.getPhone());

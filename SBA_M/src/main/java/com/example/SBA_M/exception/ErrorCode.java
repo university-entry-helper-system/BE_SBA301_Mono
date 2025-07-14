@@ -48,6 +48,7 @@ public enum ErrorCode {
     UNIVERSITY_CATEGORY_NOT_FOUND(1028, "University category not found", HttpStatus.NOT_FOUND),
     BLOCK_NOT_FOUND(1029, "Block not found", HttpStatus.NOT_FOUND),
     BLOCK_NAME_EXISTS(1030, "Block name already exists", HttpStatus.BAD_REQUEST),
+    ADMISSION_METHOD_NOT_FOUND(1031, "Admission method not found", HttpStatus.NOT_FOUND),
     ;
     private final int code;
     private final String message;

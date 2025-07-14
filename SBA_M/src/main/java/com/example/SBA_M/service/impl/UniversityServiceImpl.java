@@ -3,31 +3,39 @@ package com.example.SBA_M.service.impl;
 import com.example.SBA_M.dto.request.UniversityRequest;
 import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.dto.response.UniversityResponse;
+import com.example.SBA_M.entity.commands.AdmissionMethod;
 import com.example.SBA_M.entity.commands.University;
+import com.example.SBA_M.entity.commands.UniversityAdmissionMethod;
 import com.example.SBA_M.entity.queries.UniversityDocument;
 import com.example.SBA_M.exception.AppException;
 import com.example.SBA_M.exception.ErrorCode;
 import com.example.SBA_M.mapper.UniversityMapper;
+import com.example.SBA_M.repository.commands.AdmissionMethodRepository;
 import com.example.SBA_M.repository.commands.ProvinceRepository;
 import com.example.SBA_M.repository.commands.UniversityCategoryRepository;
 import com.example.SBA_M.repository.commands.UniversityRepository;
+import com.example.SBA_M.repository.commands.UniversityAdmissionMethodRepository;
 import com.example.SBA_M.repository.queries.UniversityReadRepository;
 import com.example.SBA_M.service.UniversityService;
 import com.example.SBA_M.service.messaging.producer.UniversityProducer;
 import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UniversityServiceImpl implements UniversityService {
 
     private final UniversityRepository universityRepository;
@@ -36,21 +44,53 @@ public class UniversityServiceImpl implements UniversityService {
     private final UniversityMapper universityMapper;
     private final UniversityCategoryRepository universityCategoryRepository;
     private final ProvinceRepository provinceRepository;
+    private final AdmissionMethodRepository admissionMethodRepository;
+    private final UniversityAdmissionMethodRepository universityAdmissionMethodRepository;
 
     @Override
-    public PageResponse<UniversityResponse> getAllUniversities(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<University> universityPage = universityRepository.findByStatus(Status.ACTIVE,pageable);
-        List<UniversityResponse> universityResponses = universityPage.getContent()
-                .stream()
+    @Transactional(readOnly = true)
+    public PageResponse<UniversityResponse> getAllUniversities(String search, int page, int size, String sort, Integer categoryId, Integer provinceId) {
+        log.info("Fetching universities with search: {}, page: {}, size: {}, sort: {}, categoryId: {}, provinceId: {}", 
+                search, page, size, sort, categoryId, provinceId);
+        
+        // Create pageable with sorting
+        Pageable pageable;
+        if (sort != null && !sort.isEmpty()) {
+            String[] sortParams = sort.split(",");
+            String sortField = sortParams[0];
+            Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+            pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        }
+
+        // Get all universities and filter in Java (similar to SubjectCombination approach)
+        List<University> allUniversities = universityRepository.findAllByStatus(Status.ACTIVE);
+        
+        // Apply filters
+        List<University> filteredUniversities = allUniversities.stream()
+                .filter(u -> search == null || search.isEmpty() || 
+                        u.getName().toLowerCase().contains(search.toLowerCase()) ||
+                        (u.getShortName() != null && u.getShortName().toLowerCase().contains(search.toLowerCase())))
+                .filter(u -> categoryId == null || u.getCategory().getId().equals(categoryId))
+                .filter(u -> provinceId == null || u.getProvince().getId().equals(provinceId))
+                .toList();
+
+        // Manual pagination
+        int start = page * size;
+        int end = Math.min(start + size, filteredUniversities.size());
+        List<University> pagedUniversities = filteredUniversities.subList(start, end);
+
+        List<UniversityResponse> items = pagedUniversities.stream()
                 .map(universityMapper::toResponse)
                 .toList();
+
         return PageResponse.<UniversityResponse>builder()
-                .page(universityPage.getNumber())
-                .size(universityPage.getSize())
-                .totalElements(universityPage.getTotalElements())
-                .totalPages(universityPage.getTotalPages())
-                .items(universityResponses)
+                .page(page)
+                .size(size)
+                .totalElements((long) filteredUniversities.size())
+                .totalPages((int) Math.ceil((double) filteredUniversities.size() / size))
+                .items(items)
                 .build();
     }
 
@@ -60,12 +100,14 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public UniversityDocument getUniversityById(Integer id) {
-        return universityReadRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
+    public UniversityResponse getUniversityById(Integer id) {
+        University university = universityRepository.findById(id)
+            .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
+        return universityMapper.toResponse(university);
     }
 
     @Override
+    @Transactional
     public UniversityResponse createUniversity(UniversityRequest request) {
         String username = getCurrentUsername();
 
@@ -101,6 +143,7 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
+    @Transactional
     public UniversityResponse updateUniversity(Integer id, UniversityRequest request) {
         String username = getCurrentUsername();
 
@@ -127,6 +170,23 @@ public class UniversityServiceImpl implements UniversityService {
                 .orElseThrow(() -> new AppException(ErrorCode.PROVINCE_NOT_FOUND)));
         university.setUpdatedAt(Instant.now());
 
+        // --- Update admission methods ---
+        // Xóa toàn bộ liên kết cũ
+        universityAdmissionMethodRepository.deleteAll(university.getAdmissionMethods());
+        university.getAdmissionMethods().clear();
+        // Thêm mới các liên kết nếu có
+        if (request.getAdmissionMethodIds() != null) {
+            for (Integer methodId : request.getAdmissionMethodIds()) {
+                AdmissionMethod method = admissionMethodRepository.findById(methodId)
+                        .orElseThrow(() -> new AppException(ErrorCode.ADMISSION_METHOD_NOT_FOUND));
+                UniversityAdmissionMethod uam = new UniversityAdmissionMethod();
+                uam.setUniversity(university);
+                uam.setAdmissionMethod(method);
+                uam.setYear(university.getFoundingYear()); // hoặc set giá trị phù hợp
+                university.getAdmissionMethods().add(uam);
+            }
+        }
+
         University updated = universityRepository.save(university);
 
         universityProducer.sendUniversityUpdated(updated);
@@ -141,8 +201,8 @@ public class UniversityServiceImpl implements UniversityService {
         return universityMapper.toResponse(updated);
     }
 
-
     @Override
+    @Transactional
     public void deleteUniversity(Integer id) {
         String username = getCurrentUsername();
 
@@ -155,6 +215,30 @@ public class UniversityServiceImpl implements UniversityService {
         University deleted = universityRepository.save(university);
         universityProducer.sendDeleteEvent(deleted.getId());;
         universityProducer.sendUniversityDeleted(deleted);
+    }
+
+    @Override
+    @Transactional
+    public UniversityResponse updateUniversityStatus(Integer id, Status status) {
+        String username = getCurrentUsername();
+        
+        University university = universityRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
+        
+        university.setStatus(status);
+        university.setUpdatedBy(username);
+        university.setUpdatedAt(Instant.now());
+        
+        University updated = universityRepository.save(university);
+        
+        // Send events if needed
+        if (status == Status.DELETED) {
+            universityProducer.sendUniversityDeleted(updated);
+        } else {
+            universityProducer.sendUniversityUpdated(updated);
+        }
+        
+        return universityMapper.toResponse(updated);
     }
 
     private String getCurrentUsername() {

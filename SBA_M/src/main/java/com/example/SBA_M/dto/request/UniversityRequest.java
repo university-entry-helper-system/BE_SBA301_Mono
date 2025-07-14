@@ -14,7 +14,6 @@ public class UniversityRequest {
     private String logoUrl;
     private Integer foundingYear;
     private Integer provinceId;
-    private String type;
     private String address;
     private String email;
     private String phone;

@@ -2,12 +2,14 @@ package com.example.SBA_M.dto.response;
 
 import com.example.SBA_M.entity.commands.Province;
 import com.example.SBA_M.utils.Status;
+import com.example.SBA_M.dto.response.UniversityCategoryResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @Builder
@@ -16,6 +18,7 @@ import java.time.Instant;
 public class UniversityResponse {
     private Integer id;
     private Integer categoryId;
+    private UniversityCategoryResponse category;
     private String name;
     private String shortName;
     private String logoUrl;
@@ -31,4 +34,5 @@ public class UniversityResponse {
     private String createdBy;
     private Instant updatedAt;
     private String updatedBy;
+    private List<Integer> admissionMethodIds;
 }

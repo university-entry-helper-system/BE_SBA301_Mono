@@ -1,6 +1,7 @@
 package com.example.SBA_M.controller;
 
 import com.example.SBA_M.dto.request.UniversityRequest;
+import com.example.SBA_M.dto.request.StatusUpdateRequest;
 import com.example.SBA_M.dto.response.ApiResponse;
 import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.dto.response.UniversityResponse;
@@ -11,27 +12,47 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/universities")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class UniversityController {
 
     private final UniversityService universityService;
 
+    @Operation(summary = "Get all universities (search, pagination, sort)")
+    @GetMapping
+    public ApiResponse<PageResponse<UniversityResponse>> getAllUniversities(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "provinceId", required = false) Integer provinceId) {
+        PageResponse<UniversityResponse> result = universityService.getAllUniversities(search, page, size, sort, categoryId, provinceId);
+        return ApiResponse.<PageResponse<UniversityResponse>>builder()
+                .code(1000)
+                .message("Universities fetched successfully")
+                .result(result)
+                .build();
+    }
+
     @Operation(summary = "Get university by ID")
     @GetMapping("/{id}")
-    public ApiResponse<UniversityDocument> getUniversityById(@PathVariable Integer id) {
-        UniversityDocument university = universityService.getUniversityById(id);
-        return ApiResponse.<UniversityDocument>builder()
+    public ApiResponse<UniversityResponse> getUniversityById(@PathVariable Integer id) {
+        UniversityResponse university = universityService.getUniversityById(id);
+        return ApiResponse.<UniversityResponse>builder()
                 .code(1000)
                 .message("University fetched successfully")
                 .result(university)
                 .build();
     }
 
-    @Operation(summary = "Create a new university", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create a new university")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<UniversityResponse> createUniversity(@Valid @RequestBody UniversityRequest universityRequest) {
         UniversityResponse created = universityService.createUniversity(universityRequest);
@@ -42,7 +63,8 @@ public class UniversityController {
                 .build();
     }
 
-    @Operation(summary = "Update a university", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Update a university")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<UniversityResponse> updateUniversity(
             @PathVariable Integer id,
@@ -55,7 +77,8 @@ public class UniversityController {
                 .build();
     }
 
-    @Operation(summary = "Delete a university", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Delete a university")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteUniversity(@PathVariable Integer id) {
         universityService.deleteUniversity(id);
@@ -65,16 +88,17 @@ public class UniversityController {
                 .build();
     }
 
-    @Operation(summary = "Get all universities")
-    @GetMapping
-    public ApiResponse<PageResponse<UniversityResponse>> getAllUniversities(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        PageResponse<UniversityResponse> result = universityService.getAllUniversities(page, size);
-        return ApiResponse.<PageResponse<UniversityResponse>>builder()
-                .code(1000)
-                .message("Universities fetched successfully")
-                .result(result)
+    @Operation(summary = "Update university status")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/status")
+    public ApiResponse<UniversityResponse> updateUniversityStatus(
+            @PathVariable Integer id,
+            @RequestBody StatusUpdateRequest request) {
+        UniversityResponse updated = universityService.updateUniversityStatus(id, request.getStatus());
+        return ApiResponse.<UniversityResponse>builder()
+                .code(1004)
+                .message("University status updated successfully")
+                .result(updated)
                 .build();
     }
 }
