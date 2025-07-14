@@ -12,4 +12,5 @@ public class ExamSubjectResponse {
     private Long id;
     private String name;
     private String shortName;
+    private com.example.SBA_M.utils.Status status;
 }
