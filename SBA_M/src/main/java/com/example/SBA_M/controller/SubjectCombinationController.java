@@ -3,6 +3,7 @@ package com.example.SBA_M.controller;
 import com.example.SBA_M.dto.request.SubjectCombinationRequest;
 import com.example.SBA_M.dto.response.ApiResponse;
 import com.example.SBA_M.dto.response.SubjectCombinationResponse;
+import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.service.SubjectCombinationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import com.example.SBA_M.dto.request.StatusUpdateRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/v1/subject-combinations")
@@ -45,13 +48,17 @@ public class SubjectCombinationController {
                 .build();
     }
 
-    @Operation(summary = "Get all subject combinations")
+    @Operation(summary = "Get all subject combinations (search, paging, sort)")
     @GetMapping
-    public ApiResponse<List<SubjectCombinationResponse>> getAllSubjectCombinations() {
-        List<SubjectCombinationResponse> responses = subjectCombinationService.getAllSubjectCombinations();
-        return ApiResponse.<List<SubjectCombinationResponse>>builder()
+    public ApiResponse<PageResponse<SubjectCombinationResponse>> getAllSubjectCombinations(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", required = false) String sort) {
+        PageResponse<SubjectCombinationResponse> responses = subjectCombinationService.getAllSubjectCombinations(search, page, size, sort);
+        return ApiResponse.<PageResponse<SubjectCombinationResponse>>builder()
                 .code(1000)
-                .message("All subject combinations fetched successfully")
+                .message("List of subject combinations fetched successfully")
                 .result(responses)
                 .build();
     }
@@ -76,6 +83,20 @@ public class SubjectCombinationController {
         return ApiResponse.<Void>builder()
                 .code(1003)
                 .message("Subject combination deleted successfully")
+                .build();
+    }
+
+    @Operation(summary = "Update status of a subject combination")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/status")
+    public ApiResponse<SubjectCombinationResponse> updateSubjectCombinationStatus(
+            @PathVariable Long id,
+            @RequestBody StatusUpdateRequest request) {
+        SubjectCombinationResponse updated = subjectCombinationService.updateSubjectCombinationStatus(id, request.getStatus());
+        return ApiResponse.<SubjectCombinationResponse>builder()
+                .code(1004)
+                .message("Subject combination status updated successfully")
+                .result(updated)
                 .build();
     }
 }

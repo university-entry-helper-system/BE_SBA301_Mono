@@ -16,6 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import com.example.SBA_M.dto.response.PageResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,13 +69,29 @@ public class SubjectCombinationServiceImpl implements SubjectCombinationService 
 
     @Override
     @Transactional(readOnly = true)
-    public List<SubjectCombinationResponse> getAllSubjectCombinations() {
-        log.info("Fetching all subject combinations");
-
-        List<SubjectCombination> combinations = subjectCombinationRepository.findAll();
-        return combinations.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public PageResponse<SubjectCombinationResponse> getAllSubjectCombinations(String search, int page, int size, String sort) {
+        Pageable pageable;
+        if (sort != null && !sort.isEmpty()) {
+            String[] sortParams = sort.split(",");
+            String sortField = sortParams[0];
+            Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+            pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        } else {
+            pageable = PageRequest.of(page, size);
+        }
+        Page<SubjectCombination> combinationPage = subjectCombinationRepository.findByStatusAndNameContainingIgnoreCase(
+            Status.ACTIVE,
+            search != null ? search : "",
+            pageable
+        );
+        List<SubjectCombinationResponse> items = combinationPage.getContent().stream().map(this::mapToResponse).toList();
+        return PageResponse.<SubjectCombinationResponse>builder()
+                .page(combinationPage.getNumber())
+                .size(combinationPage.getSize())
+                .totalElements(combinationPage.getTotalElements())
+                .totalPages(combinationPage.getTotalPages())
+                .items(items)
+                .build();
     }
 
     @Override
@@ -96,6 +117,15 @@ public class SubjectCombinationServiceImpl implements SubjectCombinationService 
 
         // Map to response
         return mapToResponse(updatedCombination);
+    }
+
+    @Override
+    @Transactional
+    public SubjectCombinationResponse updateSubjectCombinationStatus(Long id, Status status) {
+        SubjectCombination combination = findSubjectCombinationById(id);
+        combination.setStatus(status);
+        combination = subjectCombinationRepository.save(combination);
+        return mapToResponse(combination);
     }
 
     @Override
@@ -135,6 +165,7 @@ public class SubjectCombinationServiceImpl implements SubjectCombinationService 
                 .id(combination.getId())
                 .name(combination.getName())
                 .description(combination.getDescription())
+                .status(combination.getStatus())
                 .examSubjects(combination.getExamSubjects().stream()
                         .map(subject -> ExamSubjectResponse.builder()
                                 .id(subject.getId())

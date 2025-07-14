@@ -1,7 +1,6 @@
 package com.example.SBA_M.dto.response;
 
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
@@ -9,11 +8,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class SubjectCombinationResponse {
+public class BlockResponse {
     private Long id;
     private String name;
     private String description;
-    private List<ExamSubjectResponse> examSubjects;
+    private List<SubjectCombinationResponse> subjectCombinations;
     private com.example.SBA_M.utils.Status status;
-}
+} 
