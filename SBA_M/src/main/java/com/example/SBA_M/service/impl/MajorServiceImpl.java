@@ -17,6 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import com.example.SBA_M.dto.response.PageResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -50,11 +55,29 @@ public class MajorServiceImpl implements MajorService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MajorResponse> getAllMajors() {
-        log.info("Fetching all majors");
-        return majorRepository.findAll().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public PageResponse<MajorResponse> getAllMajors(String search, int page, int size, String sort) {
+        Pageable pageable;
+        if (sort != null && !sort.isEmpty()) {
+            String[] sortParams = sort.split(",");
+            String sortField = sortParams[0];
+            Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+            pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        } else {
+            pageable = PageRequest.of(page, size);
+        }
+        Page<Major> majorPage = majorRepository.findByStatusAndNameContainingIgnoreCase(
+            Status.ACTIVE,
+            search != null ? search : "",
+            pageable
+        );
+        List<MajorResponse> items = majorPage.getContent().stream().map(this::mapToResponse).toList();
+        return PageResponse.<MajorResponse>builder()
+                .page(majorPage.getNumber())
+                .size(majorPage.getSize())
+                .totalElements(majorPage.getTotalElements())
+                .totalPages(majorPage.getTotalPages())
+                .items(items)
+                .build();
     }
 
     @Override
@@ -67,6 +90,16 @@ public class MajorServiceImpl implements MajorService {
         majorProducer.sendMajorUpdatedEvent(id, major.getName());
         major = majorRepository.save(major);
         log.info("Major updated with ID: {}", major.getId());
+        return mapToResponse(major);
+    }
+
+    @Override
+    @Transactional
+    public MajorResponse updateMajorStatus(Long id, Status status) {
+        Major major = majorRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.MAJOR_NOT_FOUND));
+        major.setStatus(status);
+        major = majorRepository.save(major);
         return mapToResponse(major);
     }
 
@@ -86,6 +119,7 @@ public class MajorServiceImpl implements MajorService {
         return MajorResponse.builder()
                 .id(major.getId())
                 .name(major.getName())
+                .status(major.getStatus())
                 .build();
     }
 }
