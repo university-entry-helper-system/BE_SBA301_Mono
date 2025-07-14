@@ -54,8 +54,10 @@ public class SubjectCombinationController {
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
-            @RequestParam(value = "sort", required = false) String sort) {
-        PageResponse<SubjectCombinationResponse> responses = subjectCombinationService.getAllSubjectCombinations(search, page, size, sort);
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "block", required = false) String block,
+            @RequestParam(value = "examSubject", required = false) String examSubject) {
+        PageResponse<SubjectCombinationResponse> responses = subjectCombinationService.getAllSubjectCombinations(search, page, size, sort, block, examSubject);
         return ApiResponse.<PageResponse<SubjectCombinationResponse>>builder()
                 .code(1000)
                 .message("List of subject combinations fetched successfully")

@@ -15,7 +15,7 @@ public interface SubjectCombinationService {
     SubjectCombinationResponse getSubjectCombinationById(Long id);
 
 
-    PageResponse<SubjectCombinationResponse> getAllSubjectCombinations(String search, int page, int size, String sort);
+    PageResponse<SubjectCombinationResponse> getAllSubjectCombinations(String search, int page, int size, String sort, String block, String examSubject);
 
 
     SubjectCombinationResponse updateSubjectCombination(Long id, SubjectCombinationRequest request);

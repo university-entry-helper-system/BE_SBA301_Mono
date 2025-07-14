@@ -69,27 +69,31 @@ public class SubjectCombinationServiceImpl implements SubjectCombinationService 
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<SubjectCombinationResponse> getAllSubjectCombinations(String search, int page, int size, String sort) {
-        Pageable pageable;
-        if (sort != null && !sort.isEmpty()) {
-            String[] sortParams = sort.split(",");
-            String sortField = sortParams[0];
-            Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-            pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
-        } else {
-            pageable = PageRequest.of(page, size);
-        }
-        Page<SubjectCombination> combinationPage = subjectCombinationRepository.findByStatusAndNameContainingIgnoreCase(
-            Status.ACTIVE,
-            search != null ? search : "",
-            pageable
-        );
-        List<SubjectCombinationResponse> items = combinationPage.getContent().stream().map(this::mapToResponse).toList();
+    public PageResponse<SubjectCombinationResponse> getAllSubjectCombinations(String search, int page, int size, String sort, String block, String examSubject) {
+        // Tạm thời sử dụng findAll() đơn giản nhất để test
+        List<SubjectCombination> allCombinations = subjectCombinationRepository.findAll();
+        
+        // Filter trong Java
+        List<SubjectCombination> filteredCombinations = allCombinations.stream()
+                .filter(sc -> sc.getStatus() == Status.ACTIVE)
+                .filter(sc -> search == null || search.isEmpty() || 
+                        sc.getName().toLowerCase().contains(search.toLowerCase()))
+                .toList();
+        
+        // Manual pagination
+        int start = page * size;
+        int end = Math.min(start + size, filteredCombinations.size());
+        List<SubjectCombination> pagedCombinations = filteredCombinations.subList(start, end);
+        
+        List<SubjectCombinationResponse> items = pagedCombinations.stream()
+                .map(this::mapToResponse)
+                .toList();
+        
         return PageResponse.<SubjectCombinationResponse>builder()
-                .page(combinationPage.getNumber())
-                .size(combinationPage.getSize())
-                .totalElements(combinationPage.getTotalElements())
-                .totalPages(combinationPage.getTotalPages())
+                .page(page)
+                .size(size)
+                .totalElements((long) filteredCombinations.size())
+                .totalPages((int) Math.ceil((double) filteredCombinations.size() / size))
                 .items(items)
                 .build();
     }
@@ -173,6 +177,10 @@ public class SubjectCombinationServiceImpl implements SubjectCombinationService 
                                 .shortName(subject.getShortName())
                                 .build())
                         .collect(Collectors.toList()))
+                .block(combination.getBlock() == null ? null : SubjectCombinationResponse.BlockInfo.builder()
+                        .id(combination.getBlock().getId())
+                        .name(combination.getBlock().getName())
+                        .build())
                 .build();
     }
 }
