@@ -45,6 +45,7 @@ public class ProvinceServiceImpl implements ProvinceService {
         log.info("Creating new province with name: {}", provinceResponse.getName());
         Province province = new Province();
         province.setName(provinceResponse.getName());
+        province.setRegion(provinceResponse.getRegion());
         province.setStatus(Status.ACTIVE);
         province = provinceRepository.save(province);
         return mapToResponse(province);
@@ -58,6 +59,7 @@ public class ProvinceServiceImpl implements ProvinceService {
                 .orElseThrow(() -> new AppException(ErrorCode.PROVINCE_NOT_FOUND));
 
         province.setName(provinceResponse.getName());
+        province.setRegion(provinceResponse.getRegion());
         province = provinceRepository.save(province);
 
         return mapToResponse(province);
@@ -77,6 +79,7 @@ public class ProvinceServiceImpl implements ProvinceService {
         return ProvinceResponse.builder()
                 .id(province.getId())
                 .name(province.getName())
+                .region(province.getRegion())
                 .build();
     }
 }
