@@ -45,8 +45,9 @@ public class ProvinceServiceImpl implements ProvinceService {
         log.info("Creating new province with name: {}", provinceResponse.getName());
         Province province = new Province();
         province.setName(provinceResponse.getName());
-        province.setRegion(provinceResponse.getRegion());
-        province.setStatus(Status.ACTIVE);
+        province.setDescription(provinceResponse.getDescription());
+        province.setRegion(provinceResponse.getRegion() != null ? com.example.SBA_M.utils.Region.valueOf(provinceResponse.getRegion()) : null);
+        province.setStatus(com.example.SBA_M.utils.Status.ACTIVE);
         province = provinceRepository.save(province);
         return mapToResponse(province);
     }
@@ -55,11 +56,12 @@ public class ProvinceServiceImpl implements ProvinceService {
     @Transactional
     public ProvinceResponse updateProvince(Integer id, ProvinceResponse provinceResponse) {
         log.info("Updating province with ID: {}", id);
-        Province province = provinceRepository.findByIdAndStatus(id, Status.ACTIVE)
-                .orElseThrow(() -> new AppException(ErrorCode.PROVINCE_NOT_FOUND));
+        Province province = provinceRepository.findByIdAndStatus(id, com.example.SBA_M.utils.Status.ACTIVE)
+                .orElseThrow(() -> new com.example.SBA_M.exception.AppException(com.example.SBA_M.exception.ErrorCode.PROVINCE_NOT_FOUND));
 
         province.setName(provinceResponse.getName());
-        province.setRegion(provinceResponse.getRegion());
+        province.setDescription(provinceResponse.getDescription());
+        province.setRegion(provinceResponse.getRegion() != null ? com.example.SBA_M.utils.Region.valueOf(provinceResponse.getRegion()) : null);
         province = provinceRepository.save(province);
 
         return mapToResponse(province);
@@ -79,7 +81,9 @@ public class ProvinceServiceImpl implements ProvinceService {
         return ProvinceResponse.builder()
                 .id(province.getId())
                 .name(province.getName())
-                .region(province.getRegion())
+                .description(province.getDescription())
+                .region(province.getRegion() != null ? province.getRegion().name() : null)
+                .status(province.getStatus() != null ? province.getStatus().name() : null)
                 .build();
     }
 }

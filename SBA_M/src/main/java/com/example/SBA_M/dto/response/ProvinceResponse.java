@@ -10,5 +10,7 @@ import lombok.experimental.FieldDefaults;
 public class ProvinceResponse {
     private Integer id;
     private String name;
+    private String description;
     private String region;
+    private String status;
 }

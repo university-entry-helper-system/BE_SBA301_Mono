@@ -14,8 +14,27 @@
   "code": 1000,
   "message": "List of provinces fetched successfully",
   "result": [
-    { "id": 1, "name": "Hà Nội", "region": "North" },
-    { "id": 2, "name": "TP. Hồ Chí Minh", "region": "South" }
+    {
+      "id": 1,
+      "name": "Hà Nội",
+      "description": "Thủ đô",
+      "region": "BAC",
+      "status": "ACTIVE"
+    },
+    {
+      "id": 2,
+      "name": "Đà Nẵng",
+      "description": "Thành phố biển",
+      "region": "TRUNG",
+      "status": "ACTIVE"
+    },
+    {
+      "id": 3,
+      "name": "TP. Hồ Chí Minh",
+      "description": "Đô thị lớn nhất",
+      "region": "NAM",
+      "status": "ACTIVE"
+    }
   ]
 }
 ```
@@ -31,7 +50,13 @@
 {
   "code": 1000,
   "message": "Province fetched successfully",
-  "result": { "id": 1, "name": "Hà Nội", "region": "North" }
+  "result": {
+    "id": 1,
+    "name": "Hà Nội",
+    "description": "Thủ đô",
+    "region": "BAC",
+    "status": "ACTIVE"
+  }
 }
 ```
 
@@ -45,7 +70,8 @@
 ```json
 {
   "name": "Hà Nội",
-  "region": "North"
+  "description": "Thủ đô",
+  "region": "BAC"
 }
 ```
 
@@ -55,7 +81,13 @@
 {
   "code": 1001,
   "message": "Province created successfully",
-  "result": { "id": 1, "name": "Hà Nội", "region": "North" }
+  "result": {
+    "id": 1,
+    "name": "Hà Nội",
+    "description": "Thủ đô",
+    "region": "BAC",
+    "status": "ACTIVE"
+  }
 }
 ```
 
@@ -72,7 +104,13 @@
 {
   "code": 1002,
   "message": "Province updated successfully",
-  "result": { "id": 1, "name": "Hà Nội", "region": "North" }
+  "result": {
+    "id": 1,
+    "name": "Hà Nội",
+    "description": "Thủ đô",
+    "region": "BAC",
+    "status": "ACTIVE"
+  }
 }
 ```
 
@@ -101,6 +139,13 @@
   "result": ... // tuỳ API
 }
 ```
+
+**Giải thích các trường:**
+
+- `name`: Tên tỉnh/thành
+- `description`: Mô tả tỉnh/thành
+- `region`: Vùng miền (Enum: `BAC` - Bắc, `TRUNG` - Trung, `NAM` - Nam)
+- `status`: Trạng thái (Enum: `ACTIVE`, `DELETED`)
 
 **Lưu ý:**
 
