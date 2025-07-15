@@ -5,7 +5,6 @@ import com.example.SBA_M.dto.response.ExamSubjectResponse;
 import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.utils.Status;
 
-import java.util.List;
 
 public interface ExamSubjectService {
 
