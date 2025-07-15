@@ -147,6 +147,19 @@ public class UniversityServiceImpl implements UniversityService {
         // Save
         University saved = universityRepository.save(university);
 
+        // --- Save admission methods ---
+        if (request.getAdmissionMethodIds() != null) {
+            for (Integer methodId : request.getAdmissionMethodIds()) {
+                AdmissionMethod method = admissionMethodRepository.findById(methodId)
+                        .orElseThrow(() -> new AppException(ErrorCode.ADMISSION_METHOD_NOT_FOUND));
+                UniversityAdmissionMethod uam = new UniversityAdmissionMethod();
+                uam.setUniversity(saved);
+                uam.setAdmissionMethod(method);
+                uam.setYear(saved.getFoundingYear());
+                universityAdmissionMethodRepository.save(uam);
+            }
+        }
+
         // Produce Kafka event
         universityProducer.sendUniversityCreated(saved);
 
@@ -201,7 +214,7 @@ public class UniversityServiceImpl implements UniversityService {
                 uam.setUniversity(university);
                 uam.setAdmissionMethod(method);
                 uam.setYear(university.getFoundingYear());
-                university.getAdmissionMethods().add(uam);
+                universityAdmissionMethodRepository.save(uam);
             }
         }
 
