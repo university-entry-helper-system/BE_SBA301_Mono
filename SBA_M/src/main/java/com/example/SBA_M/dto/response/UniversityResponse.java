@@ -21,7 +21,8 @@ public class UniversityResponse {
     private UniversityCategoryResponse category;
     private String name;
     private String shortName;
-    private String logoUrl;
+    private String logoUrl; // URL public ảnh logo trả về cho FE
+    private String fanpage; // Link fanpage Facebook
     private Integer foundingYear;
     private Province province;
     private String address;

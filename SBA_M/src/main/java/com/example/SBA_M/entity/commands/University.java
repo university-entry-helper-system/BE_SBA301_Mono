@@ -23,8 +23,13 @@ public class University extends AbstractEntity<Integer> {
     @Column(name = "short_name", length = 50)
     private String shortName;
 
-    @Column(name = "logo_url", length = 255)
+    // Tên file ảnh logo lưu trên Minio
+    @Column(name = "logo_url", columnDefinition = "TEXT")
     private String logoUrl;
+
+    // Link fanpage Facebook của trường
+    @Column(name = "fanpage", length = 255)
+    private String fanpage;
 
     @Column(name = "founding_year")
     private Integer foundingYear;

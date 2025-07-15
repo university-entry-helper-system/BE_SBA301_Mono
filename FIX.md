@@ -440,6 +440,22 @@ curl http://localhost:8080/actuator/health
 - `ELASTICSEARCH_URIS`
 - `MINIO_ENDPOINT`
 
+#### Minio
+
+cd .\Downloads\
+
+# 1. Thiết lập kết nối tới MinIO
+
+.\mc.exe alias set myminio http://localhost:9000 username password
+
+# 2. Kiểm tra danh sách bucket
+
+.\mc.exe ls myminio
+
+# 3. Cấp quyền public (anonymous download) cho bucket đúng tên
+
+.\mc.exe anonymous set download myminio/mybucket
+
 ## Khi nào cần hỗ trợ thêm
 
 Nếu các cách trên không work, cung cấp thông tin:

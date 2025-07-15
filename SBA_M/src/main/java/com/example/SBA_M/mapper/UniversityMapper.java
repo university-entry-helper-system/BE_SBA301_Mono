@@ -44,7 +44,8 @@ public interface UniversityMapper {
             .category(categoryResponse)
             .name(entity.getName())
             .shortName(entity.getShortName())
-            .logoUrl(entity.getLogoUrl())
+            .logoUrl(entity.getLogoUrl()) // Map trường logoUrl
+            .fanpage(entity.getFanpage())
             .foundingYear(entity.getFoundingYear())
             .province(entity.getProvince())
             .address(entity.getAddress())

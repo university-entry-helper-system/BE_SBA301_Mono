@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
 
 @RestController
 @RequestMapping("api/v1/universities")
@@ -53,8 +54,8 @@ public class UniversityController {
 
     @Operation(summary = "Create a new university")
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
-    public ApiResponse<UniversityResponse> createUniversity(@Valid @RequestBody UniversityRequest universityRequest) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<UniversityResponse> createUniversity(@ModelAttribute UniversityRequest universityRequest) {
         UniversityResponse created = universityService.createUniversity(universityRequest);
         return ApiResponse.<UniversityResponse>builder()
                 .code(1001)
@@ -65,10 +66,10 @@ public class UniversityController {
 
     @Operation(summary = "Update a university")
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<UniversityResponse> updateUniversity(
             @PathVariable Integer id,
-            @Valid @RequestBody UniversityRequest universityRequest) {
+            @ModelAttribute UniversityRequest universityRequest) {
         UniversityResponse updated = universityService.updateUniversity(id, universityRequest);
         return ApiResponse.<UniversityResponse>builder()
                 .code(1002)

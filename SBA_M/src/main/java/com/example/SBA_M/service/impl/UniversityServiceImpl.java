@@ -18,6 +18,7 @@ import com.example.SBA_M.repository.commands.UniversityAdmissionMethodRepository
 import com.example.SBA_M.repository.queries.UniversityReadRepository;
 import com.example.SBA_M.service.UniversityService;
 import com.example.SBA_M.service.messaging.producer.UniversityProducer;
+import com.example.SBA_M.service.minio.MinioService;
 import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.List;
@@ -46,6 +48,7 @@ public class UniversityServiceImpl implements UniversityService {
     private final ProvinceRepository provinceRepository;
     private final AdmissionMethodRepository admissionMethodRepository;
     private final UniversityAdmissionMethodRepository universityAdmissionMethodRepository;
+    private final MinioService minioService;
 
     @Override
     @Transactional(readOnly = true)
@@ -114,7 +117,7 @@ public class UniversityServiceImpl implements UniversityService {
         University university = new University();
         university.setName(request.getName());
         university.setShortName(request.getShortName());
-        university.setLogoUrl(request.getLogoUrl());
+        university.setFanpage(request.getFanpage());
         university.setFoundingYear(request.getFoundingYear());
         university.setAddress(request.getAddress());
         university.setEmail(request.getEmail());
@@ -133,13 +136,23 @@ public class UniversityServiceImpl implements UniversityService {
         university.setProvince(provinceRepository.findById(request.getProvinceId())
                 .orElseThrow(() -> new AppException(ErrorCode.PROVINCE_NOT_FOUND)));
 
+        // Upload logo file nếu có
+        String logoUrl = null;
+        MultipartFile logoFile = request.getLogoFile();
+        if (logoFile != null && !logoFile.isEmpty()) {
+            logoUrl = minioService.uploadFileAndGetPresignedUrl(logoFile);
+            university.setLogoUrl(logoUrl); // Lưu URL public luôn
+        }
+
         // Save
         University saved = universityRepository.save(university);
 
         // Produce Kafka event
         universityProducer.sendUniversityCreated(saved);
 
-        return universityMapper.toResponse(saved);
+        UniversityResponse response = universityMapper.toResponse(saved);
+        response.setLogoUrl(saved.getLogoUrl()); // Đảm bảo trả về URL public
+        return response;
     }
 
     @Override
@@ -155,7 +168,7 @@ public class UniversityServiceImpl implements UniversityService {
 
         university.setName(request.getName());
         university.setShortName(request.getShortName());
-        university.setLogoUrl(request.getLogoUrl());
+        university.setFanpage(request.getFanpage());
         university.setFoundingYear(request.getFoundingYear());
         university.setAddress(request.getAddress());
         university.setEmail(request.getEmail());
@@ -170,11 +183,16 @@ public class UniversityServiceImpl implements UniversityService {
                 .orElseThrow(() -> new AppException(ErrorCode.PROVINCE_NOT_FOUND)));
         university.setUpdatedAt(Instant.now());
 
+        // Upload logo file nếu có
+        MultipartFile logoFile = request.getLogoFile();
+        if (logoFile != null && !logoFile.isEmpty()) {
+            String logoUrl = minioService.uploadFileAndGetPresignedUrl(logoFile);
+            university.setLogoUrl(logoUrl); // Lưu URL public luôn
+        }
+
         // --- Update admission methods ---
-        // Xóa toàn bộ liên kết cũ
         universityAdmissionMethodRepository.deleteAll(university.getAdmissionMethods());
         university.getAdmissionMethods().clear();
-        // Thêm mới các liên kết nếu có
         if (request.getAdmissionMethodIds() != null) {
             for (Integer methodId : request.getAdmissionMethodIds()) {
                 AdmissionMethod method = admissionMethodRepository.findById(methodId)
@@ -182,7 +200,7 @@ public class UniversityServiceImpl implements UniversityService {
                 UniversityAdmissionMethod uam = new UniversityAdmissionMethod();
                 uam.setUniversity(university);
                 uam.setAdmissionMethod(method);
-                uam.setYear(university.getFoundingYear()); // hoặc set giá trị phù hợp
+                uam.setYear(university.getFoundingYear());
                 university.getAdmissionMethods().add(uam);
             }
         }
@@ -198,7 +216,9 @@ public class UniversityServiceImpl implements UniversityService {
             universityProducer.sendUpdateSearchEvent(updated);
         }
 
-        return universityMapper.toResponse(updated);
+        UniversityResponse response = universityMapper.toResponse(updated);
+        response.setLogoUrl(updated.getLogoUrl()); // Đảm bảo trả về URL public
+        return response;
     }
 
     @Override
