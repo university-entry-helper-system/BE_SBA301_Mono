@@ -83,7 +83,8 @@ public class SecurityConfig {
                         "/api/v1/university-admission-methods/**",
                         "api/v1/provinces/**",
                         "/api/v1/admission-methods/**",
-                        "api/v1/graduation-score/**"
+                        "api/v1/graduation-score/**",
+                        "api/v1/faqs/**"
                 ).permitAll()
                 // All other requests require authentication
                 .anyRequest().authenticated()
