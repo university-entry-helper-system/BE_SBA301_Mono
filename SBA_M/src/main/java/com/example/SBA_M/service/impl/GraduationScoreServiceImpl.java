@@ -38,7 +38,7 @@ public class GraduationScoreServiceImpl implements GraduationScoreService {
         // Calculate total exam score
         double totalExamScore = calculateTotalExamScore(request);
         int numberOfExamSubjects = request.isExemptedFromForeignLanguage() ? 3 : 4;
-        double averageExamScore = (totalExamScore + request.getBonusScore()) / numberOfExamSubjects;
+        double averageExamScore = (totalExamScore / numberOfExamSubjects ) + (request.getBonusScore() / 4);
 
         // Calculate weighted school year average
         double averageSchoolScore = calculateWeightedSchoolAverage(request.getAllSubjectsScore());
@@ -46,11 +46,13 @@ public class GraduationScoreServiceImpl implements GraduationScoreService {
 
 
         // Calculate final score
-        double finalScore = round((averageExamScore + averageSchoolScore + request.getPriorityScore())/2);
+        double finalScore = round((averageExamScore + averageSchoolScore)/2 + request.getPriorityScore());
 
         // Determine result
         String resultMessage = finalScore >= PASSING_SCORE ? PASS_MESSAGE : FAIL_MESSAGE;
-
+        if (reason != null) {
+            resultMessage = FAIL_MESSAGE;
+        }
         return new GraduationScoreResponse(
                 round(totalExamScore),
                 round(request.getBonusScore()),
