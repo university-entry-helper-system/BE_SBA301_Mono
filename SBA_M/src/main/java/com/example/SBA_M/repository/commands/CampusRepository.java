@@ -27,4 +27,6 @@ public interface CampusRepository extends JpaRepository<Campus, Integer> {
     Optional<Campus> findByUniversityIdAndCampusCodeAndStatus(Integer universityId, String campusCode, Status status);
     
     List<Campus> findByUniversityIdAndIsMainCampusAndStatus(Integer universityId, Boolean isMainCampus, Status status);
+    
+    List<Campus> findByUniversityIdAndStatusNot(Integer universityId, Status status);
 } 

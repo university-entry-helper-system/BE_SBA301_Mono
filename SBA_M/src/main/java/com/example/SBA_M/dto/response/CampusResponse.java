@@ -1,8 +1,8 @@
 package com.example.SBA_M.dto.response;
 
-import com.example.SBA_M.entity.commands.Province;
-import com.example.SBA_M.entity.commands.University;
 import com.example.SBA_M.utils.Status;
+import com.example.SBA_M.dto.response.UniversityResponse;
+import com.example.SBA_M.dto.response.ProvinceResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,8 +28,8 @@ public class CampusResponse {
     private String description;
     private Integer establishedYear;
     private BigDecimal areaHectares;
-    private University university;
-    private Province province;
+    private UniversityResponse university;
+    private ProvinceResponse province;
     private Status status;
     private Instant createdAt;
     private String createdBy;

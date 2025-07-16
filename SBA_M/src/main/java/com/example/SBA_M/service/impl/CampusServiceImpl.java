@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -239,10 +240,25 @@ public class CampusServiceImpl implements CampusService {
         
         List<Campus> campuses;
         if (Boolean.TRUE.equals(includeInactive)) {
-            campuses = campusRepository.findByUniversityIdAndStatus(universityId, Status.ACTIVE);
+            // Include both ACTIVE and non-DELETED campuses (all except DELETED)
+            campuses = campusRepository.findByUniversityIdAndStatusNot(universityId, Status.DELETED);
         } else {
+            // Only ACTIVE campuses
             campuses = campusRepository.findByUniversityIdAndStatus(universityId, Status.ACTIVE);
         }
+        
+        // Force eager loading of relationships to avoid proxy issues
+        campuses.forEach(campus -> {
+            if (campus.getUniversity() != null) {
+                campus.getUniversity().getId(); // Force load
+            }
+            if (campus.getProvince() != null) {
+                campus.getProvince().getId(); // Force load
+            }
+            if (campus.getCampusType() != null) {
+                campus.getCampusType().getId(); // Force load
+            }
+        });
         
         return campuses.stream()
                 .map(campusMapper::toResponse)
