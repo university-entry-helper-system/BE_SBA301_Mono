@@ -56,7 +56,7 @@ public class UniversityController {
     @Operation(summary = "Create a new university")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<UniversityResponse> createUniversity(@ModelAttribute UniversityRequest universityRequest) {
+    public ApiResponse<UniversityResponse> createUniversity(@ModelAttribute @Valid UniversityRequest universityRequest) {
         UniversityResponse created = universityService.createUniversity(universityRequest);
         return ApiResponse.<UniversityResponse>builder()
                 .code(1001)
@@ -70,7 +70,7 @@ public class UniversityController {
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<UniversityResponse> updateUniversity(
             @PathVariable Integer id,
-            @ModelAttribute UniversityRequest universityRequest) {
+            @ModelAttribute @Valid UniversityRequest universityRequest) {
         UniversityResponse updated = universityService.updateUniversity(id, universityRequest);
         return ApiResponse.<UniversityResponse>builder()
                 .code(1002)
@@ -108,6 +108,28 @@ public class UniversityController {
     @GetMapping("/by-code/{universityCode}")
     public ApiResponse<UniversityResponse> getUniversityByCode(@PathVariable String universityCode) {
         UniversityResponse university = universityService.getUniversityByCode(universityCode);
+        return ApiResponse.<UniversityResponse>builder()
+                .code(1000)
+                .message("University fetched successfully")
+                .result(university)
+                .build();
+    }
+
+    @Operation(summary = "Get university by name")
+    @GetMapping("/by-name/{name}")
+    public ApiResponse<UniversityResponse> getUniversityByName(@PathVariable String name) {
+        UniversityResponse university = universityService.getUniversityByName(name);
+        return ApiResponse.<UniversityResponse>builder()
+                .code(1000)
+                .message("University fetched successfully")
+                .result(university)
+                .build();
+    }
+
+    @Operation(summary = "Get university by short name")
+    @GetMapping("/by-short-name/{shortName}")
+    public ApiResponse<UniversityResponse> getUniversityByShortName(@PathVariable String shortName) {
+        UniversityResponse university = universityService.getUniversityByShortName(shortName);
         return ApiResponse.<UniversityResponse>builder()
                 .code(1000)
                 .message("University fetched successfully")

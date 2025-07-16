@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class University extends AbstractEntity<Integer> {
     
-    @Column(name = "university_code", unique = true, length = 20)
+    @Column(name = "university_code", unique = true, length = 20, nullable = true)
     private String universityCode; // Mã trường (VD: VNU_HN, HUST, NEU)
 
     @Column(name = "name_en")
@@ -39,17 +39,10 @@ public class University extends AbstractEntity<Integer> {
     @Column(name = "fanpage", length = 255)
     private String fanpage;
 
-    @Column(name = "founding_year")
+    @Column(name = "founding_year", nullable = true)
     private Integer foundingYear;
 
-    @ManyToOne
-    @JoinColumn(name = "province_id", nullable = false)
-    private Province province;
-
-    @Column(columnDefinition = "TEXT")
-    private String address;
-
-    @Column(length = 255)
+    @Column(length = 255, nullable = true)
     private String email;
 
     @Column(length = 20)
@@ -70,6 +63,6 @@ public class University extends AbstractEntity<Integer> {
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UniversityMajor> universityMajors;
 
-    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<UniversityAdmissionMethod> admissionMethods;
 }

@@ -78,7 +78,7 @@ public class UniversityServiceImpl implements UniversityService {
                         (u.getUniversityCode() != null && u.getUniversityCode().toLowerCase().contains(search.toLowerCase())) ||
                         (u.getShortName() != null && u.getShortName().toLowerCase().contains(search.toLowerCase())))
                 .filter(u -> categoryId == null || u.getCategory().getId().equals(categoryId))
-                .filter(u -> provinceId == null || u.getProvince().getId().equals(provinceId))
+                .filter(u -> provinceId == null || u.getCampuses().stream().anyMatch(c -> c.getProvince().getId().equals(provinceId)))
                 .toList();
 
         // Manual pagination
@@ -117,17 +117,17 @@ public class UniversityServiceImpl implements UniversityService {
         String username = getCurrentUsername();
 
         University university = new University();
-        university.setUniversityCode(request.getUniversityCode());
-        university.setNameEn(request.getNameEn());
-        university.setName(request.getName());
-        university.setShortName(request.getShortName());
-        university.setFanpage(request.getFanpage());
+        // Handle empty strings - convert to null
+        university.setUniversityCode(request.getUniversityCode() != null && !request.getUniversityCode().trim().isEmpty() ? request.getUniversityCode().trim() : null);
+        university.setNameEn(request.getNameEn() != null && !request.getNameEn().trim().isEmpty() ? request.getNameEn().trim() : null);
+        university.setName(request.getName().trim());
+        university.setShortName(request.getShortName() != null && !request.getShortName().trim().isEmpty() ? request.getShortName().trim() : null);
+        university.setFanpage(request.getFanpage() != null && !request.getFanpage().trim().isEmpty() ? request.getFanpage().trim() : null);
         university.setFoundingYear(request.getFoundingYear());
-        university.setAddress(request.getAddress());
-        university.setEmail(request.getEmail());
-        university.setPhone(request.getPhone());
-        university.setWebsite(request.getWebsite());
-        university.setDescription(request.getDescription());
+        university.setEmail(request.getEmail() != null && !request.getEmail().trim().isEmpty() ? request.getEmail().trim() : null);
+        university.setPhone(request.getPhone() != null && !request.getPhone().trim().isEmpty() ? request.getPhone().trim() : null);
+        university.setWebsite(request.getWebsite() != null && !request.getWebsite().trim().isEmpty() ? request.getWebsite().trim() : null);
+        university.setDescription(request.getDescription() != null && !request.getDescription().trim().isEmpty() ? request.getDescription().trim() : null);
         university.setStatus(Status.ACTIVE);
         university.setCreatedBy(username);
         university.setCreatedAt(Instant.now());
@@ -136,9 +136,6 @@ public class UniversityServiceImpl implements UniversityService {
 
         university.setCategory(universityCategoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_CATEGORY_NOT_FOUND)));
-
-        university.setProvince(provinceRepository.findById(request.getProvinceId())
-                .orElseThrow(() -> new AppException(ErrorCode.PROVINCE_NOT_FOUND)));
 
         // Upload logo file nếu có
         String logoUrl = null;
@@ -159,7 +156,7 @@ public class UniversityServiceImpl implements UniversityService {
                 UniversityAdmissionMethod uam = new UniversityAdmissionMethod();
                 uam.setUniversity(saved);
                 uam.setAdmissionMethod(method);
-                uam.setYear(saved.getFoundingYear());
+                uam.setYear(saved.getFoundingYear() != null ? saved.getFoundingYear() : 2024); // Default to current year if founding year is null
                 universityAdmissionMethodRepository.save(uam);
             }
         }
@@ -169,6 +166,12 @@ public class UniversityServiceImpl implements UniversityService {
 
         UniversityResponse response = universityMapper.toResponse(saved);
         response.setLogoUrl(saved.getLogoUrl()); // Đảm bảo trả về URL public
+        
+        // Manually set admissionMethodIds from request
+        if (request.getAdmissionMethodIds() != null && !request.getAdmissionMethodIds().isEmpty()) {
+            response.setAdmissionMethodIds(request.getAdmissionMethodIds());
+        }
+        
         return response;
     }
 
@@ -181,26 +184,23 @@ public class UniversityServiceImpl implements UniversityService {
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
 
         boolean nameChanged = !university.getName().equals(request.getName());
-        boolean provinceChanged = !university.getProvince().getId().equals(request.getProvinceId());
 
-        university.setUniversityCode(request.getUniversityCode());
-        university.setNameEn(request.getNameEn());
-        university.setName(request.getName());
-        university.setShortName(request.getShortName());
-        university.setFanpage(request.getFanpage());
+        university.setUpdatedAt(Instant.now());
+
+        // Handle empty strings - convert to null
+        university.setUniversityCode(request.getUniversityCode() != null && !request.getUniversityCode().trim().isEmpty() ? request.getUniversityCode().trim() : null);
+        university.setNameEn(request.getNameEn() != null && !request.getNameEn().trim().isEmpty() ? request.getNameEn().trim() : null);
+        university.setName(request.getName().trim());
+        university.setShortName(request.getShortName() != null && !request.getShortName().trim().isEmpty() ? request.getShortName().trim() : null);
+        university.setFanpage(request.getFanpage() != null && !request.getFanpage().trim().isEmpty() ? request.getFanpage().trim() : null);
         university.setFoundingYear(request.getFoundingYear());
-        university.setAddress(request.getAddress());
-        university.setEmail(request.getEmail());
-        university.setPhone(request.getPhone());
-        university.setWebsite(request.getWebsite());
-        university.setDescription(request.getDescription());
+        university.setEmail(request.getEmail() != null && !request.getEmail().trim().isEmpty() ? request.getEmail().trim() : null);
+        university.setPhone(request.getPhone() != null && !request.getPhone().trim().isEmpty() ? request.getPhone().trim() : null);
+        university.setWebsite(request.getWebsite() != null && !request.getWebsite().trim().isEmpty() ? request.getWebsite().trim() : null);
+        university.setDescription(request.getDescription() != null && !request.getDescription().trim().isEmpty() ? request.getDescription().trim() : null);
 
         university.setCategory(universityCategoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_CATEGORY_NOT_FOUND)));
-
-        university.setProvince(provinceRepository.findById(request.getProvinceId())
-                .orElseThrow(() -> new AppException(ErrorCode.PROVINCE_NOT_FOUND)));
-        university.setUpdatedAt(Instant.now());
 
         // Upload logo file nếu có
         MultipartFile logoFile = request.getLogoFile();
@@ -219,7 +219,7 @@ public class UniversityServiceImpl implements UniversityService {
                 UniversityAdmissionMethod uam = new UniversityAdmissionMethod();
                 uam.setUniversity(university);
                 uam.setAdmissionMethod(method);
-                uam.setYear(university.getFoundingYear());
+                uam.setYear(university.getFoundingYear() != null ? university.getFoundingYear() : 2024); // Default to current year if founding year is null
                 universityAdmissionMethodRepository.save(uam);
             }
         }
@@ -231,12 +231,18 @@ public class UniversityServiceImpl implements UniversityService {
         if (nameChanged) {
             universityProducer.sendUpdateEvent(updated);
         }
-        if (provinceChanged|| nameChanged) {
+        if (nameChanged) {
             universityProducer.sendUpdateSearchEvent(updated);
         }
 
         UniversityResponse response = universityMapper.toResponse(updated);
         response.setLogoUrl(updated.getLogoUrl()); // Đảm bảo trả về URL public
+        
+        // Manually set admissionMethodIds from request
+        if (request.getAdmissionMethodIds() != null && !request.getAdmissionMethodIds().isEmpty()) {
+            response.setAdmissionMethodIds(request.getAdmissionMethodIds());
+        }
+        
         return response;
     }
 
@@ -284,6 +290,22 @@ public class UniversityServiceImpl implements UniversityService {
     @Transactional(readOnly = true)
     public UniversityResponse getUniversityByCode(String universityCode) {
         University university = universityRepository.findByUniversityCodeAndStatus(universityCode, Status.ACTIVE)
+                .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
+        return universityMapper.toResponse(university);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UniversityResponse getUniversityByName(String name) {
+        University university = universityRepository.findByNameAndStatus(name, Status.ACTIVE)
+                .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
+        return universityMapper.toResponse(university);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UniversityResponse getUniversityByShortName(String shortName) {
+        University university = universityRepository.findByShortNameAndStatus(shortName, Status.ACTIVE)
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
         return universityMapper.toResponse(university);
     }

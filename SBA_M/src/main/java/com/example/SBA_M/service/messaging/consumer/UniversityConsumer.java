@@ -42,9 +42,6 @@ public class UniversityConsumer {
                     .findById(event.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("Category not found with ID: " + event.getCategoryId()));
 
-            Province province = provinceRepository
-                    .findById(event.getProvince())
-                    .orElseThrow(() -> new RuntimeException("Province not found with ID: " + event.getProvince()));
             // Save to MongoDB
             UniversityCategoryDocument categoryDoc = new UniversityCategoryDocument(
                     category.getId(),
@@ -64,8 +61,6 @@ public class UniversityConsumer {
                     event.getShortName(),
                     event.getLogoUrl(),
                     event.getFoundingYear(),
-                    province,
-                    event.getAddress(),
                     event.getEmail(),
                     event.getPhone(),
                     event.getWebsite(),
@@ -100,8 +95,6 @@ public class UniversityConsumer {
                     .shortName(event.getShortName())
                     .logoUrl(event.getLogoUrl())
                     .foundingYear(event.getFoundingYear())
-                    .province(province)
-                    .address(event.getAddress())
                     .email(event.getEmail())
                     .phone(event.getPhone())
                     .website(event.getWebsite())
@@ -135,10 +128,6 @@ public class UniversityConsumer {
                     .findById(event.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("Category not found with ID: " + event.getCategoryId()));
 
-            Province province = provinceRepository
-                    .findById(event.getProvince())
-                    .orElseThrow(() -> new RuntimeException("Province not found with ID: " + event.getProvince()));
-
             UniversityCategoryDocument categoryDoc = new UniversityCategoryDocument(
                     category.getId(),
                     category.getName(),
@@ -156,8 +145,6 @@ public class UniversityConsumer {
             existingDoc.setShortName(event.getShortName());
             existingDoc.setLogoUrl(event.getLogoUrl());
             existingDoc.setFoundingYear(event.getFoundingYear());
-            existingDoc.setProvince(province);
-            existingDoc.setAddress(event.getAddress());
             existingDoc.setEmail(event.getEmail());
             existingDoc.setPhone(event.getPhone());
             existingDoc.setWebsite(event.getWebsite());
@@ -191,8 +178,6 @@ public class UniversityConsumer {
             existingSearch.setShortName(event.getShortName());
             existingSearch.setLogoUrl(event.getLogoUrl());
             existingSearch.setFoundingYear(event.getFoundingYear());
-            existingSearch.setProvince(province);
-            existingSearch.setAddress(event.getAddress());
             existingSearch.setEmail(event.getEmail());
             existingSearch.setPhone(event.getPhone());
             existingSearch.setWebsite(event.getWebsite());

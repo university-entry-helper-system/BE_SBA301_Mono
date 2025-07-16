@@ -19,8 +19,6 @@ public class UniversityEvent extends AbstractCreatedEvent<Integer> {
     private String shortName;
     private String logoUrl;
     private Integer foundingYear;
-    private Integer province;
-    private String address;
     private String email;
     private String phone;
     private String website;
@@ -34,8 +32,6 @@ public class UniversityEvent extends AbstractCreatedEvent<Integer> {
             String shortName,
             String logoUrl,
             Integer foundingYear,
-            Integer province,
-            String address,
             String email,
             String phone,
             String website,
@@ -57,8 +53,6 @@ public class UniversityEvent extends AbstractCreatedEvent<Integer> {
         this.shortName = shortName;
         this.logoUrl = logoUrl;
         this.foundingYear = foundingYear;
-        this.province = province;
-        this.address = address;
         this.email = email;
         this.phone = phone;
         this.website = website;

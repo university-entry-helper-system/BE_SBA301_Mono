@@ -40,11 +40,14 @@ private String nameEn; // Tên tiếng Anh của trường
 private List<Campus> campuses = new ArrayList<>(); // Danh sách cơ sở
 ```
 
-### **Các field deprecated/optional:**
+### **Các field deprecated (đã chuyển sang Campus):**
 
-- `address`: Có thể giữ làm địa chỉ tổng quan hoặc deprecated
-- `province`: Có thể giữ làm tỉnh chính của trường
-- `region`: Có thể giữ làm vùng chính của trường
+- `address`: deprecated - thông tin địa chỉ đã chuyển sang Campus
+- `province`: deprecated - thông tin tỉnh đã chuyển sang Campus
+- `region`: deprecated - thông tin vùng đã chuyển sang Campus
+- `provinceId`: deprecated - ID tỉnh đã chuyển sang Campus
+
+**Note**: Các field này không còn xuất hiện trong API response và form input.
 
 ---
 
@@ -85,9 +88,9 @@ private String website;
 @Column(name = "is_main_campus")
 private Boolean isMainCampus = false; // Cơ sở chính
 
-@ManyToOne(fetch = FetchType.LAZY)
-@JoinColumn(name = "campus_type_id", nullable = false)
-private CampusType campusType; // Loại cơ sở (khóa ngoại)
+@Enumerated(EnumType.STRING)
+@Column(name = "campus_type")
+private CampusType campusType = CampusType.BRANCH;
 
 @Column(name = "description", columnDefinition = "TEXT")
 private String description;
@@ -111,16 +114,14 @@ private University university;
 private Province province;
 ```
 
-### **CampusType Entity:**
+### **CampusType Enum:**
 
 ```java
-@Entity
-@Table(name = "campus_types")
-public class CampusType extends AbstractEntity<Integer> {
-    @Column(nullable = false, unique = true, length = 255)
-    private String name; // Tên loại cơ sở
-    @Column(length = 500)
-    private String description; // Mô tả loại cơ sở
+public enum CampusType {
+    MAIN,           // Cơ sở chính
+    BRANCH,         // Cơ sở phân hiệu
+    TRAINING_CENTER, // Trung tâm đào tạo
+    RESEARCH_CENTER  // Trung tâm nghiên cứu
 }
 ```
 
@@ -141,17 +142,20 @@ public class CampusType extends AbstractEntity<Integer> {
 
 ### **University validation:**
 
-| Field          | Bắt buộc | Kiểu    | Độ dài tối đa | Ghi chú                     |
-| -------------- | -------- | ------- | ------------- | --------------------------- |
-| universityCode | ✔️       | String  | 20            | Mã trường, unique           |
-| nameEn         |          | String  | 255           | Tên tiếng Anh               |
-| name           | ✔️       | String  | 255           | Tên trường                  |
-| shortName      |          | String  | 50            | Tên viết tắt                |
-| logoFile       |          | File    | 5MB           | Ảnh logo, chỉ nhận file ảnh |
-| fanpage        |          | String  | 255           | Link Facebook               |
-| foundingYear   | ✔️       | Integer | 4             | Năm thành lập               |
-| provinceId     | ✔️       | Integer |               | ID tỉnh/thành chính         |
-| categoryId     | ✔️       | Integer |               | ID loại trường              |
+| Field          | Bắt buộc | Kiểu    | Độ dài tối đa | Ghi chú                      |
+| -------------- | -------- | ------- | ------------- | ---------------------------- |
+| universityCode |          | String  | 20            | Mã trường, unique (optional) |
+| nameEn         |          | String  | 255           | Tên tiếng Anh                |
+| name           | ✔️       | String  | 255           | Tên trường                   |
+| shortName      |          | String  | 50            | Tên viết tắt                 |
+| logoFile       |          | File    | 5MB           | Ảnh logo, chỉ nhận file ảnh  |
+| fanpage        |          | String  | 255           | Link Facebook                |
+| foundingYear   |          | Integer | 4             | Năm thành lập (optional)     |
+| email          |          | String  | 255           | Email liên hệ (optional)     |
+| phone          |          | String  | 20            | Số điện thoại (optional)     |
+| website        |          | String  | 255           | Website (optional)           |
+| description    |          | String  | TEXT          | Mô tả (optional)             |
+| categoryId     | ✔️       | Integer |               | ID loại trường               |
 
 ### **Campus validation:**
 
@@ -164,7 +168,7 @@ public class CampusType extends AbstractEntity<Integer> {
 | email        |          | String  | 255           | Email liên hệ                     |
 | website      |          | String  | 255           | Website                           |
 | isMainCampus |          | Boolean |               | Cơ sở chính (default: false)      |
-| campusTypeId | ✔️       | Integer |               | ID loại cơ sở (khóa ngoại)        |
+| campusType   |          | Enum    |               | Loại cơ sở (default: BRANCH)      |
 | universityId | ✔️       | Integer |               | ID trường sở hữu                  |
 | provinceId   | ✔️       | Integer |               | ID tỉnh/thành của cơ sở           |
 
@@ -182,7 +186,7 @@ public class CampusType extends AbstractEntity<Integer> {
   - `size`: Số lượng mỗi trang (mặc định 10)
   - `sort`: Sắp xếp (ví dụ: `name,asc`, `universityCode,desc`)
   - `categoryId`: Lọc theo ID loại trường
-  - `provinceId`: Lọc theo ID tỉnh/thành (tìm trường có cơ sở trong tỉnh)
+  - `provinceId`: Lọc theo ID tỉnh/thành (tìm trường có cơ sở trong tỉnh - thông qua Campus)
   - `includeCampuses`: Include campus info (default: false)
 
 - **Response:**
@@ -208,13 +212,6 @@ public class CampusType extends AbstractEntity<Integer> {
         "logoUrl": "logo-vnu-hn.png",
         "fanpage": "https://facebook.com/vnu.edu.vn",
         "foundingYear": 1993,
-        "province": {
-          "id": 1,
-          "name": "Hà Nội",
-          "description": "Thủ đô Hà Nội",
-          "region": "BAC"
-        },
-        "address": "144 Xuân Thủy, Cầu Giấy, Hà Nội",
         "email": "info@vnu.edu.vn",
         "phone": "024-37547460",
         "website": "https://vnu.edu.vn",
@@ -228,11 +225,7 @@ public class CampusType extends AbstractEntity<Integer> {
             "campusName": "Cơ sở chính Xuân Thủy",
             "campusCode": "MAIN",
             "isMainCampus": true,
-            "campusType": {
-              "id": 1,
-              "name": "MAIN",
-              "description": "Cơ sở chính"
-            },
+            "campusType": "MAIN",
             "address": "144 Xuân Thủy, Cầu Giấy, Hà Nội",
             "province": {
               "id": 1,
@@ -271,13 +264,6 @@ public class CampusType extends AbstractEntity<Integer> {
     "logoUrl": "logo-vnu-hn.png",
     "fanpage": "https://facebook.com/vnu.edu.vn",
     "foundingYear": 1993,
-    "province": {
-      "id": 1,
-      "name": "Hà Nội",
-      "description": "Thủ đô Hà Nội",
-      "region": "BAC"
-    },
-    "address": "144 Xuân Thủy, Cầu Giấy, Hà Nội",
     "email": "info@vnu.edu.vn",
     "phone": "024-37547460",
     "website": "https://vnu.edu.vn",
@@ -293,11 +279,7 @@ public class CampusType extends AbstractEntity<Integer> {
         "email": "info@vnu.edu.vn",
         "website": "https://vnu.edu.vn",
         "isMainCampus": true,
-        "campusType": {
-          "id": 1,
-          "name": "MAIN",
-          "description": "Cơ sở chính"
-        },
+        "campusType": "MAIN",
         "description": "Cơ sở chính của ĐHQGHN",
         "establishedYear": 1993,
         "areaHectares": 50.5,
@@ -328,8 +310,6 @@ shortName: ĐHQGHN
 logoFile: [FILE] // File ảnh logo
 fanpage: https://facebook.com/vnu.edu.vn
 foundingYear: 1993
-provinceId: 1
-address: 144 Xuân Thủy, Cầu Giấy, Hà Nội
 email: info@vnu.edu.vn
 phone: 024-37547460
 website: https://vnu.edu.vn
@@ -377,6 +357,91 @@ admissionMethodIds: 1,2,3
 
 ---
 
+## 🏢 **CAMPUS TYPES APIs**
+
+## 1. Lấy danh sách loại cơ sở (cho dropdown)
+
+- **Endpoint:** `GET /api/v1/campus-types`
+- **Query params:**
+
+  - `page`, `size`, `sort`: Pagination (optional)
+  - `status`: Lọc theo trạng thái (default: active)
+
+- **Response:**
+
+```json
+{
+  "code": 1000,
+  "message": "Campus types fetched successfully",
+  "result": [
+    {
+      "id": 1,
+      "name": "Cơ sở chính",
+      "code": "MAIN",
+      "description": "Cơ sở chính của trường",
+      "isMainType": true,
+      "sortOrder": 1,
+      "status": "active",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "createdBy": "admin"
+    },
+    {
+      "id": 2,
+      "name": "Cơ sở phân hiệu",
+      "code": "BRANCH",
+      "description": "Cơ sở phân hiệu của trường",
+      "isMainType": false,
+      "sortOrder": 2,
+      "status": "active",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "createdBy": "admin"
+    },
+    {
+      "id": 3,
+      "name": "Trung tâm đào tạo",
+      "code": "TRAINING_CENTER",
+      "description": "Trung tâm đào tạo nghề nghiệp",
+      "isMainType": false,
+      "sortOrder": 3,
+      "status": "active",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "createdBy": "admin"
+    }
+  ]
+}
+```
+
+## 2. Lấy chi tiết loại cơ sở theo ID
+
+- **Endpoint:** `GET /api/v1/campus-types/{id}`
+
+## 3. Tạo loại cơ sở mới (ADMIN)
+
+- **Endpoint:** `POST /api/v1/campus-types`
+- **Body (JSON):**
+
+```json
+{
+  "name": "Trung tâm thực hành",
+  "code": "PRACTICE_CENTER",
+  "description": "Trung tâm thực hành nghề nghiệp",
+  "isMainType": false,
+  "sortOrder": 5
+}
+```
+
+## 4. Cập nhật loại cơ sở (ADMIN)
+
+- **Endpoint:** `PUT /api/v1/campus-types/{id}`
+- **Body:** Giống như tạo mới
+
+## 5. Xóa loại cơ sở (ADMIN)
+
+- **Endpoint:** `DELETE /api/v1/campus-types/{id}`
+- **Note:** Không cho phép xóa nếu có Campus đang sử dụng loại này
+
+---
+
 ## 🏢 **CAMPUS APIs**
 
 ## 1. Lấy danh sách cơ sở
@@ -388,7 +453,7 @@ admissionMethodIds: 1,2,3
   - `page`, `size`, `sort`: Pagination và sorting
   - `universityId`: Lọc theo ID trường
   - `provinceId`: Lọc theo ID tỉnh/thành
-  - `campusTypeId`: Lọc theo loại cơ sở (ID)
+  - `campusType`: Lọc theo loại cơ sở (MAIN, BRANCH, TRAINING_CENTER, RESEARCH_CENTER)
   - `isMainCampus`: Lọc cơ sở chính (true/false)
 
 - **Response:**
@@ -412,11 +477,7 @@ admissionMethodIds: 1,2,3
         "email": "info@vnu.edu.vn",
         "website": "https://vnu.edu.vn",
         "isMainCampus": true,
-        "campusType": {
-          "id": 1,
-          "name": "MAIN",
-          "description": "Cơ sở chính"
-        },
+        "campusType": "MAIN",
         "university": {
           "id": 1,
           "universityCode": "VNU_HN",
@@ -453,11 +514,7 @@ admissionMethodIds: 1,2,3
     "email": "info@vnu.edu.vn",
     "website": "https://vnu.edu.vn",
     "isMainCampus": true,
-    "campusType": {
-      "id": 1,
-      "name": "MAIN",
-      "description": "Cơ sở chính"
-    },
+    "campusType": "MAIN",
     "description": "Cơ sở chính của ĐHQGHN",
     "establishedYear": 1993,
     "areaHectares": 50.5,
@@ -499,7 +556,7 @@ admissionMethodIds: 1,2,3
   "email": "nt@vnu.edu.vn",
   "website": "https://nt.vnu.edu.vn",
   "isMainCampus": false,
-  "campusTypeId": 2,
+  "campusType": "BRANCH",
   "description": "Cơ sở Nguyễn Trãi của ĐHQGHN",
   "establishedYear": 1995,
   "areaHectares": 15.2
@@ -567,11 +624,7 @@ admissionMethodIds: 1,2,3
             "campusCode": "MAIN",
             "address": "144 Xuân Thủy, Cầu Giấy, Hà Nội",
             "isMainCampus": true,
-            "campusType": {
-              "id": 1,
-              "name": "MAIN",
-              "description": "Cơ sở chính"
-            }
+            "campusType": "MAIN"
           },
           {
             "id": 2,
@@ -579,11 +632,7 @@ admissionMethodIds: 1,2,3
             "campusCode": "NT",
             "address": "25 Nguyễn Trãi, Thanh Xuân, Hà Nội",
             "isMainCampus": false,
-            "campusType": {
-              "id": 2,
-              "name": "BRANCH",
-              "description": "Cơ sở phân hiệu"
-            }
+            "campusType": "BRANCH"
           }
         ]
       }
@@ -641,22 +690,30 @@ admissionMethodIds: 1,2,3
 - Các API University cũ vẫn hoạt động
 - Thêm field `campusCount` trong University list
 - Thêm array `campuses` trong University detail
-- Field `address`, `province`, `region` trong University vẫn giữ để tương thích
+- **Field deprecated trong University**: `address`, `province`, `region`, `provinceId` không còn trong response và form input
+- **Migration**: Dữ liệu cũ từ University đã được chuyển sang Campus tương ứng
+- **Search by Province**: Tìm kiếm University theo provinceId sẽ tìm thông qua Campus relationship
 
 ---
 
 ## 📋 **Frontend Integration**
 
-### **Dropdown APIs:**
+### **Dropdown APIs (unchanged):**
 
-- `GET /api/v1/campus-types` - Loại cơ sở (CampusType)
 - `GET /api/v1/university-categories/paginated` - Loại trường
 - `GET /api/v1/provinces` - Tỉnh/thành
 - `GET /api/v1/admission-methods` - Phương thức tuyển sinh
 
-### **FE lấy campus type:**
+### **New Campus Types for dropdown:**
 
-- FE lấy danh sách loại cơ sở qua API `/api/v1/campus-types` để render dropdown, không hardcode enum.
+```javascript
+const CAMPUS_TYPES = [
+  { value: "MAIN", label: "Cơ sở chính" },
+  { value: "BRANCH", label: "Cơ sở phân hiệu" },
+  { value: "TRAINING_CENTER", label: "Trung tâm đào tạo" },
+  { value: "RESEARCH_CENTER", label: "Trung tâm nghiên cứu" },
+];
+```
 
 ### **Search Enhancement:**
 

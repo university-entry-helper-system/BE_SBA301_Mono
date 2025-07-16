@@ -108,8 +108,6 @@ public interface UniversityMapper {
             .logoUrl(entity.getLogoUrl()) // Map trường logoUrl
             .fanpage(entity.getFanpage())
             .foundingYear(entity.getFoundingYear())
-            .province(entity.getProvince())
-            .address(entity.getAddress())
             .email(entity.getEmail())
             .phone(entity.getPhone())
             .website(entity.getWebsite())
@@ -136,8 +134,6 @@ public interface UniversityMapper {
             .shortName(doc.getShortName())
             .logoUrl(doc.getLogoUrl())
             .foundingYear(doc.getFoundingYear())
-            .province(doc.getProvince())
-            .address(doc.getAddress())
             .email(doc.getEmail())
             .phone(doc.getPhone())
             .website(doc.getWebsite())

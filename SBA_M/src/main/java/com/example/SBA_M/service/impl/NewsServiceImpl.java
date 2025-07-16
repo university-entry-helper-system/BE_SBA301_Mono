@@ -188,8 +188,6 @@ public class NewsServiceImpl implements NewsService {
                     .shortName(news.getUniversity().getShortName())
                     .logoUrl(news.getUniversity().getLogoUrl())
                     .foundingYear(news.getUniversity().getFoundingYear())
-                    .province(news.getUniversity().getProvince())
-                    .address(news.getUniversity().getAddress())
                     .email(news.getUniversity().getEmail())
                     .phone(news.getUniversity().getPhone())
                     .website(news.getUniversity().getWebsite())

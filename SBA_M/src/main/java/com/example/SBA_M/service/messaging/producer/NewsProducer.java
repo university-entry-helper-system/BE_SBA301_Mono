@@ -205,8 +205,6 @@ public class NewsProducer {
                 .shortName(university.getShortName())
                 .logoUrl(university.getLogoUrl())
                 .foundingYear(university.getFoundingYear())
-                .province(university.getProvince())
-                .address(university.getAddress())
                 .email(university.getEmail())
                 .phone(university.getPhone())
                 .website(university.getWebsite())

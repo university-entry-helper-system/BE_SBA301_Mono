@@ -54,7 +54,6 @@ public class UniversityMajorConsumer {
                     document.setId(e.getId());
                     document.setUniversityId(e.getUniversityId());
                     document.setUniversityName(e.getUniversityName());
-                    document.setProvince(e.getProvince());
                     document.setMajorId(e.getMajorId());
                     document.setMajorName(e.getMajorName());
                     document.setSubjectCombinationId(e.getSubjectCombinationId());

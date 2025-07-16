@@ -1,6 +1,5 @@
 package com.example.SBA_M.entity.queries;
 
-import com.example.SBA_M.entity.commands.Province;
 import com.example.SBA_M.entity.commands.University;
 import com.example.SBA_M.utils.Status;
 import lombok.AllArgsConstructor;
@@ -36,12 +35,6 @@ public class UniversityDocument extends AbstractDocument<Integer> {
     @Field("founding_year")
     private Integer foundingYear;
 
-    @Field("province")
-    private Province province;
-
-    @Field("address")
-    private String address;
-
     @Field("email")
     private String email;
 
@@ -54,15 +47,13 @@ public class UniversityDocument extends AbstractDocument<Integer> {
     @Field("description")
     private String description;
 
-    public UniversityDocument(Integer id, UniversityCategoryDocument categoryDoc, String name, String shortName, String logoUrl, Integer foundingYear, Province province, String address, String email, String phone, String website, String description,Status status, Instant createdAt, String creatBy, Instant updatedAt, String createdBy) {
+    public UniversityDocument(Integer id, UniversityCategoryDocument categoryDoc, String name, String shortName, String logoUrl, Integer foundingYear, String email, String phone, String website, String description,Status status, Instant createdAt, String creatBy, Instant updatedAt, String createdBy) {
         this.setId(id);
         this.category = categoryDoc;
         this.name = name;
         this.shortName = shortName;
         this.logoUrl = logoUrl;
         this.foundingYear = foundingYear;
-        this.province = province;
-        this.address = address;
         this.email = email;
         this.phone = phone;
         this.website = website;

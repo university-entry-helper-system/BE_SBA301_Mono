@@ -22,7 +22,7 @@ public class Province extends AbstractEntity<Integer>{
 
     @Column(nullable = false, unique = true, length = 100)
     private String name;
-    @Column(length = 100)
+    @Column(columnDefinition = "TEXT")
     private String description;
     @Enumerated(EnumType.STRING)
     @Column(length = 10)

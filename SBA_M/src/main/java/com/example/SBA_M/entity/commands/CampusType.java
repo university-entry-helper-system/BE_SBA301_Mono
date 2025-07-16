@@ -13,6 +13,6 @@ public class CampusType extends AbstractEntity<Integer> {
     @Column(nullable = false, unique = true, length = 255)
     private String name; // Tên loại cơ sở
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String description; // Mô tả loại cơ sở
 } 

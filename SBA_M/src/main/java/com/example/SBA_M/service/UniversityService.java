@@ -49,6 +49,16 @@ public interface UniversityService {
     UniversityResponse getUniversityByCode(String universityCode);
 
     /**
+     * Get university by name
+     */
+    UniversityResponse getUniversityByName(String name);
+
+    /**
+     * Get university by short name
+     */
+    UniversityResponse getUniversityByShortName(String shortName);
+
+    /**
      * Get universities by province
      */
     PageResponse<UniversityResponse> getUniversitiesByProvince(Integer provinceId, Boolean includeMainCampusOnly, int page, int size, String sort);
