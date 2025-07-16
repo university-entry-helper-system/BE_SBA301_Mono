@@ -2,7 +2,9 @@ package com.example.SBA_M.controller;
 
 import com.example.SBA_M.dto.request.FaqRequest;
 import com.example.SBA_M.dto.response.FaqResponse;
+import com.example.SBA_M.entity.commands.Faq;
 import com.example.SBA_M.service.IFaqService;
+import com.example.SBA_M.utils.Status;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +33,11 @@ public class FaqController {
         return faqService.createFaq(faqRequest);
     }
 
+    @GetMapping("/status/{status}")
+    public List<Faq> getFaqsByStatus(@PathVariable Status status) {
+        return faqService.findByStatus(status);
+    }
+
     @PutMapping("/{id}")
     public FaqResponse updateFaq(@PathVariable Long id, @RequestBody FaqRequest faqRequest) {
         return faqService.updateFaq(id, faqRequest);
@@ -40,4 +47,5 @@ public class FaqController {
     public void deleteFaq(@PathVariable Long id) {
         faqService.deleteFaq(id);
     }
+
 }
