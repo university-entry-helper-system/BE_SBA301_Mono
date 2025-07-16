@@ -3,7 +3,11 @@ package com.example.SBA_M.mapper;
 import com.example.SBA_M.dto.request.UniversityRequest;
 import com.example.SBA_M.dto.response.UniversityResponse;
 import com.example.SBA_M.dto.response.UniversityCategoryResponse;
+import com.example.SBA_M.dto.response.CampusResponse;
+import com.example.SBA_M.dto.response.CampusTypeResponse;
 import com.example.SBA_M.entity.commands.University;
+import com.example.SBA_M.entity.commands.Campus;
+import com.example.SBA_M.entity.commands.CampusType;
 import com.example.SBA_M.entity.queries.UniversityDocument;
 import org.mapstruct.*;
 
@@ -27,7 +31,50 @@ public interface UniversityMapper {
             .build();
     }
 
+    default CampusResponse mapToCampusResponse(Campus campus) {
+        if (campus == null) return null;
+        return CampusResponse.builder()
+            .id(campus.getId())
+            .campusName(campus.getCampusName())
+            .campusCode(campus.getCampusCode())
+            .address(campus.getAddress())
+            .phone(campus.getPhone())
+            .email(campus.getEmail())
+            .website(campus.getWebsite())
+            .isMainCampus(campus.getIsMainCampus())
+            .campusType(mapToCampusTypeResponse(campus.getCampusType()))
+            .description(campus.getDescription())
+            .establishedYear(campus.getEstablishedYear())
+            .areaHectares(campus.getAreaHectares())
+            .university(campus.getUniversity())
+            .province(campus.getProvince())
+            .status(campus.getStatus())
+            .createdAt(campus.getCreatedAt())
+            .createdBy(campus.getCreatedBy())
+            .updatedAt(campus.getUpdatedAt())
+            .updatedBy(campus.getUpdatedBy())
+            .build();
+    }
+
+    default CampusTypeResponse mapToCampusTypeResponse(CampusType campusType) {
+        if (campusType == null) return null;
+        return CampusTypeResponse.builder()
+            .id(campusType.getId())
+            .name(campusType.getName())
+            .description(campusType.getDescription())
+            .status(campusType.getStatus())
+            .createdAt(campusType.getCreatedAt())
+            .createdBy(campusType.getCreatedBy())
+            .updatedAt(campusType.getUpdatedAt())
+            .updatedBy(campusType.getUpdatedBy())
+            .build();
+    }
+
     default UniversityResponse toResponse(University entity) {
+        return toResponse(entity, false);
+    }
+
+    default UniversityResponse toResponse(University entity, boolean includeCampuses) {
         if (entity == null) return null;
         Integer categoryId = entity.getCategory() != null ? entity.getCategory().getId() : null;
         List<Integer> admissionMethodIds = entity.getAdmissionMethods() != null ?
@@ -38,8 +85,22 @@ public interface UniversityMapper {
         if (entity.getCategory() != null) {
             categoryResponse = mapToCategoryResponse(entity.getCategory());
         }
+        
+        // Calculate campus count
+        Integer campusCount = entity.getCampuses() != null ? entity.getCampuses().size() : 0;
+        
+        // Map campuses if requested
+        List<CampusResponse> campuses = null;
+        if (includeCampuses && entity.getCampuses() != null) {
+            campuses = entity.getCampuses().stream()
+                .map(this::mapToCampusResponse)
+                .collect(Collectors.toList());
+        }
+        
         return UniversityResponse.builder()
             .id(entity.getId())
+            .universityCode(entity.getUniversityCode())
+            .nameEn(entity.getNameEn())
             .categoryId(categoryId)
             .category(categoryResponse)
             .name(entity.getName())
@@ -59,6 +120,8 @@ public interface UniversityMapper {
             .updatedAt(entity.getUpdatedAt())
             .updatedBy(entity.getUpdatedBy())
             .admissionMethodIds(admissionMethodIds)
+            .campusCount(campusCount)
+            .campuses(campuses)
             .build();
     }
 

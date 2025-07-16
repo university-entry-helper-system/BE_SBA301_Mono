@@ -17,4 +17,6 @@ public interface UniversityRepository extends JpaRepository<University, Integer>
     Page<University> findByStatus(Status status, Pageable pageable);
     
     List<University> findAllByStatus(Status status);
+    
+    Optional<University> findByUniversityCodeAndStatus(String universityCode, Status status);
 }

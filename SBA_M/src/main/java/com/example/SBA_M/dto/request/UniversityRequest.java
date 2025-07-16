@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @RequiredArgsConstructor
 public class UniversityRequest {
+    private String universityCode; // Mã trường (VD: VNU_HN, HUST, NEU)
+    private String nameEn; // Tên tiếng Anh của trường
     private Integer categoryId;
     private String name;
     private String shortName;

@@ -32,8 +32,9 @@ public class UniversityController {
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sort", required = false) String sort,
             @RequestParam(value = "categoryId", required = false) Integer categoryId,
-            @RequestParam(value = "provinceId", required = false) Integer provinceId) {
-        PageResponse<UniversityResponse> result = universityService.getAllUniversities(search, page, size, sort, categoryId, provinceId);
+            @RequestParam(value = "provinceId", required = false) Integer provinceId,
+            @RequestParam(value = "includeCampuses", defaultValue = "false") Boolean includeCampuses) {
+        PageResponse<UniversityResponse> result = universityService.getAllUniversities(search, page, size, sort, categoryId, provinceId, includeCampuses);
         return ApiResponse.<PageResponse<UniversityResponse>>builder()
                 .code(1000)
                 .message("Universities fetched successfully")
@@ -100,6 +101,33 @@ public class UniversityController {
                 .code(1004)
                 .message("University status updated successfully")
                 .result(updated)
+                .build();
+    }
+
+    @Operation(summary = "Get university by code")
+    @GetMapping("/by-code/{universityCode}")
+    public ApiResponse<UniversityResponse> getUniversityByCode(@PathVariable String universityCode) {
+        UniversityResponse university = universityService.getUniversityByCode(universityCode);
+        return ApiResponse.<UniversityResponse>builder()
+                .code(1000)
+                .message("University fetched successfully")
+                .result(university)
+                .build();
+    }
+
+    @Operation(summary = "Get universities by province")
+    @GetMapping("/by-province/{provinceId}")
+    public ApiResponse<PageResponse<UniversityResponse>> getUniversitiesByProvince(
+            @PathVariable Integer provinceId,
+            @RequestParam(value = "includeMainCampusOnly", defaultValue = "false") Boolean includeMainCampusOnly,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", required = false) String sort) {
+        PageResponse<UniversityResponse> result = universityService.getUniversitiesByProvince(provinceId, includeMainCampusOnly, page, size, sort);
+        return ApiResponse.<PageResponse<UniversityResponse>>builder()
+                .code(1000)
+                .message("Universities in province fetched successfully")
+                .result(result)
                 .build();
     }
 }

@@ -17,6 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 public class UniversityResponse {
     private Integer id;
+    private String universityCode; // Mã trường (VD: VNU_HN, HUST, NEU)
+    private String nameEn; // Tên tiếng Anh của trường
     private Integer categoryId;
     private UniversityCategoryResponse category;
     private String name;
@@ -36,4 +38,6 @@ public class UniversityResponse {
     private Instant updatedAt;
     private String updatedBy;
     private List<Integer> admissionMethodIds;
+    private Integer campusCount; // Số lượng cơ sở
+    private List<CampusResponse> campuses; // Danh sách cơ sở (optional)
 }

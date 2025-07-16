@@ -52,9 +52,9 @@ public class UniversityServiceImpl implements UniversityService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<UniversityResponse> getAllUniversities(String search, int page, int size, String sort, Integer categoryId, Integer provinceId) {
-        log.info("Fetching universities with search: {}, page: {}, size: {}, sort: {}, categoryId: {}, provinceId: {}", 
-                search, page, size, sort, categoryId, provinceId);
+    public PageResponse<UniversityResponse> getAllUniversities(String search, int page, int size, String sort, Integer categoryId, Integer provinceId, Boolean includeCampuses) {
+        log.info("Fetching universities with search: {}, page: {}, size: {}, sort: {}, categoryId: {}, provinceId: {}, includeCampuses: {}", 
+                search, page, size, sort, categoryId, provinceId, includeCampuses);
         
         // Create pageable with sorting
         Pageable pageable;
@@ -74,6 +74,8 @@ public class UniversityServiceImpl implements UniversityService {
         List<University> filteredUniversities = allUniversities.stream()
                 .filter(u -> search == null || search.isEmpty() || 
                         u.getName().toLowerCase().contains(search.toLowerCase()) ||
+                        (u.getNameEn() != null && u.getNameEn().toLowerCase().contains(search.toLowerCase())) ||
+                        (u.getUniversityCode() != null && u.getUniversityCode().toLowerCase().contains(search.toLowerCase())) ||
                         (u.getShortName() != null && u.getShortName().toLowerCase().contains(search.toLowerCase())))
                 .filter(u -> categoryId == null || u.getCategory().getId().equals(categoryId))
                 .filter(u -> provinceId == null || u.getProvince().getId().equals(provinceId))
@@ -85,7 +87,7 @@ public class UniversityServiceImpl implements UniversityService {
         List<University> pagedUniversities = filteredUniversities.subList(start, end);
 
         List<UniversityResponse> items = pagedUniversities.stream()
-                .map(universityMapper::toResponse)
+                .map(u -> universityMapper.toResponse(u, includeCampuses))
                 .toList();
 
         return PageResponse.<UniversityResponse>builder()
@@ -115,6 +117,8 @@ public class UniversityServiceImpl implements UniversityService {
         String username = getCurrentUsername();
 
         University university = new University();
+        university.setUniversityCode(request.getUniversityCode());
+        university.setNameEn(request.getNameEn());
         university.setName(request.getName());
         university.setShortName(request.getShortName());
         university.setFanpage(request.getFanpage());
@@ -179,6 +183,8 @@ public class UniversityServiceImpl implements UniversityService {
         boolean nameChanged = !university.getName().equals(request.getName());
         boolean provinceChanged = !university.getProvince().getId().equals(request.getProvinceId());
 
+        university.setUniversityCode(request.getUniversityCode());
+        university.setNameEn(request.getNameEn());
         university.setName(request.getName());
         university.setShortName(request.getShortName());
         university.setFanpage(request.getFanpage());
@@ -272,6 +278,59 @@ public class UniversityServiceImpl implements UniversityService {
         }
         
         return universityMapper.toResponse(updated);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UniversityResponse getUniversityByCode(String universityCode) {
+        University university = universityRepository.findByUniversityCodeAndStatus(universityCode, Status.ACTIVE)
+                .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
+        return universityMapper.toResponse(university);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<UniversityResponse> getUniversitiesByProvince(Integer provinceId, Boolean includeMainCampusOnly, int page, int size, String sort) {
+        log.info("Fetching universities by province: {}, includeMainCampusOnly: {}, page: {}, size: {}, sort: {}", 
+                provinceId, includeMainCampusOnly, page, size, sort);
+        
+        // Create pageable with sorting
+        Pageable pageable;
+        if (sort != null && !sort.isEmpty()) {
+            String[] sortParams = sort.split(",");
+            String sortField = sortParams[0];
+            Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+            pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        }
+
+        // Get all universities and filter by province through campuses
+        List<University> allUniversities = universityRepository.findAllByStatus(Status.ACTIVE);
+        
+        // Filter universities that have campuses in the specified province
+        List<University> filteredUniversities = allUniversities.stream()
+                .filter(u -> u.getCampuses() != null && u.getCampuses().stream()
+                        .anyMatch(c -> c.getProvince().getId().equals(provinceId) && 
+                                (!Boolean.TRUE.equals(includeMainCampusOnly) || Boolean.TRUE.equals(c.getIsMainCampus()))))
+                .toList();
+
+        // Manual pagination
+        int start = page * size;
+        int end = Math.min(start + size, filteredUniversities.size());
+        List<University> pagedUniversities = filteredUniversities.subList(start, end);
+
+        List<UniversityResponse> items = pagedUniversities.stream()
+                .map(universityMapper::toResponse)
+                .toList();
+
+        return PageResponse.<UniversityResponse>builder()
+                .page(page)
+                .size(size)
+                .totalElements((long) filteredUniversities.size())
+                .totalPages((int) Math.ceil((double) filteredUniversities.size() / size))
+                .items(items)
+                .build();
     }
 
     private String getCurrentUsername() {

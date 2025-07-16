@@ -11,7 +11,7 @@ public interface UniversityService {
     /**
      * Get all universities with search, pagination, sort and filters
      */
-    PageResponse<UniversityResponse> getAllUniversities(String search, int page, int size, String sort, Integer categoryId, Integer provinceId);
+    PageResponse<UniversityResponse> getAllUniversities(String search, int page, int size, String sort, Integer categoryId, Integer provinceId, Boolean includeCampuses);
 
     /**
      * Save a university entity
@@ -42,4 +42,14 @@ public interface UniversityService {
      * Update university status
      */
     UniversityResponse updateUniversityStatus(Integer id, Status status);
+
+    /**
+     * Get university by code
+     */
+    UniversityResponse getUniversityByCode(String universityCode);
+
+    /**
+     * Get universities by province
+     */
+    PageResponse<UniversityResponse> getUniversitiesByProvince(Integer provinceId, Boolean includeMainCampusOnly, int page, int size, String sort);
 }

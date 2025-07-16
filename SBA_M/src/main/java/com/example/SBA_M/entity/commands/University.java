@@ -4,6 +4,7 @@ import com.example.SBA_M.utils.AccountStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,6 +14,13 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class University extends AbstractEntity<Integer> {
+    
+    @Column(name = "university_code", unique = true, length = 20)
+    private String universityCode; // Mã trường (VD: VNU_HN, HUST, NEU)
+
+    @Column(name = "name_en")
+    private String nameEn; // Tên tiếng Anh của trường
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private UniversityCategory category;
@@ -52,6 +60,9 @@ public class University extends AbstractEntity<Integer> {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Campus> campuses = new ArrayList<>(); // Danh sách cơ sở
 
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<News> news;
