@@ -14,6 +14,7 @@ import com.example.SBA_M.repository.commands.UniversityAdmissionMethodRepository
 import com.example.SBA_M.repository.commands.UniversityRepository;
 import com.example.SBA_M.repository.queries.UniversityAdmissionMethodReadRepository;
 import com.example.SBA_M.service.UniversityAdmissionMethodService;
+import com.example.SBA_M.service.messaging.producer.UniversityAdmissionMethodProducer;
 import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,7 @@ public class UniversityAdmissionMethodServiceImpl implements UniversityAdmission
     private final AdmissionMethodRepository admissionMethodRepository;
     private final UniversityAdmissionMethodMapper mapper;
     private final UniversityAdmissionMethodReadRepository universityAdmissionMethodReadRepository;
+    private final UniversityAdmissionMethodProducer universityAdmissionMethodProducer;
 
     @Override
     public PageResponse<UniversityAdmissionMethodResponse> getAll(int page, int size) {
@@ -79,7 +81,8 @@ public class UniversityAdmissionMethodServiceImpl implements UniversityAdmission
         uam.setConditions(request.getConditions());
         uam.setRegulations(request.getRegulations());
         uam.setAdmissionTime(request.getAdmissionTime());
-
+        uam.setStatus(Status.ACTIVE);
+        universityAdmissionMethodProducer.sendCreateEvent(uam);
         UniversityAdmissionMethod saved = universityAdmissionMethodRepository.save(uam);
         return mapper.toResponse(saved);
     }
@@ -107,7 +110,7 @@ public class UniversityAdmissionMethodServiceImpl implements UniversityAdmission
         uam.setConditions(request.getConditions());
         uam.setRegulations(request.getRegulations());
         uam.setAdmissionTime(request.getAdmissionTime());
-
+        universityAdmissionMethodProducer.sendCreateEvent(uam);
         UniversityAdmissionMethod saved = universityAdmissionMethodRepository.save(uam);
         return mapper.toResponse(saved);
     }
@@ -117,6 +120,7 @@ public class UniversityAdmissionMethodServiceImpl implements UniversityAdmission
     public void delete(Integer id) {
         UniversityAdmissionMethod uam = universityAdmissionMethodRepository.findByIdAndStatus(id, Status.ACTIVE)
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
+        universityAdmissionMethodProducer.sendCreateEvent(uam);
         uam.setStatus(Status.DELETED);
         universityAdmissionMethodRepository.save(uam);
     }

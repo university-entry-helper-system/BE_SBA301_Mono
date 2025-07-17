@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UniversityAdmissionMethodEvent {
-    private Integer id;
+    private String id;
     private Integer universityId;
     private String universityName;
 
