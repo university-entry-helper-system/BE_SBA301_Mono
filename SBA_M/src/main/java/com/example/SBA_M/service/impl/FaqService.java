@@ -6,6 +6,7 @@ import com.example.SBA_M.entity.commands.Faq;
 import com.example.SBA_M.service.IFaqService;
 import com.example.SBA_M.mapper.FaqMapper;
 import com.example.SBA_M.repository.commands.FaqRepository;
+import com.example.SBA_M.utils.Status;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -54,5 +55,11 @@ public class FaqService implements IFaqService {
     @Override
     public void deleteFaq(Long id) {
         faqRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Faq> findByStatus(Status status) {
+        return faqRepository.findByStatus(status);
+
     }
 }

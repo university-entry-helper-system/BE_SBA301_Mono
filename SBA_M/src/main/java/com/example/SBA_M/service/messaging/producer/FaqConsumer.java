@@ -1,4 +1,4 @@
-package com.example.SBA_M.service.messaging.consumer;
+package com.example.SBA_M.service.messaging.producer;
 
 import com.example.SBA_M.event.FaqEvent;
 import com.example.SBA_M.repository.commands.FaqRepository;
