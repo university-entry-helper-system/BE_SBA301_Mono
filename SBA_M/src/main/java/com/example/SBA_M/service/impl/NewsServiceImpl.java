@@ -13,6 +13,7 @@ import com.example.SBA_M.repository.queries.NewsReadRepository;
 import com.example.SBA_M.service.NewsService;
 import com.example.SBA_M.service.messaging.producer.NewsProducer;
 import com.example.SBA_M.utils.Status;
+import com.example.SBA_M.utils.NewsStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -210,7 +211,7 @@ public class NewsServiceImpl implements NewsService {
                 .imageUrl(news.getImageUrl())
                 .category(news.getCategory())
                 .viewCount(news.getViewCount())
-                .newsStatus(news.getNewsStatus())
+                .newsStatus(news.getNewsStatus() != null ? NewsStatus.valueOf(news.getNewsStatus()) : NewsStatus.PUBLISHED)
                 .publishedAt(news.getPublishedAt())
                 .status(news.getStatus())
                 .createdAt(news.getCreatedAt())

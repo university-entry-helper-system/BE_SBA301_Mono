@@ -8,6 +8,5 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = { UniversityMapper.class })
 public interface NewsMapper {
 
-    @Mapping(source = "newStatus", target = "newsStatus")
     NewsResponse toResponse(News entity);
 }

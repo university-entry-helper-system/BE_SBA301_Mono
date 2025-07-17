@@ -26,6 +26,7 @@ public enum ErrorCode {
     MAJOR_NOT_FOUND(1014, "Major not found", HttpStatus.NOT_FOUND),
     // Role Errors
     ROLE_NOT_FOUND(1014, "Role not found", HttpStatus.NOT_FOUND),
+    INVALID_OPERATION(1036, "Invalid operation: {0}", HttpStatus.BAD_REQUEST),
 
     // Token Errors
     INVALID_TOKEN(1015, "Invalid token.", HttpStatus.UNAUTHORIZED),
