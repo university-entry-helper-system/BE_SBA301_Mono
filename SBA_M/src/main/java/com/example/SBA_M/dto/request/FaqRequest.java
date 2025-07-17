@@ -1,5 +1,6 @@
 package com.example.SBA_M.dto.request;
 
+import com.example.SBA_M.utils.FaqType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -13,4 +14,5 @@ public class FaqRequest {
 
     @NotBlank(message = "Answer is required")
     private String answer;
+    private FaqType faqType;
 }

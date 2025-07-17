@@ -1,5 +1,6 @@
 package com.example.SBA_M.entity.commands;
 
+import com.example.SBA_M.utils.FaqType;
 import com.example.SBA_M.utils.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,4 +20,7 @@ public class Faq extends AbstractEntity<Long>{
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Status status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private FaqType faqType;
 }
