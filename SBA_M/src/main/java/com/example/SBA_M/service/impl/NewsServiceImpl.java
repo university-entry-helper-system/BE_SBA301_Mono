@@ -46,7 +46,7 @@ public class NewsServiceImpl implements NewsService {
         List<NewsResponse> items = newsPage.getContent().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
-
+        log.info("Fetched {} news items for page {}, size {}", items.size(), page, size);
         return PageResponse.<NewsResponse>builder()
                 .page(newsPage.getNumber())
                 .size(newsPage.getSize())
