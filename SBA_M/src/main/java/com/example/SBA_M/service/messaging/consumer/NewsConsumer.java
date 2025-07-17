@@ -40,6 +40,7 @@ public class NewsConsumer {
                 event.getViewCount(),
                 event.getNewsStatus(),
                 event.getPublishedAt(),
+                event.getDeletedAt(),
                 event.getStatus(),
                 event.getCreatedAt(),
                 event.getCreatedBy(),
@@ -56,7 +57,7 @@ public class NewsConsumer {
                 .imageUrl(event.getImageUrl())
                 .category(event.getCategory())
                 .viewCount(event.getViewCount())
-                .newStatus(event.getNewsStatus())
+                .newsStatus(event.getNewsStatus()) // Now String, no conversion needed
                 .publishedAt(event.getPublishedAt())
                 .build();
 
@@ -109,7 +110,7 @@ public class NewsConsumer {
         existingSearch.setImageUrl(event.getImageUrl());
         existingSearch.setCategory(event.getCategory());
         existingSearch.setViewCount(event.getViewCount());
-        existingSearch.setNewStatus(event.getNewsStatus());
+        existingSearch.setNewsStatus(event.getNewsStatus()); // Now String, no conversion needed
         existingSearch.setPublishedAt(event.getPublishedAt());
         existingSearch.setUniversity(uniSearch);
 
@@ -130,7 +131,7 @@ public class NewsConsumer {
         existingDoc.setStatus(event.getStatus());
         existingDoc.setUpdatedAt(event.getUpdatedAt());
         existingDoc.setUpdatedBy(event.getUpdatedBy());
-
+        existingDoc.setDeletedAt(event.getDeletedAt()); // Set deletedAt for soft delete
         newsReadRepository.save(existingDoc);
 
         // Update Elasticsearch document status
@@ -140,7 +141,6 @@ public class NewsConsumer {
         existingSearch.setStatus(event.getStatus());
         existingSearch.setUpdatedAt(event.getUpdatedAt());
         existingSearch.setUpdatedBy(event.getUpdatedBy());
-
         newsSearchRepository.save(existingSearch);
     }
 }

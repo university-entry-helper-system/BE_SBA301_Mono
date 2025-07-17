@@ -9,6 +9,7 @@ import com.example.SBA_M.event.NewsEvent;
 import com.example.SBA_M.repository.commands.NewsRepository;
 import com.example.SBA_M.repository.commands.UniversityRepository;
 import com.example.SBA_M.service.minio.MinioService;
+import com.example.SBA_M.utils.NewsStatus;
 import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +17,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -46,7 +45,7 @@ public class NewsProducer {
         news.setCategory(request.getCategory());
         news.setUniversity(university);
         news.setViewCount(0);
-        news.setNewStatus(request.getNewsStatus());
+        news.setNewsStatus(request.getNewsStatus());
         news.setStatus(Status.ACTIVE);
         news.setCreatedBy(username);
         news.setCreatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
@@ -55,7 +54,7 @@ public class NewsProducer {
 
         News savedNews = newsRepository.save(news);
 
-        var publishedAt = "PUBLISHED".equals(savedNews.getNewStatus()) ?
+        var publishedAt = NewsStatus.PUBLISHED.equals(savedNews.getNewsStatus()) ?
                 LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant() :
                 null;
 
@@ -69,8 +68,9 @@ public class NewsProducer {
                 savedNews.getImageUrl(),
                 savedNews.getCategory(),
                 savedNews.getViewCount(),
-                savedNews.getNewStatus(),
+                savedNews.getNewsStatus().name(), // pass as String
                 publishedAt,
+                savedNews.getDeletedAt(),
                 savedNews.getStatus(),
                 savedNews.getCreatedAt(),
                 savedNews.getCreatedBy(),
@@ -104,13 +104,13 @@ public class NewsProducer {
         existingNews.setImageUrl(imageUrl);
         existingNews.setCategory(request.getCategory());
         existingNews.setUniversity(university);
-        existingNews.setNewStatus(request.getNewsStatus());
+        existingNews.setNewsStatus(request.getNewsStatus());
         existingNews.setUpdatedBy(username);
         existingNews.setUpdatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
 
         News updatedNews = newsRepository.save(existingNews);
 
-        var publishedAt = "PUBLISHED".equals(updatedNews.getNewStatus()) ?
+        var publishedAt = NewsStatus.PUBLISHED.equals(updatedNews.getNewsStatus()) ?
                 LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant() :
                 null;
 
@@ -124,8 +124,9 @@ public class NewsProducer {
             updatedNews.getImageUrl(),
             updatedNews.getCategory(),
             updatedNews.getViewCount(),
-            updatedNews.getNewStatus(),
+            updatedNews.getNewsStatus().name(), // pass as String
             publishedAt,
+            updatedNews.getDeletedAt(),
             updatedNews.getStatus(),
             updatedNews.getCreatedAt(),
             updatedNews.getCreatedBy(),
@@ -145,12 +146,11 @@ public class NewsProducer {
 
         // Soft delete by changing status
         news.setStatus(Status.DELETED);
+        news.setDeletedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
         news.setUpdatedBy(username);
-        news.setUpdatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
-
         News deletedNews = newsRepository.save(news);
 
-        var publishedAt = "PUBLISHED".equals(deletedNews.getNewStatus()) ?
+        var publishedAt = NewsStatus.PUBLISHED.equals(deletedNews.getNewsStatus()) ?
                 LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant() :
                 null;
 
@@ -164,8 +164,9 @@ public class NewsProducer {
             deletedNews.getImageUrl(),
             deletedNews.getCategory(),
             deletedNews.getViewCount(),
-            deletedNews.getNewStatus(),
+            deletedNews.getNewsStatus().name(), // pass as String
             publishedAt,
+            deletedNews.getDeletedAt(),
             deletedNews.getStatus(),
             deletedNews.getCreatedAt(),
             deletedNews.getCreatedBy(),
@@ -188,7 +189,7 @@ public class NewsProducer {
                 .category(news.getCategory())
                 .university(mapToUniversityResponse(news.getUniversity()))
                 .viewCount(news.getViewCount())
-                .newsStatus(news.getNewStatus())
+                .newsStatus(news.getNewsStatus())
                 .status(news.getStatus())
                 .createdAt(news.getCreatedAt())
                 .createdBy(news.getCreatedBy())

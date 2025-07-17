@@ -1,5 +1,6 @@
 package com.example.SBA_M.dto.response;
 
+import com.example.SBA_M.utils.NewsStatus;
 import com.example.SBA_M.utils.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,8 +22,9 @@ public class NewsResponse {
     private String imageUrl;
     private String category;
     private Integer viewCount;
-    private String newsStatus;
+    private NewsStatus newsStatus;
     private Instant publishedAt;
+    private Instant deletedAt;
     private Status status;
     private Instant createdAt;
     private String createdBy;

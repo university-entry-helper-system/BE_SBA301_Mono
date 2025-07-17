@@ -21,8 +21,9 @@ public class NewsEvent extends AbstractCreatedEvent<Long> {
     private String imageUrl;
     private String category;
     private Integer viewCount;
-    private String newsStatus;
+    private String newsStatus; // Change to String
     private Instant publishedAt;
+    private Instant deletedAt;
 
     public NewsEvent(
             Long id,
@@ -34,8 +35,9 @@ public class NewsEvent extends AbstractCreatedEvent<Long> {
             String imageUrl,
             String category,
             Integer viewCount,
-            String newsStatus,
+            String newsStatus, // Change to String
             Instant publishedAt,
+            Instant deletedAt,
             Status status,
             Instant createdAt,
             String createdBy,
@@ -48,6 +50,7 @@ public class NewsEvent extends AbstractCreatedEvent<Long> {
         this.setCreatedAt(createdAt);
         this.setUpdatedBy(updatedBy);
         this.setUpdatedAt(updatedAt);
+        this.setDeletedAt(deletedAt);
         this.universityId = universityId;
         this.universityName = universityName;
         this.title = title;
@@ -58,5 +61,6 @@ public class NewsEvent extends AbstractCreatedEvent<Long> {
         this.viewCount = viewCount;
         this.newsStatus = newsStatus;
         this.publishedAt = publishedAt;
+        this.deletedAt = deletedAt;
     }
 }
