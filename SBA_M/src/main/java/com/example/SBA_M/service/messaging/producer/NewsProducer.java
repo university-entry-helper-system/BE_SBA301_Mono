@@ -75,7 +75,8 @@ public class NewsProducer {
                 savedNews.getCreatedAt(),
                 savedNews.getCreatedBy(),
                 savedNews.getUpdatedAt(),
-                savedNews.getUpdatedBy()
+                savedNews.getUpdatedBy(),
+                savedNews.isFlagged()
         );
 
         log.info("Sending create news message: {}", event);
@@ -131,7 +132,8 @@ public class NewsProducer {
             updatedNews.getCreatedAt(),
             updatedNews.getCreatedBy(),
             updatedNews.getUpdatedAt(),
-            updatedNews.getUpdatedBy()
+            updatedNews.getUpdatedBy(),
+            updatedNews.isFlagged()
         );
 
         log.info("Sending update news message: {}", event);
@@ -171,7 +173,8 @@ public class NewsProducer {
             deletedNews.getCreatedAt(),
             deletedNews.getCreatedBy(),
             deletedNews.getUpdatedAt(),
-            deletedNews.getUpdatedBy()
+            deletedNews.getUpdatedBy(),
+            deletedNews.isFlagged()
         );
 
         log.info("Sending delete news message for ID: {}", id);

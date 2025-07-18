@@ -45,7 +45,8 @@ public class NewsConsumer {
                 event.getCreatedAt(),
                 event.getCreatedBy(),
                 event.getUpdatedAt(),
-                event.getUpdatedBy()
+                event.getUpdatedBy(),
+                event.isFlagged()
         );
         newsReadRepository.save(doc);
 
