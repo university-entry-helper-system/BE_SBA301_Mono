@@ -17,4 +17,5 @@ import java.util.List;
 public class MajorResponse {
     Long id;
     String name;
+    com.example.SBA_M.utils.Status status;
 }

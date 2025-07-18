@@ -12,6 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import com.example.SBA_M.dto.response.PageResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,12 +56,29 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ExamSubjectResponse> getAllExamSubjects() {
-        log.info("Fetching all exam subjects");
-
-        return examSubjectRepository.findAll().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public PageResponse<ExamSubjectResponse> getAllExamSubjects(String search, int page, int size, String sort) {
+        Pageable pageable;
+        if (sort != null && !sort.isEmpty()) {
+            String[] sortParams = sort.split(",");
+            String sortField = sortParams[0];
+            Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+            pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        } else {
+            pageable = PageRequest.of(page, size);
+        }
+        Page<ExamSubject> subjectPage = examSubjectRepository.findByStatusAndNameContainingIgnoreCase(
+            Status.ACTIVE,
+            search != null ? search : "",
+            pageable
+        );
+        List<ExamSubjectResponse> items = subjectPage.getContent().stream().map(this::mapToResponse).toList();
+        return PageResponse.<ExamSubjectResponse>builder()
+                .page(subjectPage.getNumber())
+                .size(subjectPage.getSize())
+                .totalElements(subjectPage.getTotalElements())
+                .totalPages(subjectPage.getTotalPages())
+                .items(items)
+                .build();
     }
 
     @Override
@@ -73,6 +95,16 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
         examSubject = examSubjectRepository.save(examSubject);
         log.info("Exam subject updated with ID: {}", examSubject.getId());
 
+        return mapToResponse(examSubject);
+    }
+
+    @Override
+    @Transactional
+    public ExamSubjectResponse updateExamSubjectStatus(Long id, Status status) {
+        ExamSubject examSubject = examSubjectRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.EXAM_SUBJECT_NOT_FOUND));
+        examSubject.setStatus(status);
+        examSubject = examSubjectRepository.save(examSubject);
         return mapToResponse(examSubject);
     }
 
@@ -99,6 +131,7 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
                 .id(examSubject.getId())
                 .name(examSubject.getName())
                 .shortName(examSubject.getShortName())
+                .status(examSubject.getStatus())
                 .build();
     }
 }

@@ -1,7 +1,6 @@
 package com.example.SBA_M.entity.queries;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -35,7 +34,7 @@ public class NewsSearch extends AbstractElasticsearchDocument<Long> {
     private Integer viewCount;
 
     @Field(type = FieldType.Keyword)
-    private String newStatus;
+    private String newsStatus;
 
     @Field(type = FieldType.Date)
     private Instant publishedAt;

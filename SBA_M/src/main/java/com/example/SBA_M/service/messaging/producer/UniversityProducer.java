@@ -41,8 +41,6 @@ public class UniversityProducer {
                 university.getShortName(),
                 university.getLogoUrl(),
                 university.getFoundingYear(),
-                university.getProvince().getId(),
-                university.getAddress(),
                 university.getEmail(),
                 university.getPhone(),
                 university.getWebsite(),
@@ -66,7 +64,7 @@ public class UniversityProducer {
         UniversityUpdatedEvent event = new UniversityUpdatedEvent(
                 university.getId(),
                 university.getName(),
-                university.getProvince().getName() // Assuming name is not needed for province update event
+                null
         );
         kafkaTemplate.send("university.updated.search.event", event);
     }

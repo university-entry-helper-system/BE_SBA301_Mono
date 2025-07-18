@@ -16,6 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import com.example.SBA_M.dto.response.PageResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,13 +69,33 @@ public class SubjectCombinationServiceImpl implements SubjectCombinationService 
 
     @Override
     @Transactional(readOnly = true)
-    public List<SubjectCombinationResponse> getAllSubjectCombinations() {
-        log.info("Fetching all subject combinations");
-
-        List<SubjectCombination> combinations = subjectCombinationRepository.findAll();
-        return combinations.stream()
+    public PageResponse<SubjectCombinationResponse> getAllSubjectCombinations(String search, int page, int size, String sort, String block, String examSubject) {
+        // Tạm thời sử dụng findAll() đơn giản nhất để test
+        List<SubjectCombination> allCombinations = subjectCombinationRepository.findAll();
+        
+        // Filter trong Java
+        List<SubjectCombination> filteredCombinations = allCombinations.stream()
+                .filter(sc -> sc.getStatus() == Status.ACTIVE)
+                .filter(sc -> search == null || search.isEmpty() || 
+                        sc.getName().toLowerCase().contains(search.toLowerCase()))
+                .toList();
+        
+        // Manual pagination
+        int start = page * size;
+        int end = Math.min(start + size, filteredCombinations.size());
+        List<SubjectCombination> pagedCombinations = filteredCombinations.subList(start, end);
+        
+        List<SubjectCombinationResponse> items = pagedCombinations.stream()
                 .map(this::mapToResponse)
-                .collect(Collectors.toList());
+                .toList();
+        
+        return PageResponse.<SubjectCombinationResponse>builder()
+                .page(page)
+                .size(size)
+                .totalElements((long) filteredCombinations.size())
+                .totalPages((int) Math.ceil((double) filteredCombinations.size() / size))
+                .items(items)
+                .build();
     }
 
     @Override
@@ -96,6 +121,15 @@ public class SubjectCombinationServiceImpl implements SubjectCombinationService 
 
         // Map to response
         return mapToResponse(updatedCombination);
+    }
+
+    @Override
+    @Transactional
+    public SubjectCombinationResponse updateSubjectCombinationStatus(Long id, Status status) {
+        SubjectCombination combination = findSubjectCombinationById(id);
+        combination.setStatus(status);
+        combination = subjectCombinationRepository.save(combination);
+        return mapToResponse(combination);
     }
 
     @Override
@@ -135,6 +169,7 @@ public class SubjectCombinationServiceImpl implements SubjectCombinationService 
                 .id(combination.getId())
                 .name(combination.getName())
                 .description(combination.getDescription())
+                .status(combination.getStatus())
                 .examSubjects(combination.getExamSubjects().stream()
                         .map(subject -> ExamSubjectResponse.builder()
                                 .id(subject.getId())
@@ -142,6 +177,10 @@ public class SubjectCombinationServiceImpl implements SubjectCombinationService 
                                 .shortName(subject.getShortName())
                                 .build())
                         .collect(Collectors.toList()))
+                .block(combination.getBlock() == null ? null : SubjectCombinationResponse.BlockInfo.builder()
+                        .id(combination.getBlock().getId())
+                        .name(combination.getBlock().getName())
+                        .build())
                 .build();
     }
 }

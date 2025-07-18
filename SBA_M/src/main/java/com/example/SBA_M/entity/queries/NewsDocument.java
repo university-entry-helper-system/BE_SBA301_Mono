@@ -44,9 +44,12 @@ public class NewsDocument extends AbstractDocument<Long> {
     @Field("published_at")
     private Instant publishedAt;
 
+    @Field("deleted_at")
+    private Instant deletedAt;
+
     public NewsDocument(Long id, UniversityDocument university, String title,
                         String summary, String content, String imageUrl, String category,
-                        Integer viewCount, String newsStatus, Instant publishedAt,
+                        Integer viewCount, String newsStatus, Instant publishedAt, Instant deletedAt,
                         Status status, Instant createdAt, String createdBy,
                         Instant updatedAt, String updatedBy) {
         this.setId(id);
@@ -59,6 +62,7 @@ public class NewsDocument extends AbstractDocument<Long> {
         this.viewCount = viewCount;
         this.newsStatus = newsStatus;
         this.publishedAt = publishedAt;
+        this.deletedAt = deletedAt;
         this.setStatus(status);
         this.setCreatedAt(createdAt);
         this.setCreatedBy(createdBy);

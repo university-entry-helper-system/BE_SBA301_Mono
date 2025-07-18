@@ -26,6 +26,7 @@ public enum ErrorCode {
     MAJOR_NOT_FOUND(1014, "Major not found", HttpStatus.NOT_FOUND),
     // Role Errors
     ROLE_NOT_FOUND(1014, "Role not found", HttpStatus.NOT_FOUND),
+    INVALID_OPERATION(1036, "Invalid operation: {0}", HttpStatus.BAD_REQUEST),
 
     // Token Errors
     INVALID_TOKEN(1015, "Invalid token.", HttpStatus.UNAUTHORIZED),
@@ -46,6 +47,13 @@ public enum ErrorCode {
     SEARCH_FAILED(1026, "Search failed", HttpStatus.INTERNAL_SERVER_ERROR),
     PROVINCE_NOT_FOUND(1027, "Province not found", HttpStatus.NOT_FOUND),
     UNIVERSITY_CATEGORY_NOT_FOUND(1028, "University category not found", HttpStatus.NOT_FOUND),
+    BLOCK_NOT_FOUND(1029, "Block not found", HttpStatus.NOT_FOUND),
+    BLOCK_NAME_EXISTS(1030, "Block name already exists", HttpStatus.BAD_REQUEST),
+    ADMISSION_METHOD_NOT_FOUND(1031, "Admission method not found", HttpStatus.NOT_FOUND),
+    CAMPUS_NOT_FOUND(1032, "Campus not found", HttpStatus.NOT_FOUND),
+    CAMPUS_CODE_ALREADY_EXISTS(1033, "Campus code already exists within this university", HttpStatus.BAD_REQUEST),
+    CAMPUS_TYPE_NOT_FOUND(1034, "Campus type not found", HttpStatus.NOT_FOUND),
+    CAMPUS_TYPE_NAME_EXISTS(1035, "Campus type name already exists", HttpStatus.BAD_REQUEST),
     ;
     private final int code;
     private final String message;

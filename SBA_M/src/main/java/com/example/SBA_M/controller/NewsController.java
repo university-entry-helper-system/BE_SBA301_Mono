@@ -5,7 +5,7 @@ import com.example.SBA_M.dto.response.ApiResponse;
 import com.example.SBA_M.dto.response.NewsResponse;
 import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.service.NewsService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("api/v1/news")
@@ -21,14 +24,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class NewsController {
 
     private final NewsService newsService;
-    private final ObjectMapper objectMapper;
 
-    public NewsController(NewsService newsService, ObjectMapper objectMapper) {
+    public NewsController(NewsService newsService) {
         this.newsService = newsService;
-        this.objectMapper = objectMapper;
     }
 
     @Operation(summary = "Get paginated news")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/paginated")
     public ApiResponse<PageResponse<NewsResponse>> getNewsPaginated(
             @RequestParam(defaultValue = "0") int page,
@@ -42,6 +44,7 @@ public class NewsController {
     }
 
     @Operation(summary = "Get news by ID")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ApiResponse<NewsResponse> getNewsById(@PathVariable Long id) {
         NewsResponse news = newsService.getNewsById(id);
@@ -53,13 +56,11 @@ public class NewsController {
     }
 
     @Operation(summary = "Create news with optional image")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<?> createNews(
-            @RequestParam("news") String newsJson,
-            @RequestParam(value = "image", required = false) MultipartFile image) {
+    public ApiResponse<?> createNews(@Valid @ModelAttribute NewsRequest newsRequest) {
         try {
-            NewsRequest newsRequest = objectMapper.readValue(newsJson, NewsRequest.class);
-            NewsResponse created = newsService.createNews(newsRequest, image);
+            NewsResponse created = newsService.createNews(newsRequest);
             return ApiResponse.<NewsResponse>builder()
                     .code(1001)
                     .message("News created successfully")
@@ -75,10 +76,11 @@ public class NewsController {
     }
 
     @Operation(summary = "Update a news item")
-    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<NewsResponse> updateNews(
             @PathVariable Long id,
-            @Valid @RequestBody NewsRequest newsRequest) {
+            @Valid @ModelAttribute NewsRequest newsRequest) {
         NewsResponse updated = newsService.updateNews(id, newsRequest);
         return ApiResponse.<NewsResponse>builder()
                 .code(1002)
@@ -88,6 +90,7 @@ public class NewsController {
     }
 
     @Operation(summary = "Delete a news item")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteNews(@PathVariable Long id) {
         newsService.deleteNews(id);
@@ -98,6 +101,7 @@ public class NewsController {
     }
 
     @Operation(summary = "Search news")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/search")
     public ApiResponse<PageResponse<NewsResponse>> searchNews(
             @RequestParam String query,
@@ -111,3 +115,4 @@ public class NewsController {
                 .build();
     }
 }
+

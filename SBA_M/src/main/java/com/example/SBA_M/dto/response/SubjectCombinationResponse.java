@@ -15,4 +15,15 @@ public class SubjectCombinationResponse {
     private String name;
     private String description;
     private List<ExamSubjectResponse> examSubjects;
+    private com.example.SBA_M.utils.Status status;
+    private BlockInfo block;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class BlockInfo {
+        private Long id;
+        private String name;
+    }
 }

@@ -13,6 +13,7 @@ import com.example.SBA_M.repository.queries.NewsReadRepository;
 import com.example.SBA_M.service.NewsService;
 import com.example.SBA_M.service.messaging.producer.NewsProducer;
 import com.example.SBA_M.utils.Status;
+import com.example.SBA_M.utils.NewsStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -45,7 +46,7 @@ public class NewsServiceImpl implements NewsService {
         List<NewsResponse> items = newsPage.getContent().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
-
+        log.info("Fetched {} news items for page {}, size {}", items.size(), page, size);
         return PageResponse.<NewsResponse>builder()
                 .page(newsPage.getNumber())
                 .size(newsPage.getSize())
@@ -118,7 +119,7 @@ public class NewsServiceImpl implements NewsService {
                 .build();
     }
     @Override
-    public NewsResponse createNews(NewsRequest request, MultipartFile image) {
+    public NewsResponse createNews(NewsRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.isAuthenticated() || authentication.getName() == null) {
@@ -127,7 +128,8 @@ public class NewsServiceImpl implements NewsService {
             String username = authentication.getName();
 
             log.info("Creating news with title: {}", request.getTitle());
-            return newsProducer.createNews(request, image,  username);
+            // Sử dụng image từ request
+            return newsProducer.createNews(request, request.getImage(), username);
         } catch (AppException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -146,7 +148,7 @@ public class NewsServiceImpl implements NewsService {
             String username = authentication.getName();
 
             log.info("Updating news with ID: {}", id);
-            return newsProducer.updateNews(id, request, username);
+            return newsProducer.updateNews(id, request, request.getImage(), username);
         } catch (AppException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -187,8 +189,6 @@ public class NewsServiceImpl implements NewsService {
                     .shortName(news.getUniversity().getShortName())
                     .logoUrl(news.getUniversity().getLogoUrl())
                     .foundingYear(news.getUniversity().getFoundingYear())
-                    .province(news.getUniversity().getProvince())
-                    .address(news.getUniversity().getAddress())
                     .email(news.getUniversity().getEmail())
                     .phone(news.getUniversity().getPhone())
                     .website(news.getUniversity().getWebsite())
@@ -211,7 +211,7 @@ public class NewsServiceImpl implements NewsService {
                 .imageUrl(news.getImageUrl())
                 .category(news.getCategory())
                 .viewCount(news.getViewCount())
-                .newsStatus(news.getNewsStatus())
+                .newsStatus(news.getNewsStatus() != null ? NewsStatus.valueOf(news.getNewsStatus()) : NewsStatus.PUBLISHED)
                 .publishedAt(news.getPublishedAt())
                 .status(news.getStatus())
                 .createdAt(news.getCreatedAt())

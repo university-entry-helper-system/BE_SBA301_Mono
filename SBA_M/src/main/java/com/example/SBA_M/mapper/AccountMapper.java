@@ -3,7 +3,10 @@ package com.example.SBA_M.mapper;
 import com.example.SBA_M.dto.request.AccountCreationRequest;
 import com.example.SBA_M.dto.request.UserUpdateRequest;
 import com.example.SBA_M.dto.response.AccountResponse;
+import com.example.SBA_M.dto.response.RoleResponse;
 import com.example.SBA_M.entity.commands.Account;
+import com.example.SBA_M.entity.commands.Role;
+import com.example.SBA_M.utils.Gender;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -12,6 +15,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 @Mapper(componentModel = "spring") // Đảm bảo Spring có thể inject mapper này
 public interface AccountMapper {
@@ -37,7 +41,12 @@ public interface AccountMapper {
 
     // Chuyển đổi Account entity sang AccountResponse DTO
     // Bỏ qua trường 'password' vì nó là thông tin nhạy cảm
-    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "role", source = "roles", qualifiedByName = "rolesToRoleResponse")
+    @Mapping(target = "gender", source = "gender", qualifiedByName = "genderToString")
+    @Mapping(target = "loginCount", source = "loginCount")
+    @Mapping(target = "lastLoginAt", source = "lastLoginAt")
+    @Mapping(target = "createdBy", source = "createdBy")
+    @Mapping(target = "updatedBy", source = "updatedBy")
     AccountResponse toAccountResponse(Account account);
 
     // Cập nhật một Account entity hiện có từ UserUpdateRequest
@@ -69,5 +78,23 @@ public interface AccountMapper {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @Named("rolesToRoleResponse")
+    default RoleResponse rolesToRoleResponse(Set<Role> roles) {
+        if (roles == null || roles.isEmpty()) {
+            return null;
+        }
+        // Lấy role đầu tiên (thường user chỉ có 1 role)
+        Role firstRole = roles.iterator().next();
+        RoleResponse response = new RoleResponse();
+        response.setId(firstRole.getId());
+        response.setName(firstRole.getName().name());
+        return response;
+    }
+
+    @Named("genderToString")
+    default String genderToString(Gender gender) {
+        return gender != null ? gender.name() : null;
     }
 }

@@ -1,8 +1,10 @@
 package com.example.SBA_M.dto.request;
 
+import com.example.SBA_M.utils.NewsStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -33,7 +35,9 @@ public class NewsRequest {
     @NotBlank(message = "Category is required")
     private String category;
 
-    private String newsStatus = "Published";
+    private NewsStatus newsStatus = NewsStatus.PUBLISHED;
 
     private Instant publishedAt;
+
+    private MultipartFile image;
 }

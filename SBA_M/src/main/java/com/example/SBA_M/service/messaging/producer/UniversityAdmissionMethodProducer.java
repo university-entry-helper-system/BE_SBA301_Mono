@@ -15,8 +15,9 @@ public class UniversityAdmissionMethodProducer {
     private final KafkaTemplate<String, UniversityAdmissionMethodEvent> kafkaTemplate;
 
     public void sendCreateEvent(UniversityAdmissionMethod entity) {
+        String id = entity.getId() + "-" + entity.getUniversity().getId() + "-" + entity.getAdmissionMethod().getId();
         UniversityAdmissionMethodEvent event = new UniversityAdmissionMethodEvent(
-                entity.getId(),
+                id,
                 entity.getUniversity().getId(),
                 entity.getUniversity().getName(),
 

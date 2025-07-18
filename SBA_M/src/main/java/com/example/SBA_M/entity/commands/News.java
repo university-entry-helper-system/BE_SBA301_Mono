@@ -1,5 +1,6 @@
 package com.example.SBA_M.entity.commands;
 
+import com.example.SBA_M.utils.NewsStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,9 +36,20 @@ public class News extends AbstractEntity<Long> {
     @Column(name = "view_count")
     private Integer viewCount = 0;
 
-    @Column(length = 20)
-    private String newStatus = "PUBLISHED";
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20, name = "news_status")
+    private NewsStatus newsStatus = NewsStatus.PUBLISHED;
 
     @Column(name = "published_at")
     private Instant publishedAt;
+
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (publishedAt == null && newsStatus == NewsStatus.PUBLISHED) {
+            publishedAt = Instant.now();
+        }
+    }
 }

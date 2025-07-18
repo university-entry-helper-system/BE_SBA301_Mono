@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -14,17 +15,19 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AccountResponse {
-    UUID id; // ID tài khoản là UUID
+    UUID id;
     String username;
     String email;
-    String password;
     String fullName;
     String phone;
     String status;
-    RoleResponse role; // Thông tin về vai trò của tài khoản
+    String gender;
+    LocalDate dob;
+    RoleResponse role;
+    Integer loginCount;
+    Instant lastLoginAt;
+    String createdBy;
+    String updatedBy;
     Instant createdAt;
     Instant updatedAt;
-    // Có thể thêm createdBy/updatedBy nếu thực sự cần cho client, nhưng thường là không.
-    // String createdBy;
-    // String updatedBy;
 }

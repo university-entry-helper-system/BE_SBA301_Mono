@@ -12,5 +12,5 @@ import org.springframework.context.annotation.Configuration;
     bearerFormat = "JWT"
 )
 public class SwaggerConfig {
-    // Nếu có method baseOpenAPI() chỉ cần trả về info, không cần security scheme ở đây
+    // If there's a baseOpenAPI() method that returns Info, defining the security scheme here is not necessary.
 }

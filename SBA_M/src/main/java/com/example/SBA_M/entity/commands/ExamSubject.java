@@ -1,7 +1,10 @@
 package com.example.SBA_M.entity.commands;
 
+import com.example.SBA_M.utils.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -24,6 +27,10 @@ public class ExamSubject extends AbstractEntity<Long> {
 
     @Column(name = "short_name", length = 20)
     private String shortName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
 
     @ManyToMany(mappedBy = "examSubjects")
     private List<SubjectCombination> subjectCombinations;

@@ -103,7 +103,7 @@ public class UniversityMajorProducer {
                     id,
                     universityId,
                     universityMajor.getUniversity().getName(),
-                    universityMajor.getUniversity().getProvince().getName(),
+                    null, // province is deprecated, pass null
                     majorId,
                     universityMajor.getMajor().getName(),
                     combo.getId(),

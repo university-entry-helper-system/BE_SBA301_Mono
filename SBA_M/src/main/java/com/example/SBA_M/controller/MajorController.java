@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import com.example.SBA_M.dto.response.PageResponse;
+import com.example.SBA_M.dto.request.StatusUpdateRequest;
+
 @RestController
 @RequestMapping("/api/v1/majors")
 @RequiredArgsConstructor
@@ -23,6 +27,7 @@ public class MajorController {
     private final MajorService majorService;
 
     @Operation(summary = "Create a new major")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<MajorResponse> createMajor(@Valid @RequestBody MajorRequest request) {
         MajorResponse createdMajor = majorService.createMajor(request);
@@ -34,6 +39,7 @@ public class MajorController {
     }
 
     @Operation(summary = "Get major by ID")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ApiResponse<MajorResponse> getMajorById(@PathVariable Long id) {
         MajorResponse major = majorService.getMajorById(id);
@@ -44,11 +50,17 @@ public class MajorController {
                 .build();
     }
 
-    @Operation(summary = "Get all majors")
+    @Operation(summary = "Get all majors (search, paging, sort)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
-    public ApiResponse<List<MajorResponse>> getAllMajors() {
-        List<MajorResponse> majors = majorService.getAllMajors();
-        return ApiResponse.<List<MajorResponse>>builder()
+    public ApiResponse<PageResponse<MajorResponse>> getAllMajors(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", required = false) String sort
+    ) {
+        PageResponse<MajorResponse> majors = majorService.getAllMajors(search, page, size, sort);
+        return ApiResponse.<PageResponse<MajorResponse>>builder()
                 .code(1000)
                 .message("List of majors fetched successfully")
                 .result(majors)
@@ -56,6 +68,7 @@ public class MajorController {
     }
 
     @Operation(summary = "Update a major")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<MajorResponse> updateMajor(
             @PathVariable Long id,
@@ -68,7 +81,22 @@ public class MajorController {
                 .build();
     }
 
+    @Operation(summary = "Update status of a major")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/status")
+    public ApiResponse<MajorResponse> updateMajorStatus(
+            @PathVariable Long id,
+            @RequestBody StatusUpdateRequest request) {
+        MajorResponse updated = majorService.updateMajorStatus(id, request.getStatus());
+        return ApiResponse.<MajorResponse>builder()
+                .code(1004)
+                .message("Major status updated successfully")
+                .result(updated)
+                .build();
+    }
+
     @Operation(summary = "Delete a major")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteMajor(@PathVariable Long id) {
         majorService.deleteMajor(id);

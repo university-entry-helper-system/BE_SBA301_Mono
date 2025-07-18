@@ -14,6 +14,8 @@ import com.example.SBA_M.utils.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,6 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     private final AdmissionMethodMapper admissionMethodMapper;
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public AdmissionMethodResponse createAdmissionMethod(AdmissionMethodRequest request, String username) {
         AdmissionMethod am = new AdmissionMethod();
         am.setName(request.getName());
@@ -45,10 +46,21 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public PageResponse<AdmissionMethodResponse> getAllAdmissionMethods(int page, int size) {
-        Page<AdmissionMethod> methodPage = admissionMethodRepository
-                .findAllByStatus(Status.ACTIVE, PageRequest.of(page, size));
+    public PageResponse<AdmissionMethodResponse> getAllAdmissionMethods(String search, int page, int size, String sort) {
+        Pageable pageable;
+        if (sort != null && !sort.isEmpty()) {
+            String[] sortParams = sort.split(",");
+            String sortField = sortParams[0];
+            Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+            pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        } else {
+            pageable = PageRequest.of(page, size);
+        }
+        Page<AdmissionMethod> methodPage = admissionMethodRepository.findByStatusAndNameContainingIgnoreCase(
+            Status.ACTIVE,
+            search != null ? search : "",
+            pageable
+        );
         return PageResponse.<AdmissionMethodResponse>builder()
                 .page(methodPage.getNumber())
                 .size(methodPage.getSize())
@@ -61,7 +73,6 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public AdmissionMethodResponse getAdmissionMethodById(Integer id) {
         AdmissionMethod am = admissionMethodRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
@@ -69,11 +80,8 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public AdmissionMethodResponse updateAdmissionMethod(Integer id, AdmissionMethodRequest request, String username) {
-        AdmissionMethod amDoc = admissionMethodRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
-        AdmissionMethod am = admissionMethodRepository.findById(amDoc.getId())
+        AdmissionMethod am = admissionMethodRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
         am.setName(request.getName());
         am.setDescription(request.getDescription());
@@ -87,11 +95,17 @@ public class AdmissionMethodServiceImpl implements AdmissionMethodService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
-    public void deleteAdmissionMethod(Integer id) {
-        AdmissionMethod amDoc = admissionMethodRepository.findByIdAndStatus(id, Status.ACTIVE)
+    public AdmissionMethodResponse updateAdmissionMethodStatus(Integer id, Status status) {
+        AdmissionMethod am = admissionMethodRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
-        AdmissionMethod am = admissionMethodRepository.findById(amDoc.getId())
+        am.setStatus(status);
+        am = admissionMethodRepository.save(am);
+        return admissionMethodMapper.toResponse(am);
+    }
+
+    @Override
+    public void deleteAdmissionMethod(Integer id) {
+        AdmissionMethod am = admissionMethodRepository.findByIdAndStatus(id, Status.ACTIVE)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_KEY));
         am.setStatus(Status.DELETED);
         admissionMethodProducer.sendDeleteEvent(am);

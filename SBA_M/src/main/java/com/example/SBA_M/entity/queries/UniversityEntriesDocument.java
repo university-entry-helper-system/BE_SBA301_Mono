@@ -22,7 +22,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class UniversityEntriesDocument {
 
     @Id
-    private Integer id;
+    @Field("_id")
+    private String id;
 
     @Field("university_id")
     private Integer universityId;
