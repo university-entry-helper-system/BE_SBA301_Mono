@@ -16,6 +16,7 @@ public class UniversityMajorEvent {
 
     private Long majorId;
     private String majorName;
+    private Integer year;
 
     private Integer methodId;
     private String methodName;

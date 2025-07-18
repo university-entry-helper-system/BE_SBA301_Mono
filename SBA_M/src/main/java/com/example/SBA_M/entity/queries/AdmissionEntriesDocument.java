@@ -68,4 +68,5 @@ public class AdmissionEntriesDocument {
 
     @Field("status")
     private Status status;
+
 }

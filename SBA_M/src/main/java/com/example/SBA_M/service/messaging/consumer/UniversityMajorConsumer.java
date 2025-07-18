@@ -37,6 +37,7 @@ public class UniversityMajorConsumer {
                     doc.setSubjectCombinationId(event.getSubjectCombinationId());
                     doc.setSubjectCombination(event.getSubjectCombination());
                     doc.setScore(event.getScore());
+                    doc.setYear(event.getYear());
                     doc.setNote(event.getNote());
                     doc.setStatus(event.getStatus());
                     return doc;

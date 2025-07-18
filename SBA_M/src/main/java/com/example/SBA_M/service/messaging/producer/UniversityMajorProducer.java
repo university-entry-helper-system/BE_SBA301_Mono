@@ -43,13 +43,14 @@ public class UniversityMajorProducer {
 
         for (AdmissionMethod method : admissionMethods) {
             for (SubjectCombination combo : subjectCombinations) {
-                String id = university.getId() + "-" + major.getId() + "-" + method.getId() + "-" + combo.getId();
+                String id = university.getId() + "-" + major.getId() + "-" + method.getId() + "-" + combo.getId() + "-" + um.getYear();
                 UniversityMajorEvent event = new UniversityMajorEvent(
                         id,
                         university.getId(),
                         university.getName(),
                         major.getId(),
                         um.getUniversityMajorName(),
+                        um.getYear(),
                         method.getId(),
                         method.getName(),
                         combo.getId(),

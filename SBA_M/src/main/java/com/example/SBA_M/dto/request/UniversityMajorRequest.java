@@ -23,6 +23,8 @@ public class UniversityMajorRequest {
 
     private String notes;
 
+    private Integer year;
+
     private List<Integer> admissionMethodIds;
 
     private List<Long> subjectCombinationIds;
