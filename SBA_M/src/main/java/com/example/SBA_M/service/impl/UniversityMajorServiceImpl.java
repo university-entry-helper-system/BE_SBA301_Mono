@@ -33,10 +33,13 @@ import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -92,14 +95,12 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
     @Override
     @Transactional
     public UniversityMajorResponse createUniversityMajor(UniversityMajorRequest request) {
+        String username = getCurrentUsername();
         University university = universityRepository.findByIdAndStatus(request.getUniversityId(), Status.ACTIVE)
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_NOT_FOUND));
         Major major = majorRepository.findByIdAndStatus(request.getMajorId(), Status.ACTIVE)
                 .orElseThrow(() -> new AppException(ErrorCode.MAJOR_NOT_FOUND));
         List<SubjectCombination> subjectCombination = subjectCombinationService.findAllById(request.getSubjectCombinationIds());
-        if (subjectCombination.size() != request.getAdmissionMethodIds().size()) {
-            throw new AppException(ErrorCode.INVALID_PARAM, "Some admission methods not found");
-        }
         List<AdmissionMethod> methods = admissionMethodRepository.findAllById(request.getAdmissionMethodIds());
         if (methods.size() != request.getAdmissionMethodIds().size()) {
             throw new AppException(ErrorCode.INVALID_PARAM, "Some admission methods not found");
@@ -110,10 +111,16 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
         entity.setMajor(major);
         entity.setAdmissionMethods(methods);
         entity.setSubjectCombinations(subjectCombination);
-        entity.setUniversityMajorName(request.getUniversityMajorName());
         entity.setScore(request.getScores());
+        entity.setYear(request.getYear());
+        entity.setUniversityMajorName(request.getUniversityMajorName());
         entity.setQuota(request.getQuota());
         entity.setNotes(request.getNotes());
+        entity.setStatus(Status.ACTIVE);
+        entity.setCreatedBy(username);
+        entity.setCreatedAt(Instant.now());
+        entity.setUpdatedBy(username);
+        entity.setUpdatedAt(Instant.now());
 
         UniversityMajor saved = universityMajorRepository.save(entity);
        universityMajorProducer.sendCreateEvents(saved);
@@ -124,6 +131,7 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
     @Override
     @Transactional
     public UniversityMajorResponse updateUniversityMajor(Integer id, UniversityMajorRequest request) {
+        String username = getCurrentUsername();
         UniversityMajor existing = universityMajorRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.UNIVERSITY_MAJOR_NOT_FOUND));
 
@@ -145,9 +153,13 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
         existing.setAdmissionMethods(methods);
         existing.setSubjectCombinations(subjectCombinations);
         existing.setScore(request.getScores());
+        existing.setYear(request.getYear());
         existing.setQuota(request.getQuota());
         existing.setNotes(request.getNotes());
         existing.setUniversityMajorName(request.getUniversityMajorName());
+        existing.setStatus(Status.ACTIVE);
+        existing.setUpdatedBy(username);
+        existing.setUpdatedAt(Instant.now());
 
         UniversityMajor saved = universityMajorRepository.save(existing);
         universityMajorProducer.sendCreateEvents(saved);
@@ -447,5 +459,11 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
             throw new AppException(ErrorCode.INVALID_PARAM, "Major ID must be a positive long");
         }
     }
-
+    private String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getName() == null) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+        return authentication.getName();
+    }
 }
