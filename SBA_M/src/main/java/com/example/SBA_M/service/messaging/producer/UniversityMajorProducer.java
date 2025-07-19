@@ -66,14 +66,14 @@ public class UniversityMajorProducer {
         kafkaTemplate.send("university-major.bulk-event", new UniversityMajorEventBatch(events));
     }
 
-    public void sendSearchEvent(UniversityMajor universityMajor) {
+    public void sendSearchEvent(UniversityMajor universityMajor,Integer year) {
         Integer universityId = universityMajor.getUniversity().getId();
         Long majorId = universityMajor.getMajor().getId();
         Status status = universityMajor.getStatus();
 
         // Count by major (only once)
         int countByMajor = universityMajorRepository
-                .countByUniversityIdAndMajorIdAndStatus(universityId, majorId, status);
+                .countByUniversityIdAndMajorIdAndStatusAndYear(universityId, majorId, status, year);
 
         // Get all subject combination IDs
         List<Long> subjectCombinationIds = universityMajor.getSubjectCombinations().stream()
@@ -82,7 +82,7 @@ public class UniversityMajorProducer {
 
         // Get count per subjectCombination in 1 query
         Map<Long, Integer> countByComboMap = universityMajorRepository
-                .countByUniversityIdAndSubjectCombinationIds(universityId, subjectCombinationIds, status)
+                .countByUniversityIdAndSubjectCombinationIdsAndYear(universityId, subjectCombinationIds, status, year)
                 .stream()
                 .collect(Collectors.toMap(
                         ComboCountProjection::getComboId,
@@ -95,7 +95,7 @@ public class UniversityMajorProducer {
         // Send one event per subjectCombination
         for (SubjectCombination combo : universityMajor.getSubjectCombinations()) {
 
-            String id = universityId + "-" + majorId + "-" + combo.getId();
+            String id = universityId + "-" + majorId + "-" + combo.getId() + "-" + year;
 
 
             int countByCombo = countByComboMap.getOrDefault(combo.getId(), 0);
@@ -104,13 +104,13 @@ public class UniversityMajorProducer {
                     id,
                     universityId,
                     universityMajor.getUniversity().getName(),
-                    null, // province is deprecated, pass null
                     majorId,
                     universityMajor.getMajor().getName(),
                     combo.getId(),
                     combo.getName(),
                     countByMajor,
                     countByCombo,
+                    year,
                     status
             );
             events.add(event);

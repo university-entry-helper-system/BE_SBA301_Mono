@@ -6,9 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/event/NewsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/event/NewsEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/consumer/NewsConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/consumer/NewsConsumer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/producer/NewsProducer.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/producer/NewsProducer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/UniversityMajorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/UniversityMajorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/tuition_search_response/MajorEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/tuition_search_response/MajorEntry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/queries/UniversityMajorSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/queries/UniversityMajorSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/event/UniversityMajorSearchEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/event/UniversityMajorSearchEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/UniversityMajorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/UniversityMajorRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/elasticsearch/UniversityMajorSearchRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/elasticsearch/UniversityMajorSearchRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/UniversityMajorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/UniversityMajorService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/UniversityMajorServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/UniversityMajorServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/consumer/UniversityConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/consumer/UniversityConsumer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/consumer/UniversityMajorConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/consumer/UniversityMajorConsumer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/producer/UniversityAdmissionMethodProducer.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/producer/UniversityAdmissionMethodProducer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/producer/UniversityMajorProducer.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/producer/UniversityMajorProducer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/resources/elasticsearch/university-settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/resources/elasticsearch/university-settings.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,9 +28,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
-        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -38,12 +48,12 @@
     &quot;assignee&quot;: &quot;sonnamnguyen&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/university-entry-helper-system/BE_SBA301_Mono.git",
-    "accountId": "c91efdee-37a4-4c32-b14b-0ee203569aa0"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:university-entry-helper-system/BE_SBA301_Mono.git&quot;,
+    &quot;accountId&quot;: &quot;dff3d485-d2d2-45de-9d23-f37fda0dbaf5&quot;
   }
-}]]></component>
+}</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -102,7 +112,7 @@
       <option name="envFilePaths">
         <option value="$PROJECT_DIR$/SBA_M/.env" />
       </option>
-      <module name="SBA_M" />
+      <module name="backend-service" />
       <selectedOptions>
         <option name="environmentVariables" />
       </selectedOptions>
@@ -126,8 +136,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.21829.142" />
-        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-IU-242.21829.142" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
       </set>
     </attachedChunks>
   </component>
@@ -155,7 +165,7 @@
       <workItem from="1752117637901" duration="13120000" />
       <workItem from="1752282869105" duration="636000" />
       <workItem from="1752383431719" duration="9632000" />
-      <workItem from="1752799899467" duration="2775000" />
+      <workItem from="1752892209814" duration="1633000" />
     </task>
     <servers />
   </component>

@@ -14,13 +14,13 @@ public class UniversityMajorSearchEvent {
     private String id; // Composite: universityId-majorId-subjectCombinationId
     private Integer universityId;
     private String universityName;
-    private String province;
     private Long majorId;
     private String majorName;
     private Long subjectCombinationId;
     private String subjectCombinationName;
     private Integer universityMajorCountByMajor;
     private Integer universityMajorCountBySubjectCombination;
+    private Integer year;
     private Status status;
 }
 

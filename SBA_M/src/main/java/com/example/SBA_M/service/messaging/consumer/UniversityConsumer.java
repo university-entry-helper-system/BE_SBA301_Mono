@@ -267,7 +267,6 @@ public class UniversityConsumer {
         List<UniversityMajorSearch> searchDocs = universityMajorSearchRepository.findByUniversityId(event.getUniversityId());
         searchDocs.forEach(doc -> {
             doc.setUniversityName(event.getUniversityName());
-            doc.setProvince(event.getProvince()); // Assuming province name is included in the event
         });
         universityMajorSearchRepository.saveAll(searchDocs);
     }

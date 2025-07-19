@@ -49,25 +49,31 @@ public class UniversityMajorConsumer {
 
     @KafkaListener(topics = "university-major-search.event", groupId = "sba-search-group")
     public void consume(UniversityMajorSearchEventBatch event) {
-        List<UniversityMajorSearch> documents = event.getEvents().stream()
-                .map(e -> {
-                    UniversityMajorSearch document = new UniversityMajorSearch();
-                    document.setId(e.getId());
-                    document.setUniversityId(e.getUniversityId());
-                    document.setUniversityName(e.getUniversityName());
-                    document.setMajorId(e.getMajorId());
-                    document.setMajorName(e.getMajorName());
-                    document.setSubjectCombinationId(e.getSubjectCombinationId());
-                    document.setSubjectCombinationName(e.getSubjectCombinationName());
-                    document.setUniversityMajorCountByMajor(e.getUniversityMajorCountByMajor());
-                    document.setUniversityMajorCountBySubjectCombination(e.getUniversityMajorCountBySubjectCombination());
-                    document.setStatus(e.getStatus());
-                    return document;
-                })
-                .toList();
+        try {
+            List<UniversityMajorSearch> documents = event.getEvents().stream()
+                    .map(e -> {
+                        UniversityMajorSearch document = new UniversityMajorSearch();
+                        document.setId(e.getId());
+                        document.setUniversityId(e.getUniversityId());
+                        document.setUniversityName(e.getUniversityName());
+                        document.setMajorId(e.getMajorId());
+                        document.setMajorName(e.getMajorName());
+                        document.setSubjectCombinationId(e.getSubjectCombinationId());
+                        document.setSubjectCombinationName(e.getSubjectCombinationName());
+                        document.setUniversityMajorCountByMajor(e.getUniversityMajorCountByMajor());
+                        document.setUniversityMajorCountBySubjectCombination(e.getUniversityMajorCountBySubjectCombination());
+                        document.setYear(e.getYear());
+                        document.setStatus(e.getStatus());
+                        return document;
+                    })
+                    .toList();
 
+            universityMajorSearchRepository.saveAll(documents);
 
-        universityMajorSearchRepository.saveAll(documents);
+        } catch (Exception ex) {
+            log.error("Failed to consume and save UniversityMajorSearchEventBatch", ex);
+            throw ex; // rethrow to let Kafka handle retry (or dead-letter)
+        }
     }
 
 }

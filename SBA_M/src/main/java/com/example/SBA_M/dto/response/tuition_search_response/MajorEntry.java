@@ -15,7 +15,6 @@ import java.util.List;
 public class MajorEntry {
     private String majorId;
     private String majorName;
-    private String degree; // Optional
     private List<SubjectCombinationTuitionScore> subjectCombinations;
     private String note;
 }
