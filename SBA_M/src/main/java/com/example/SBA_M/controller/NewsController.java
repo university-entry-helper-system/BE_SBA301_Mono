@@ -30,7 +30,6 @@ public class NewsController {
     }
 
     @Operation(summary = "Get paginated news")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/paginated")
     public ApiResponse<PageResponse<NewsResponse>> getNewsPaginated(
             @RequestParam(defaultValue = "0") int page,
@@ -44,7 +43,6 @@ public class NewsController {
     }
 
     @Operation(summary = "Get news by ID")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ApiResponse<NewsResponse> getNewsById(@PathVariable Long id) {
         NewsResponse news = newsService.getNewsById(id);
@@ -101,7 +99,6 @@ public class NewsController {
     }
 
     @Operation(summary = "Search news")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/search")
     public ApiResponse<PageResponse<NewsResponse>> searchNews(
             @RequestParam String query,
