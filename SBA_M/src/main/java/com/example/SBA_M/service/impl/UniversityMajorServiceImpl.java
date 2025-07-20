@@ -257,59 +257,63 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
                     String.valueOf(universityId),
                     null,
                     String.valueOf(majorId),
-                    null,
                     List.of()
             );
         }
 
-        // Extract static info from the first entry
+        // Extract base info
         String universityName = entries.getFirst().getUniversityName();
-        String majorName = entries.getFirst().getMajorName();
 
-        // Grouping: year -> methodId -> methodName -> subjectCombination -> score + note
-        Map<Integer, Map<Integer, Map<String, SubjectCombinationScore>>> grouped = new TreeMap<>(Collections.reverseOrder());
-
-        for (AdmissionEntriesDocument doc : entries) {
-            grouped
-                    .computeIfAbsent(doc.getYear(), y -> new HashMap<>())
-                    .computeIfAbsent(doc.getMethodId(), m -> new HashMap<>())
-                    .put(doc.getSubjectCombination(), new SubjectCombinationScore(
-                            doc.getSubjectCombination(),
-                            doc.getScore(),
-                            doc.getNote()
-                    ));
-        }
+        // Group by (year, methodName)
+        Map<String, List<AdmissionEntriesDocument>> grouped = entries.stream()
+                .collect(Collectors.groupingBy(doc -> doc.getYear() + "_" + doc.getMethodName()));
 
         List<MajorAdmissionYearGroup> yearGroups = grouped.entrySet().stream()
-                .map(yearEntry -> {
-                    Integer year = yearEntry.getKey();
-                    List<MajorMethodGroup> methods = yearEntry.getValue().entrySet().stream()
-                            .map(methodEntry -> {
-                                Integer methodId = methodEntry.getKey();
-                                String methodName = entries.stream()
-                                        .filter(e -> e.getMethodId().equals(methodId))
-                                        .map(AdmissionEntriesDocument::getMethodName)
-                                        .findFirst()
-                                        .orElse("Unknown");
+                .map(entry -> {
+                    String[] keyParts = entry.getKey().split("_", 2);
+                    Integer year = Integer.parseInt(keyParts[0]);
+                    String methodName = keyParts[1];
+                    List<AdmissionEntriesDocument> docs = entry.getValue();
 
-                                List<SubjectCombinationScore> subjectCombinations = methodEntry.getValue().values().stream().toList();
+                    // Group by universityMajorName (in case same year/method has multiple majors)
+                    Map<String, List<AdmissionEntriesDocument>> majorGroups = docs.stream()
+                            .collect(Collectors.groupingBy(AdmissionEntriesDocument::getMajorName));
+
+                    List<MajorMethodGroup> majorMethodGroups = majorGroups.entrySet().stream()
+                            .map(majorEntry -> {
+                                List<AdmissionEntriesDocument> majorDocs = majorEntry.getValue();
+                                AdmissionEntriesDocument firstDoc = majorDocs.getFirst();
+
+                                List<SubjectCombinationScore> subjectCombinations = majorDocs.stream()
+                                        .map(doc -> {
+                                            SubjectCombinationScore sc = new SubjectCombinationScore();
+                                            sc.setSubjectCombination(doc.getSubjectCombination());
+                                            return sc;
+                                        })
+                                        .toList();
+
                                 return new MajorMethodGroup(
-                                        String.valueOf(methodId),
-                                        methodName,
+                                        majorEntry.getKey(),  // universityMajorName
+                                        firstDoc.getScore(),
+                                        firstDoc.getNote(),
                                         subjectCombinations
                                 );
                             }).toList();
-                    return new MajorAdmissionYearGroup(year, methods);
-                }).toList();
+
+                    return new MajorAdmissionYearGroup(year, methodName, majorMethodGroups);
+                })
+                .sorted(Comparator.comparing(MajorAdmissionYearGroup::getYear).reversed())
+                .toList();
 
         return new MajorAdmissionResponse(
                 String.valueOf(universityId),
                 universityName,
                 String.valueOf(majorId),
-                majorName,
                 yearGroups
         );
     }
+
+
     @Override
     public SubjectCombinationResponse getSubjectCombinationAdmission(Integer universityId, Long subjectCombinationId) {
         List<AdmissionEntriesDocument> entries = universityMajorReadRepository
@@ -417,13 +421,24 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
             }
         }
 
-        return results.stream()
+        // ✅ Group by universityId + majorId to remove duplicates
+        Map<String, UniversityMajorSearch> groupedResults = results.stream()
+                .collect(Collectors.toMap(
+                        // Key: universityId-majorId
+                        item -> item.getUniversityId() + "-" + item.getMajorId(),
+                        item -> item,
+                        (existing, replacement) -> existing // Keep the first occurrence
+                ));
+
+        return groupedResults.values().stream()
                 .map(this::mapToMajorResponse)
                 .collect(Collectors.toList());
     }
 
+
     private UniversitySubjectCombinationSearchResponse mapToSubjectCombinationResponse(UniversityMajorSearch entity) {
         return UniversitySubjectCombinationSearchResponse.builder()
+                .universityId(entity.getUniversityId())
                 .universityName(entity.getUniversityName())
                 .universityMajorCountBySubjectCombination(entity.getUniversityMajorCountBySubjectCombination())
                 .build();
@@ -431,6 +446,7 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
 
     private UniversityMajorSearchResponse mapToMajorResponse(UniversityMajorSearch entity) {
         return UniversityMajorSearchResponse.builder()
+                .universityId(entity.getUniversityId())
                 .universityName(entity.getUniversityName())
                 .universityMajorCountByMajor(entity.getUniversityMajorCountByMajor())
                 .build();

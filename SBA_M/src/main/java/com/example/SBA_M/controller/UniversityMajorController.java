@@ -152,7 +152,6 @@ public class UniversityMajorController {
     @GetMapping("/search/major/{majorId}")
     public ApiResponse<List<UniversityMajorSearchResponse>> searchByMajor(
             @PathVariable Long majorId,
-            @RequestParam(required = false) String province,
             @RequestParam(required = false) String universityName
     ) {
         try {

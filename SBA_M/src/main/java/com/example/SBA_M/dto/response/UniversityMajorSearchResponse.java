@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UniversityMajorSearchResponse {
+    private Integer universityId;
     private String universityName;
     private Integer universityMajorCountByMajor;
 }

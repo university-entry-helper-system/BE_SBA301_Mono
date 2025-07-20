@@ -51,7 +51,6 @@ public class MajorController {
     }
 
     @Operation(summary = "Get all majors (search, paging, sort)")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ApiResponse<PageResponse<MajorResponse>> getAllMajors(
             @RequestParam(value = "search", required = false) String search,
