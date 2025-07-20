@@ -1,5 +1,6 @@
 package com.example.SBA_M.entity.commands;
 
+import com.example.SBA_M.utils.NewsCategory;
 import com.example.SBA_M.utils.NewsStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,8 +31,9 @@ public class News extends AbstractEntity<Long> {
     @Column(name = "image_url", length = 1000)
     private String imageUrl;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 100)
-    private String category;
+    private NewsCategory category = NewsCategory.OTHER;
 
     @Column(name = "view_count")
     private Integer viewCount = 0;

@@ -66,7 +66,7 @@ public class NewsProducer {
                 savedNews.getSummary(),
                 savedNews.getContent(),
                 savedNews.getImageUrl(),
-                savedNews.getCategory(),
+                savedNews.getCategory().name(), // pass as String
                 savedNews.getViewCount(),
                 savedNews.getNewsStatus().name(), // pass as String
                 publishedAt,
@@ -122,7 +122,7 @@ public class NewsProducer {
             updatedNews.getSummary(),
             updatedNews.getContent(),
             updatedNews.getImageUrl(),
-            updatedNews.getCategory(),
+            updatedNews.getCategory().name(),
             updatedNews.getViewCount(),
             updatedNews.getNewsStatus().name(), // pass as String
             publishedAt,
@@ -162,7 +162,7 @@ public class NewsProducer {
             deletedNews.getSummary(),
             deletedNews.getContent(),
             deletedNews.getImageUrl(),
-            deletedNews.getCategory(),
+            deletedNews.getCategory().name(),
             deletedNews.getViewCount(),
             deletedNews.getNewsStatus().name(), // pass as String
             publishedAt,
@@ -186,7 +186,7 @@ public class NewsProducer {
                 .summary(news.getSummary())
                 .content(news.getContent())
                 .imageUrl(news.getImageUrl())
-                .category(news.getCategory())
+                .category(news.getCategory().name())
                 .university(mapToUniversityResponse(news.getUniversity()))
                 .viewCount(news.getViewCount())
                 .newsStatus(news.getNewsStatus())

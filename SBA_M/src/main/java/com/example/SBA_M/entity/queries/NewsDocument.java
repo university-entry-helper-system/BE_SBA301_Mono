@@ -33,7 +33,7 @@ public class NewsDocument extends AbstractDocument<Long> {
     private String imageUrl;
 
     @Field("category")
-    private String category;
+    private String category = "OTHER"; // Default category
 
     @Field("view_count")
     private Integer viewCount = 0;
