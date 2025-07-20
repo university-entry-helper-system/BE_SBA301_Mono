@@ -17,6 +17,7 @@ import com.example.SBA_M.service.NewsService;
 import com.example.SBA_M.service.messaging.producer.NewsProducer;
 import com.example.SBA_M.utils.Status;
 import com.example.SBA_M.utils.NewsStatus;
+import com.example.SBA_M.utils.NewsCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +40,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NewsServiceImpl implements NewsService {
     private final NewsProducer newsProducer;
+    private final NewsRepository newsRepository;
     private final NewsReadRepository newsReadRepository;
     private final NewsSearchRepository newsSearchRepository;
 
@@ -71,6 +76,15 @@ public class NewsServiceImpl implements NewsService {
         news.setViewCount(news.getViewCount() + 1);
         newsReadRepository.save(news);
         log.debug("Incremented view count for news id: {}", id);
+
+        // Đồng bộ viewCount sang Elasticsearch
+        // Lấy entity News từ repository để truyền vào producer
+        News newsEntity = newsRepository.findById(id)
+                .orElse(null);
+        if (newsEntity != null) {
+            newsEntity.setViewCount(news.getViewCount());
+            newsProducer.sendViewCountUpdate(newsEntity);
+        }
 
         return mapToResponse(news);
     }
@@ -176,6 +190,88 @@ public class NewsServiceImpl implements NewsService {
             log.error("Error while deleting news with ID: {}", id, ex);
             throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+
+    @Override
+    public List<NewsResponse> getTop5HotNews() {
+        String newsStatus = "PUBLISHED";
+        // Lấy tất cả giá trị enum NewsCategory
+        List<String> categories = Arrays.stream(NewsCategory.values())
+                .map(Enum::name)
+                .toList();
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(0, 5);
+        List<NewsDocument> hotNews = newsReadRepository.findTopNHotNews(newsStatus, com.example.SBA_M.utils.Status.ACTIVE, categories, pageable);
+        return hotNews.stream().map(this::mapToResponse).collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public PageResponse<NewsResponse> filterNewsByCategoryAndSearch(String category, String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
+        Page<NewsSearch> searchResults;
+        if (category != null && !category.isEmpty() && search != null && !search.isEmpty()) {
+            searchResults = newsSearchRepository.findByCategoryAndContentContainingOrCategoryAndSummaryContainingAndStatus(
+                category, search, category, search, Status.ACTIVE, pageable);
+        } else if (category != null && !category.isEmpty()) {
+            searchResults = newsSearchRepository.findByCategoryAndStatus(category, Status.ACTIVE, pageable);
+        } else if (search != null && !search.isEmpty()) {
+            searchResults = newsSearchRepository.findByContentContainingOrSummaryContainingAndStatus(
+                search, search, Status.ACTIVE, pageable);
+        } else {
+            // fallback: all news
+            searchResults = newsSearchRepository.findByContentContainingOrSummaryContainingAndStatus("", "", Status.ACTIVE, pageable);
+        }
+        List<NewsResponse> items = searchResults.getContent().stream()
+                .map(newsSearch -> {
+                    NewsDocument newsDoc = newsReadRepository.findById(newsSearch.getId())
+                            .orElse(null);
+                    return newsDoc != null ? mapToResponse(newsDoc) : null;
+                })
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.toList());
+        return PageResponse.<NewsResponse>builder()
+                .page(searchResults.getNumber())
+                .size(searchResults.getSize())
+                .totalElements(searchResults.getTotalElements())
+                .totalPages(searchResults.getTotalPages())
+                .items(items)
+                .build();
+    }
+
+    @Override
+    public PageResponse<NewsResponse> advancedNewsSearch(String search, String fromDate, String toDate, Integer minViews, Integer maxViews, String newsStatus, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
+        Instant from = null;
+        Instant to = null;
+        try {
+            from = (fromDate != null && !fromDate.isEmpty()) ? Instant.parse(fromDate + "T00:00:00Z") : Instant.EPOCH;
+        } catch (DateTimeParseException ignored) {}
+        try {
+            to = (toDate != null && !toDate.isEmpty()) ? Instant.parse(toDate + "T23:59:59Z") : Instant.now();
+        } catch (DateTimeParseException ignored) {}
+        if (from == null) from = Instant.EPOCH;
+        if (to == null) to = Instant.now();
+        if (minViews == null) minViews = 0;
+        if (maxViews == null) maxViews = Integer.MAX_VALUE;
+        if (newsStatus == null || newsStatus.isEmpty()) newsStatus = "PUBLISHED";
+        Page<NewsSearch> searchResults = newsSearchRepository.findByContentContainingOrSummaryContainingAndStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatus(
+                search != null ? search : "", search != null ? search : "", Status.ACTIVE, from, to, minViews, maxViews, newsStatus, pageable);
+        List<NewsResponse> items = searchResults.getContent().stream()
+                .map(newsSearch -> {
+                    NewsDocument newsDoc = newsReadRepository.findById(newsSearch.getId())
+                            .orElse(null);
+                    return newsDoc != null ? mapToResponse(newsDoc) : null;
+                })
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.toList());
+        return PageResponse.<NewsResponse>builder()
+                .page(searchResults.getNumber())
+                .size(searchResults.getSize())
+                .totalElements(searchResults.getTotalElements())
+                .totalPages(searchResults.getTotalPages())
+                .items(items)
+                .build();
     }
 
 

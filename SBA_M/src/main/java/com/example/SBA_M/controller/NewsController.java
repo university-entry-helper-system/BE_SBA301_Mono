@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/news")
 @SecurityRequirement(name = "bearerAuth")
@@ -108,6 +110,42 @@ public class NewsController {
         return ApiResponse.<PageResponse<NewsResponse>>builder()
                 .code(1000)
                 .message("News search successful")
+                .result(result)
+                .build();
+    }
+
+    @Operation(summary = "Get top 5 hot news")
+    @GetMapping("/hot")
+    public ApiResponse<List<NewsResponse>> getTopHotNews() {
+        List<NewsResponse> result = newsService.getTop5HotNews();
+        return ApiResponse.<List<NewsResponse>>builder()
+                .code(1000)
+                .message("Top 5 hot news fetched successfully")
+                .result(result)
+                .build();
+    }
+
+    @Operation(summary = "Get news with filter and search (guest & admin)")
+    @GetMapping("/api/news")
+    public ApiResponse<PageResponse<NewsResponse>> getNewsFiltered(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String fromDate,
+            @RequestParam(required = false) String toDate,
+            @RequestParam(required = false) Integer minViews,
+            @RequestParam(required = false) Integer maxViews,
+            @RequestParam(required = false) String newsStatus,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        // Nếu có filter nâng cao thì dùng advanced, còn lại dùng guest
+        boolean isAdvanced = fromDate != null || toDate != null || minViews != null || maxViews != null || (newsStatus != null && !newsStatus.isEmpty());
+        PageResponse<NewsResponse> result = isAdvanced
+                ? newsService.advancedNewsSearch(search, fromDate, toDate, minViews, maxViews, newsStatus, page, size)
+                : newsService.filterNewsByCategoryAndSearch(category, search, page, size);
+        return ApiResponse.<PageResponse<NewsResponse>>builder()
+                .code(1000)
+                .message("News fetched successfully")
                 .result(result)
                 .build();
     }

@@ -178,6 +178,35 @@ public class NewsProducer {
         kafkaTemplate.send("news.deleted", event);
     }
 
+    /**
+     * Gửi event cập nhật viewCount cho Elasticsearch
+     */
+    public void sendViewCountUpdate(News news) {
+        var publishedAt = NewsStatus.PUBLISHED.equals(news.getNewsStatus()) ?
+                (news.getPublishedAt() != null ? news.getPublishedAt() : null) : null;
+        NewsEvent event = new NewsEvent(
+                news.getId(),
+                news.getUniversity().getId(),
+                news.getUniversity().getName(),
+                news.getTitle(),
+                news.getSummary(),
+                news.getContent(),
+                news.getImageUrl(),
+                news.getCategory().name(),
+                news.getViewCount(),
+                news.getNewsStatus().name(),
+                publishedAt,
+                news.getDeletedAt(),
+                news.getStatus(),
+                news.getCreatedAt(),
+                news.getCreatedBy(),
+                news.getUpdatedAt(),
+                news.getUpdatedBy()
+        );
+        log.info("Sending viewCount update message: {}", event);
+        kafkaTemplate.send("news.updated", event);
+    }
+
     // Helper method to map entity to response DTO
     private NewsResponse mapToResponse(News news) {
         return NewsResponse.builder()
