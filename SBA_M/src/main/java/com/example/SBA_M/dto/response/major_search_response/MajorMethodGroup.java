@@ -13,7 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MajorMethodGroup {
-    private String method;
-    private String methodName;
+    private String universityMajorName;
+    private Double score;
+    private String note;
     private List<SubjectCombinationScore> subjectCombinations;
 }

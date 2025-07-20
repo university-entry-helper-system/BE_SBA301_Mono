@@ -16,6 +16,5 @@ public class MajorAdmissionResponse {
     private String universityId;
     private String universityName;
     private String majorId;
-    private String majorName;
     private List<MajorAdmissionYearGroup> years;
 }
