@@ -38,7 +38,6 @@ public class NewsServiceImpl implements NewsService {
     private final NewsProducer newsProducer;
     private final NewsReadRepository newsReadRepository;
     private final NewsSearchRepository newsSearchRepository;
-//    private final NewsRepository newsRepository;
 
 
     @Override
@@ -69,11 +68,6 @@ public class NewsServiceImpl implements NewsService {
                     log.error("News not found with id: {}", id);
                     return new AppException(ErrorCode.NEWS_NOT_FOUND);
                 });
-        if(news.isFlagged()) {
-            return mapToResponse(news);
-        }
-        // Increment view count
-        news.setFlagged(true);
         news.setViewCount(news.getViewCount() + 1);
         newsReadRepository.save(news);
         log.debug("Incremented view count for news id: {}", id);

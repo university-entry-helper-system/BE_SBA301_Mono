@@ -46,9 +46,6 @@ public class News extends AbstractEntity<Long> {
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
-    @Column(name = "flagged", nullable = false)
-    private boolean flagged = false;
-
     @PrePersist
     protected void onCreate() {
         if (publishedAt == null && newsStatus == NewsStatus.PUBLISHED) {

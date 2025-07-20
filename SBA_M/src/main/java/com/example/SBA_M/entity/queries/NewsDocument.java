@@ -47,14 +47,12 @@ public class NewsDocument extends AbstractDocument<Long> {
     @Field("deleted_at")
     private Instant deletedAt;
 
-    @Field("flagged")
-    private boolean flagged = false;
 
     public NewsDocument(Long id, UniversityDocument university, String title,
                         String summary, String content, String imageUrl, String category,
                         Integer viewCount, String newsStatus, Instant publishedAt, Instant deletedAt,
                         Status status, Instant createdAt, String createdBy,
-                        Instant updatedAt, String updatedBy, boolean flagged) {
+                        Instant updatedAt, String updatedBy) {
         this.setId(id);
         this.university = university;
         this.title = title;
@@ -66,12 +64,10 @@ public class NewsDocument extends AbstractDocument<Long> {
         this.newsStatus = newsStatus;
         this.publishedAt = publishedAt;
         this.deletedAt = deletedAt;
-        this.flagged = flagged;
         this.setStatus(status);
         this.setCreatedAt(createdAt);
         this.setCreatedBy(createdBy);
         this.setUpdatedAt(updatedAt);
         this.setUpdatedBy(updatedBy);
-        this.setFlagged(flagged);
     }
 }
