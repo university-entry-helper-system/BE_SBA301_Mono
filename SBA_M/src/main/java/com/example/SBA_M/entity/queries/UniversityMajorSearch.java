@@ -24,22 +24,19 @@ public class UniversityMajorSearch {
     @Field(type = FieldType.Integer)
     private Integer universityId;
 
-    @Field(type = FieldType.Text, analyzer = "autocomplete", searchAnalyzer = "standard")
+    @Field(type = FieldType.Text)
     private String universityName;
-
-    @Field(type = FieldType.Keyword)
-    private String province; // For filtering
 
     @Field(type = FieldType.Integer)
     private Long majorId;
 
-    @Field(type = FieldType.Text, analyzer = "autocomplete", searchAnalyzer = "standard")
+    @Field(type = FieldType.Text)
     private String majorName;
 
     @Field(type = FieldType.Long)
     private Long subjectCombinationId;
 
-    @Field(type = FieldType.Text, analyzer = "autocomplete", searchAnalyzer = "standard")
+    @Field(type = FieldType.Text)
     private String subjectCombinationName;
 
     @Field(type = FieldType.Integer)
@@ -48,6 +45,9 @@ public class UniversityMajorSearch {
     @Field(type = FieldType.Integer)
     private Integer universityMajorCountBySubjectCombination; // By subject combo
 
-    @Field(type = FieldType.Boolean)
+    @Field(type = FieldType.Integer)
+    private Integer year;
+
+    @Field(type = FieldType.Text)
     private Status status;
 }
