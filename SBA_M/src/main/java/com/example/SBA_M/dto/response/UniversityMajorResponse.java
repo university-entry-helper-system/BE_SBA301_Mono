@@ -21,13 +21,13 @@ public class UniversityMajorResponse {
     private Long majorId;
     private String majorName;
 
-    private Integer year;
-
     private Double score;
 
     private Integer quota;
 
     private String notes;
+
+    private Integer year;
 
     private List<AdmissionMethodResponse> admissionMethods;
 

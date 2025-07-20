@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UniversitySubjectCombinationSearchResponse {
+    private Integer universityId;
     private String universityName;
     private Integer universityMajorCountBySubjectCombination;
 }

@@ -1,5 +1,6 @@
 package com.example.SBA_M.dto.request;
 
+import com.example.SBA_M.utils.NewsCategory;
 import com.example.SBA_M.utils.NewsStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,8 +33,7 @@ public class NewsRequest {
 
     private String imageUrl;
 
-    @NotBlank(message = "Category is required")
-    private String category;
+    private NewsCategory category = NewsCategory.OTHER; // Default category
 
     private NewsStatus newsStatus = NewsStatus.PUBLISHED;
 

@@ -1,31 +1,60 @@
 {
   "analysis": {
+    "analyzer": {
+      "autocomplete_analyzer": {
+        "tokenizer": "autocomplete_tokenizer",
+        "filter": [
+          "lowercase",
+          "asciifolding"
+        ]
+      },
+      "autocomplete_search_analyzer": {
+        "tokenizer": "keyword",
+        "filter": [
+          "lowercase",
+          "asciifolding"
+        ]
+      },
+      "university_name_analyzer": {
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "asciifolding",
+          "word_delimiter",
+          "stemmer"
+        ]
+      }
+    },
     "tokenizer": {
       "autocomplete_tokenizer": {
         "type": "edge_ngram",
-        "min_gram": 1,
-        "max_gram": 20,
+        "min_gram": 2,
+        "max_gram": 10,
         "token_chars": [
           "letter",
           "digit"
         ]
       }
     },
-    "analyzer": {
-      "autocomplete": {
-        "type": "custom",
-        "tokenizer": "autocomplete_tokenizer",
-        "filter": [
-          "lowercase"
-        ]
+    "filter": {
+      "word_delimiter": {
+        "type": "word_delimiter",
+        "generate_word_parts": true,
+        "generate_number_parts": true,
+        "catenate_words": true,
+        "catenate_numbers": true,
+        "catenate_all": false,
+        "split_on_case_change": true
       },
-      "autocomplete_search": {
-        "type": "custom",
-        "tokenizer": "standard",
-        "filter": [
-          "lowercase"
-        ]
+      "stemmer": {
+        "type": "stemmer",
+        "language": "english"
       }
     }
+  },
+  "index": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1,
+    "refresh_interval": "1s"
   }
 }

@@ -43,7 +43,7 @@ public class NewsEvent extends AbstractCreatedEvent<Long> {
             String createdBy,
             Instant updatedAt,
             String updatedBy
-    ) {
+  ) {
         this.setId(id);
         this.setStatus(status);
         this.setCreatedBy(createdBy);

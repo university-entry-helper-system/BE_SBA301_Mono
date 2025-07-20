@@ -21,6 +21,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -77,11 +79,11 @@ public class PdfExportServiceImpl implements PdfExportService {
                 yPosition = drawTitle(contentStream, "Major Admission Details", margin, yPosition);
 
                 // University and Major Name
-                if (response != null && response.getUniversityName() != null && response.getMajorName() != null) {
+                if (response != null && response.getUniversityName() != null) {
                     contentStream.beginText();
                     contentStream.setFont(PDType1Font.HELVETICA, 10);
                     contentStream.newLineAtOffset(margin, yPosition);
-                    contentStream.showText("University: " + response.getUniversityName() + " | Major: " + response.getMajorName());
+                    contentStream.showText("University: " + response.getUniversityName());
                     contentStream.endText();
                     yPosition -= 20;
                 }
@@ -217,22 +219,26 @@ public class PdfExportServiceImpl implements PdfExportService {
         float cellHeight = 20;
         float xStart = margin;
 
-        // Draw header
-        drawTableRow(contentStream, xStart, yPosition, columnWidths, cellHeight, true,
-                "Year", "Method", "Subject Combination", "Score/Note");
-        yPosition -= cellHeight;
-
         // Draw data
         for (MajorAdmissionYearGroup yearGroup : response.getYears()) {
             for (MajorMethodGroup methodGroup : yearGroup.getMethods()) {
-                for (SubjectCombinationScore score : methodGroup.getSubjectCombinations()) {
-                    drawTableRow(contentStream, xStart, yPosition, columnWidths, cellHeight, false,
-                            String.valueOf(yearGroup.getYear()),
-                            methodGroup.getMethodName() != null ? methodGroup.getMethodName() : "",
-                            score.getSubjectCombination() != null ? score.getSubjectCombination() : "",
-                            (score.getScore() != null ? score.getScore().toString() : "") + " / " + (score.getNote() != null ? score.getNote() : ""));
-                    yPosition -= cellHeight;
-                }
+
+                // Collect all subject combinations into a single comma-separated string
+                String subjectCombinationsText = methodGroup.getSubjectCombinations().stream()
+                        .map(SubjectCombinationScore::getSubjectCombination)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.joining(", "));
+
+                // Format score and note
+                String scoreNote = formatScoreNote(methodGroup.getScore(), methodGroup.getNote());
+
+                // Draw one row per method group
+                drawTableRow(contentStream, xStart, yPosition, columnWidths, cellHeight, false,
+                        String.valueOf(yearGroup.getYear()),
+                        subjectCombinationsText,
+                        scoreNote);
+
+                yPosition -= cellHeight;
             }
         }
         return yPosition - 10;
@@ -317,5 +323,13 @@ public class PdfExportServiceImpl implements PdfExportService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to draw table row: " + e.getMessage(), e);
         }
+    }
+
+    private String formatScoreNote(Double score, String note) {
+        String scoreStr = score != null ? String.valueOf(score) : "";
+        if (note != null && !note.isBlank()) {
+            return !scoreStr.isEmpty() ? scoreStr + " - " + note : note;
+        }
+        return scoreStr;
     }
 }

@@ -19,7 +19,7 @@ public abstract class AbstractEntity<T extends Serializable> implements Serializ
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "id", updatable = false, nullable = true)
     private T id;
 
     @Enumerated(EnumType.STRING)

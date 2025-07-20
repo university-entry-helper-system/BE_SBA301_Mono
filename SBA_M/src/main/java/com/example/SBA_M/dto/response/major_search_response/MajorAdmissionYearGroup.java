@@ -14,5 +14,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MajorAdmissionYearGroup {
     private Integer year;
+    private String methodName;
     private List<MajorMethodGroup> methods;
 }

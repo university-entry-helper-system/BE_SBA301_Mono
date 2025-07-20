@@ -33,7 +33,7 @@ public class NewsDocument extends AbstractDocument<Long> {
     private String imageUrl;
 
     @Field("category")
-    private String category;
+    private String category = "OTHER"; // Default category
 
     @Field("view_count")
     private Integer viewCount = 0;
@@ -46,6 +46,7 @@ public class NewsDocument extends AbstractDocument<Long> {
 
     @Field("deleted_at")
     private Instant deletedAt;
+
 
     public NewsDocument(Long id, UniversityDocument university, String title,
                         String summary, String content, String imageUrl, String category,

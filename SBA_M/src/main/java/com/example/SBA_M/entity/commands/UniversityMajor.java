@@ -10,26 +10,25 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "university_majors", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"university_id", "major_id", "year"})
-})
+@Table(name = "university_majors")
+
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class UniversityMajor extends AbstractEntity<Integer> {
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "university_id", nullable = false)
+    @JoinColumn(name = "university_id",unique = false, nullable = false)
     private University university;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "major_id", nullable = false)
+    @JoinColumn(name = "major_id",unique = false, nullable = false)
     private Major major;
 
     @ManyToMany
     @JoinTable(
             name = "university_major_admission_methods",
-            joinColumns = @JoinColumn(name = "id"),
+            joinColumns = @JoinColumn(name = "university_major_id"),
             inverseJoinColumns = @JoinColumn(name = "admission_method_id")
     )
     private List<AdmissionMethod> admissionMethods;
@@ -46,6 +45,9 @@ public class UniversityMajor extends AbstractEntity<Integer> {
 
     @Column(columnDefinition = "TEXT")
     private String notes;
+
+    @Column(name = "year", nullable = false)
+    private Integer year; // Năm tuyển sinh
 
     @ManyToMany
     @JoinTable(

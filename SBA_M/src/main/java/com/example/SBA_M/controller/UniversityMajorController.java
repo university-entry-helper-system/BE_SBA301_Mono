@@ -130,11 +130,10 @@ public class UniversityMajorController {
     @GetMapping("/search/subject-combination/{subjectCombinationId}")
     public ApiResponse<List<UniversitySubjectCombinationSearchResponse>> searchBySubjectCombination(
             @PathVariable Long subjectCombinationId,
-            @RequestParam(required = false) Long majorId,
-            @RequestParam(required = false) String province
+            @RequestParam(required = false) String universityName
     ) {
         try {
-            List<UniversitySubjectCombinationSearchResponse> results = universityMajorService.searchBySubjectCombination(subjectCombinationId, majorId, province);
+            List<UniversitySubjectCombinationSearchResponse> results = universityMajorService.searchBySubjectCombination(subjectCombinationId, universityName);
             return ApiResponse.<List<UniversitySubjectCombinationSearchResponse>>builder()
                     .code(1000)
                     .message("Search results by subject combination fetched successfully")
@@ -153,12 +152,10 @@ public class UniversityMajorController {
     @GetMapping("/search/major/{majorId}")
     public ApiResponse<List<UniversityMajorSearchResponse>> searchByMajor(
             @PathVariable Long majorId,
-            @RequestParam(required = false) String province,
-            @RequestParam(required = false) String method,
-            @RequestParam(required = false) Long subjectCombinationId
+            @RequestParam(required = false) String universityName
     ) {
         try {
-            List<UniversityMajorSearchResponse> results = universityMajorService.searchByMajor(majorId, province, method, subjectCombinationId);
+            List<UniversityMajorSearchResponse> results = universityMajorService.searchByMajor(majorId, universityName);
             return ApiResponse.<List<UniversityMajorSearchResponse>>builder()
                     .code(1000)
                     .message("Search results by major fetched successfully")

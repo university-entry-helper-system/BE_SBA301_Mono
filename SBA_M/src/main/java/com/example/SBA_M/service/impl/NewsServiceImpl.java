@@ -4,10 +4,13 @@ import com.example.SBA_M.dto.request.NewsRequest;
 import com.example.SBA_M.dto.response.NewsResponse;
 import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.dto.response.UniversityResponse;
+import com.example.SBA_M.entity.commands.News;
 import com.example.SBA_M.entity.queries.NewsDocument;
 import com.example.SBA_M.entity.queries.NewsSearch;
 import com.example.SBA_M.exception.AppException;
 import com.example.SBA_M.exception.ErrorCode;
+import com.example.SBA_M.repository.commands.AccountRepository;
+import com.example.SBA_M.repository.commands.NewsRepository;
 import com.example.SBA_M.repository.elasticsearch.NewsSearchRepository;
 import com.example.SBA_M.repository.queries.NewsReadRepository;
 import com.example.SBA_M.service.NewsService;
@@ -59,13 +62,12 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public NewsResponse getNewsById(Long id) {
         log.info("Fetching news with id: {}", id);
+
         NewsDocument news = newsReadRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("News not found with id: {}", id);
                     return new AppException(ErrorCode.NEWS_NOT_FOUND);
                 });
-
-        // Increment view count
         news.setViewCount(news.getViewCount() + 1);
         newsReadRepository.save(news);
         log.debug("Incremented view count for news id: {}", id);
