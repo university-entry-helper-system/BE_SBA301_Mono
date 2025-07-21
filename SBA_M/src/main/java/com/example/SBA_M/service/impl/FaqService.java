@@ -1,6 +1,7 @@
 package com.example.SBA_M.service.impl;
 
 import com.example.SBA_M.dto.request.FaqRequest;
+import com.example.SBA_M.dto.request.FaqUpdateRequest;
 import com.example.SBA_M.dto.response.FaqResponse;
 import com.example.SBA_M.entity.commands.Faq;
 import com.example.SBA_M.service.IFaqService;
@@ -44,11 +45,13 @@ public class FaqService implements IFaqService {
     }
 
     @Override
-    public FaqResponse updateFaq(Long id, FaqRequest faqRequest) {
+    public FaqResponse updateFaq(Long id, FaqUpdateRequest faqUpdateRequest) {
         Faq faq = faqRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("FAQ not found"));
-        faq.setQuestion(faqRequest.getQuestion());
-        faq.setAnswer(faqRequest.getAnswer());
+        faq.setQuestion(faqUpdateRequest.getQuestion());
+        faq.setAnswer(faqUpdateRequest.getAnswer());
+        faq.setStatus(faqUpdateRequest.getStatus());
+        faq.setFaqType(faqUpdateRequest.getFaqType());
         return faqMapper.toResponse(faqRepository.save(faq));
     }
 
