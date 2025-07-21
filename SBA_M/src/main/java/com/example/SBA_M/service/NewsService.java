@@ -58,6 +58,6 @@ public interface NewsService {
     /**
      * Admin/User: Advanced search and filtering
      */
-    PageResponse<NewsResponse> advancedNewsSearch(String search, String fromDate, String toDate, Integer minViews, Integer maxViews, String newsStatus, int page, int size);
+    PageResponse<NewsResponse> advancedNewsSearch(String search, String fromDate, String toDate, Integer minViews, Integer maxViews, String newsStatus, String category, int page, int size);
 
 }

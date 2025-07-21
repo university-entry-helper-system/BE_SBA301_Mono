@@ -126,7 +126,7 @@ public class NewsController {
     }
 
     @Operation(summary = "Get news with filter and search (guest & admin)")
-    @GetMapping("/api/news")
+    @GetMapping("")
     public ApiResponse<PageResponse<NewsResponse>> getNewsFiltered(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String search,
@@ -141,7 +141,7 @@ public class NewsController {
         // Nếu có filter nâng cao thì dùng advanced, còn lại dùng guest
         boolean isAdvanced = fromDate != null || toDate != null || minViews != null || maxViews != null || (newsStatus != null && !newsStatus.isEmpty());
         PageResponse<NewsResponse> result = isAdvanced
-                ? newsService.advancedNewsSearch(search, fromDate, toDate, minViews, maxViews, newsStatus, page, size)
+                ? newsService.advancedNewsSearch(search, fromDate, toDate, minViews, maxViews, newsStatus, category, page, size)
                 : newsService.filterNewsByCategoryAndSearch(category, search, page, size);
         return ApiResponse.<PageResponse<NewsResponse>>builder()
                 .code(1000)

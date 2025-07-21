@@ -20,4 +20,10 @@ public interface NewsSearchRepository extends ElasticsearchRepository<NewsSearch
 
     Page<NewsSearch> findByContentContainingOrSummaryContainingAndStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatus(
             String content, String summary, Status status, java.time.Instant fromDate, java.time.Instant toDate, Integer minViews, Integer maxViews, String newsStatus, Pageable pageable);
+
+    Page<NewsSearch> findByCategoryAndContentContainingOrCategoryAndSummaryContainingAndStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatus(
+            String category1, String content, String category2, String summary, Status status, java.time.Instant fromDate, java.time.Instant toDate, Integer minViews, Integer maxViews, String newsStatus, Pageable pageable);
+
+    Page<NewsSearch> findByCategoryAndStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatus(
+            String category, Status status, java.time.Instant fromDate, java.time.Instant toDate, Integer minViews, Integer maxViews, String newsStatus, Pageable pageable);
 }

@@ -240,7 +240,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public PageResponse<NewsResponse> advancedNewsSearch(String search, String fromDate, String toDate, Integer minViews, Integer maxViews, String newsStatus, int page, int size) {
+    public PageResponse<NewsResponse> advancedNewsSearch(String search, String fromDate, String toDate, Integer minViews, Integer maxViews, String newsStatus, String category, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
         Instant from = null;
         Instant to = null;
@@ -254,22 +254,38 @@ public class NewsServiceImpl implements NewsService {
         if (to == null) to = Instant.now();
         if (minViews == null) minViews = 0;
         if (maxViews == null) maxViews = Integer.MAX_VALUE;
-        if (newsStatus == null || newsStatus.isEmpty()) newsStatus = "PUBLISHED";
-        Page<NewsSearch> searchResults = newsSearchRepository.findByContentContainingOrSummaryContainingAndStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatus(
-                search != null ? search : "", search != null ? search : "", Status.ACTIVE, from, to, minViews, maxViews, newsStatus, pageable);
-        List<NewsResponse> items = searchResults.getContent().stream()
-                .map(newsSearch -> {
-                    NewsDocument newsDoc = newsReadRepository.findById(newsSearch.getId())
-                            .orElse(null);
-                    return newsDoc != null ? mapToResponse(newsDoc) : null;
-                })
-                .filter(java.util.Objects::nonNull)
+        if (newsStatus == null || newsStatus.isEmpty()) {
+            newsStatus = "PUBLISHED";
+        } else {
+            newsStatus = newsStatus.toUpperCase(); // Đảm bảo luôn là enum name
+        }
+        Page<NewsDocument> newsPage;
+        String searchValue = (search != null) ? search.trim() : null;
+        if (category != null && !category.isEmpty()) {
+            if (searchValue != null && !searchValue.isEmpty()) {
+                newsPage = newsReadRepository.findByCategoryAndStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatusAndTitleContainingIgnoreCaseOrSummaryContainingIgnoreCaseOrContentContainingIgnoreCase(
+                    category, Status.ACTIVE, from, to, minViews, maxViews, newsStatus, searchValue, searchValue, searchValue, pageable);
+            } else {
+                newsPage = newsReadRepository.findByCategoryAndStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatus(
+                    category, Status.ACTIVE, from, to, minViews, maxViews, newsStatus, pageable);
+            }
+        } else {
+            if (searchValue != null && !searchValue.isEmpty()) {
+                newsPage = newsReadRepository.findByStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatusAndTitleContainingIgnoreCaseOrSummaryContainingIgnoreCaseOrContentContainingIgnoreCase(
+                    Status.ACTIVE, from, to, minViews, maxViews, newsStatus, searchValue, searchValue, searchValue, pageable);
+            } else {
+                newsPage = newsReadRepository.findByStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatus(
+                    Status.ACTIVE, from, to, minViews, maxViews, newsStatus, pageable);
+            }
+        }
+        List<NewsResponse> items = newsPage.getContent().stream()
+                .map(this::mapToResponse)
                 .collect(Collectors.toList());
         return PageResponse.<NewsResponse>builder()
-                .page(searchResults.getNumber())
-                .size(searchResults.getSize())
-                .totalElements(searchResults.getTotalElements())
-                .totalPages(searchResults.getTotalPages())
+                .page(newsPage.getNumber())
+                .size(newsPage.getSize())
+                .totalElements(newsPage.getTotalElements())
+                .totalPages(newsPage.getTotalPages())
                 .items(items)
                 .build();
     }
