@@ -195,7 +195,10 @@ public class AuthService {
         newToken.setRevoked(false);
         newToken.setCreatedAt(Instant.now());
         tokenRepository.save(newToken);
-        if(!account.getStatus().name().equals("ADMIN")) {
+        boolean isAdmin = account.getRoles().stream()
+                .anyMatch(role -> role.getName().name().equals("ADMIN"));
+
+        if (!isAdmin) {
             pageVisitService.recordVisit();
         }
 
