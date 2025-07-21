@@ -31,8 +31,6 @@ public class NewsRequest {
     @NotBlank(message = "Content is required")
     private String content;
 
-    private String imageUrl;
-
     private NewsCategory category = NewsCategory.OTHER; // Default category
 
     private NewsStatus newsStatus = NewsStatus.PUBLISHED;

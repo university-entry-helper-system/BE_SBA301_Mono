@@ -34,14 +34,12 @@ public class NewsProducer {
         String presignedImageUrl = null;
         if (image != null && !image.isEmpty()) {
             presignedImageUrl = minioService.uploadFileAndGetPresignedUrl(image);
-        } else if (request.getImageUrl() != null && !request.getImageUrl().isEmpty()) {
-            presignedImageUrl = request.getImageUrl();
         }
         News news = new News();
         news.setTitle(request.getTitle());
         news.setContent(request.getContent());
         news.setSummary(request.getSummary());
-        news.setImageUrl(presignedImageUrl);
+        news.setImageUrl(presignedImageUrl); // Có thể null nếu không upload file
         news.setCategory(request.getCategory());
         news.setUniversity(university);
         news.setViewCount(0);
@@ -91,15 +89,12 @@ public class NewsProducer {
                 .orElseThrow(() -> new RuntimeException("News not found with id: " + id));
         University university = universityRepository.findById(request.getUniversityId()).orElseThrow(
                 () -> new RuntimeException("University not found with id: " + request.getUniversityId()));
-        
         // Handle image upload if provided
-        String imageUrl = existingNews.getImageUrl(); // Keep existing image by default
+        String imageUrl = existingNews.getImageUrl(); // Giữ ảnh cũ mặc định
         if (image != null && !image.isEmpty()) {
             imageUrl = minioService.uploadFileAndGetPresignedUrl(image);
-        } else if (request.getImageUrl() != null && !request.getImageUrl().isEmpty()) {
-            imageUrl = request.getImageUrl(); // Use imageUrl from request if no new image
         }
-        
+        // Không nhận imageUrl từ FE nữa!
         existingNews.setTitle(request.getTitle());
         existingNews.setContent(request.getContent());
         existingNews.setSummary(request.getSummary());
