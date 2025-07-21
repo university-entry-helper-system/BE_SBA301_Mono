@@ -6,15 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/NewsRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/NewsRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/NewsResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/NewsResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/News.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/News.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/queries/NewsDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/queries/NewsDocument.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/queries/NewsSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/queries/NewsSearch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/event/NewsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/event/NewsEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/NewsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/NewsServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/consumer/NewsConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/consumer/NewsConsumer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/producer/NewsProducer.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/messaging/producer/NewsProducer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/MajorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/MajorController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,9 +17,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
-        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -46,8 +39,8 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/university-entry-helper-system/BE_SBA301_Mono.git&quot;,
-    &quot;accountId&quot;: &quot;c91efdee-37a4-4c32-b14b-0ee203569aa0&quot;
+    &quot;url&quot;: &quot;git@github.com:university-entry-helper-system/BE_SBA301_Mono.git&quot;,
+    &quot;accountId&quot;: &quot;dff3d485-d2d2-45de-9d23-f37fda0dbaf5&quot;
   }
 }</component>
   <component name="KubernetesApiPersistence">{}</component>
@@ -119,16 +112,6 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -142,8 +125,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.21829.142" />
-        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-IU-242.21829.142" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
       </set>
     </attachedChunks>
   </component>
@@ -171,11 +154,7 @@
       <workItem from="1752117637901" duration="13120000" />
       <workItem from="1752282869105" duration="636000" />
       <workItem from="1752383431719" duration="9632000" />
-      <workItem from="1752799899467" duration="2775000" />
-      <workItem from="1752810005880" duration="115000" />
-      <workItem from="1753024435634" duration="494000" />
-      <workItem from="1753028246312" duration="6353000" />
-      <workItem from="1753049704037" duration="8527000" />
+      <workItem from="1752892209814" duration="3645000" />
     </task>
     <servers />
   </component>
