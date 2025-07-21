@@ -40,6 +40,7 @@ public class NewsConsumer {
                 event.getViewCount(),
                 event.getNewsStatus(),
                 event.getPublishedAt(),
+                event.getReleaseDate(),
                 event.getDeletedAt(),
                 event.getStatus(),
                 event.getCreatedAt(),
@@ -59,6 +60,7 @@ public class NewsConsumer {
                 .viewCount(event.getViewCount())
                 .newsStatus(event.getNewsStatus()) // Now String, no conversion needed
                 .publishedAt(event.getPublishedAt())
+                .releaseDate(event.getReleaseDate())
                 .build();
 
         // Set abstract document fields
@@ -91,6 +93,7 @@ public class NewsConsumer {
         existingDoc.setViewCount(event.getViewCount());
         existingDoc.setNewsStatus(event.getNewsStatus());
         existingDoc.setPublishedAt(event.getPublishedAt());
+        existingDoc.setReleaseDate(event.getReleaseDate());
         existingDoc.setStatus(event.getStatus());
         existingDoc.setUpdatedAt(event.getUpdatedAt());
         existingDoc.setUpdatedBy(event.getUpdatedBy());
@@ -112,6 +115,7 @@ public class NewsConsumer {
         existingSearch.setViewCount(event.getViewCount());
         existingSearch.setNewsStatus(event.getNewsStatus()); // Now String, no conversion needed
         existingSearch.setPublishedAt(event.getPublishedAt());
+        existingSearch.setReleaseDate(event.getReleaseDate());
         existingSearch.setUniversity(uniSearch);
 
         // Update abstract document fields
@@ -132,6 +136,7 @@ public class NewsConsumer {
         existingDoc.setUpdatedAt(event.getUpdatedAt());
         existingDoc.setUpdatedBy(event.getUpdatedBy());
         existingDoc.setDeletedAt(event.getDeletedAt()); // Set deletedAt for soft delete
+        existingDoc.setReleaseDate(event.getReleaseDate());
         newsReadRepository.save(existingDoc);
 
         // Update Elasticsearch document status
@@ -141,6 +146,7 @@ public class NewsConsumer {
         existingSearch.setStatus(event.getStatus());
         existingSearch.setUpdatedAt(event.getUpdatedAt());
         existingSearch.setUpdatedBy(event.getUpdatedBy());
+        existingSearch.setReleaseDate(event.getReleaseDate());
         newsSearchRepository.save(existingSearch);
     }
 }

@@ -5,6 +5,7 @@ import com.example.SBA_M.dto.response.NewsResponse;
 import com.example.SBA_M.dto.response.PageResponse;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 
 public interface NewsService {
 
@@ -40,5 +41,23 @@ public interface NewsService {
      */
     void deleteNews(Long id);
 
+    /**
+     * Get top N hot news
+     */
+
+    /**
+     * Get top 5 hot news (category là bất kỳ giá trị nào thuộc enum NewsCategory)
+     */
+    List<NewsResponse> getTop5HotNews();
+
+    /**
+     * Guest: Filter news by category and full-text search
+     */
+    PageResponse<NewsResponse> filterNewsByCategoryAndSearch(String category, String search, int page, int size);
+
+    /**
+     * Admin/User: Advanced search and filtering
+     */
+    PageResponse<NewsResponse> advancedNewsSearch(String search, String fromDate, String toDate, Integer minViews, Integer maxViews, String newsStatus, String category, int page, int size);
 
 }

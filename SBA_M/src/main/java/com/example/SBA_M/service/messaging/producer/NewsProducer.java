@@ -51,6 +51,7 @@ public class NewsProducer {
         news.setCreatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
         news.setUpdatedBy(username);
         news.setUpdatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
+        news.setReleaseDate(request.getReleaseDate());
 
         News savedNews = newsRepository.save(news);
 
@@ -70,6 +71,7 @@ public class NewsProducer {
                 savedNews.getViewCount(),
                 savedNews.getNewsStatus().name(), // pass as String
                 publishedAt,
+                savedNews.getReleaseDate(),
                 savedNews.getDeletedAt(),
                 savedNews.getStatus(),
                 savedNews.getCreatedAt(),
@@ -107,6 +109,7 @@ public class NewsProducer {
         existingNews.setNewsStatus(request.getNewsStatus());
         existingNews.setUpdatedBy(username);
         existingNews.setUpdatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
+        existingNews.setReleaseDate(request.getReleaseDate());
 
         News updatedNews = newsRepository.save(existingNews);
 
@@ -126,6 +129,7 @@ public class NewsProducer {
             updatedNews.getViewCount(),
             updatedNews.getNewsStatus().name(), // pass as String
             publishedAt,
+            updatedNews.getReleaseDate(),
             updatedNews.getDeletedAt(),
             updatedNews.getStatus(),
             updatedNews.getCreatedAt(),
@@ -166,6 +170,7 @@ public class NewsProducer {
             deletedNews.getViewCount(),
             deletedNews.getNewsStatus().name(), // pass as String
             publishedAt,
+            deletedNews.getReleaseDate(),
             deletedNews.getDeletedAt(),
             deletedNews.getStatus(),
             deletedNews.getCreatedAt(),
@@ -176,6 +181,36 @@ public class NewsProducer {
 
         log.info("Sending delete news message for ID: {}", id);
         kafkaTemplate.send("news.deleted", event);
+    }
+
+    /**
+     * Gửi event cập nhật viewCount cho Elasticsearch
+     */
+    public void sendViewCountUpdate(News news) {
+        var publishedAt = NewsStatus.PUBLISHED.equals(news.getNewsStatus()) ?
+                (news.getPublishedAt() != null ? news.getPublishedAt() : null) : null;
+        NewsEvent event = new NewsEvent(
+                news.getId(),
+                news.getUniversity().getId(),
+                news.getUniversity().getName(),
+                news.getTitle(),
+                news.getSummary(),
+                news.getContent(),
+                news.getImageUrl(),
+                news.getCategory().name(),
+                news.getViewCount(),
+                news.getNewsStatus().name(),
+                publishedAt,
+                news.getReleaseDate(),
+                news.getDeletedAt(),
+                news.getStatus(),
+                news.getCreatedAt(),
+                news.getCreatedBy(),
+                news.getUpdatedAt(),
+                news.getUpdatedBy()
+        );
+        log.info("Sending viewCount update message: {}", event);
+        kafkaTemplate.send("news.updated", event);
     }
 
     // Helper method to map entity to response DTO

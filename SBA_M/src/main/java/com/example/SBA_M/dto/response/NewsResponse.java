@@ -30,4 +30,6 @@ public class NewsResponse {
     private String createdBy;
     private Instant updatedAt;
     private String updatedBy;
+    private Instant releaseDate;
+    private Long daysToRelease;
 }

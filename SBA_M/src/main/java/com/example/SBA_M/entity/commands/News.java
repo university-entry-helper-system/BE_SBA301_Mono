@@ -45,6 +45,9 @@ public class News extends AbstractEntity<Long> {
     @Column(name = "published_at")
     private Instant publishedAt;
 
+    @Column(name = "release_date")
+    private Instant releaseDate;
+
     @Column(name = "deleted_at")
     private Instant deletedAt;
 

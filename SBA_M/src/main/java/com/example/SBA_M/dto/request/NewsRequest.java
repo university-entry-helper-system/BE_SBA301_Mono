@@ -39,5 +39,7 @@ public class NewsRequest {
 
     private Instant publishedAt;
 
+    private Instant releaseDate;
+
     private MultipartFile image;
 }
