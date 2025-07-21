@@ -24,6 +24,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -34,6 +37,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +48,7 @@ public class NewsServiceImpl implements NewsService {
     private final NewsRepository newsRepository;
     private final NewsReadRepository newsReadRepository;
     private final NewsSearchRepository newsSearchRepository;
+    private final MongoTemplate mongoTemplate;
 
 
     @Override
@@ -240,56 +245,80 @@ public class NewsServiceImpl implements NewsService {
                 .build();
     }
 
-    @Override
-    public PageResponse<NewsResponse> advancedNewsSearch(String search, String fromDate, String toDate, Integer minViews, Integer maxViews, String newsStatus, String category, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
-        Instant from = null;
-        Instant to = null;
-        try {
-            from = (fromDate != null && !fromDate.isEmpty()) ? Instant.parse(fromDate + "T00:00:00Z") : Instant.EPOCH;
-        } catch (DateTimeParseException ignored) {}
-        try {
-            to = (toDate != null && !toDate.isEmpty()) ? Instant.parse(toDate + "T23:59:59Z") : Instant.now();
-        } catch (DateTimeParseException ignored) {}
-        if (from == null) from = Instant.EPOCH;
-        if (to == null) to = Instant.now();
-        if (minViews == null) minViews = 0;
-        if (maxViews == null) maxViews = Integer.MAX_VALUE;
-        if (newsStatus == null || newsStatus.isEmpty()) {
-            newsStatus = "PUBLISHED";
-        } else {
-            newsStatus = newsStatus.toUpperCase(); // Đảm bảo luôn là enum name
+
+@Override
+public PageResponse<NewsResponse> advancedNewsSearch(
+        String search, String fromDate, String toDate,
+        Integer minViews, Integer maxViews,
+        String newsStatus, String category,
+        int page, int size) {
+
+    Pageable pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
+
+    // Parse thời gian
+    Instant from = Instant.EPOCH;
+    Instant to = Instant.now();
+    try {
+        if (fromDate != null && !fromDate.isEmpty()) {
+            from = Instant.parse(fromDate + "T00:00:00Z");
         }
-        Page<NewsDocument> newsPage;
-        String searchValue = (search != null) ? search.trim() : null;
-        if (category != null && !category.isEmpty()) {
-            if (searchValue != null && !searchValue.isEmpty()) {
-                newsPage = newsReadRepository.findByCategoryAndStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatusAndTitleContainingIgnoreCaseOrSummaryContainingIgnoreCaseOrContentContainingIgnoreCase(
-                    category, Status.ACTIVE, from, to, minViews, maxViews, newsStatus, searchValue, searchValue, searchValue, pageable);
-            } else {
-                newsPage = newsReadRepository.findByCategoryAndStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatus(
-                    category, Status.ACTIVE, from, to, minViews, maxViews, newsStatus, pageable);
-            }
-        } else {
-            if (searchValue != null && !searchValue.isEmpty()) {
-                newsPage = newsReadRepository.findByStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatusAndTitleContainingIgnoreCaseOrSummaryContainingIgnoreCaseOrContentContainingIgnoreCase(
-                    Status.ACTIVE, from, to, minViews, maxViews, newsStatus, searchValue, searchValue, searchValue, pageable);
-            } else {
-                newsPage = newsReadRepository.findByStatusAndPublishedAtBetweenAndViewCountBetweenAndNewsStatus(
-                    Status.ACTIVE, from, to, minViews, maxViews, newsStatus, pageable);
-            }
+    } catch (DateTimeParseException ignored) {}
+    try {
+        if (toDate != null && !toDate.isEmpty()) {
+            to = Instant.parse(toDate + "T23:59:59Z");
         }
-        List<NewsResponse> items = newsPage.getContent().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
-        return PageResponse.<NewsResponse>builder()
-                .page(newsPage.getNumber())
-                .size(newsPage.getSize())
-                .totalElements(newsPage.getTotalElements())
-                .totalPages(newsPage.getTotalPages())
-                .items(items)
-                .build();
+    } catch (DateTimeParseException ignored) {}
+
+    // View count mặc định
+    int viewsFrom = (minViews != null) ? minViews : 0;
+    int viewsTo = (maxViews != null) ? maxViews : Integer.MAX_VALUE;
+
+    // NewsStatus mặc định
+    String statusText = (newsStatus != null && !newsStatus.isEmpty()) ? newsStatus.toUpperCase() : "PUBLISHED";
+
+    // Keyword tìm kiếm
+    String keyword = (search != null && !search.trim().isEmpty()) ? search.trim() : null;
+
+    // Build query
+    Criteria criteria = new Criteria();
+
+    criteria.and("status").is(Status.ACTIVE);
+    criteria.and("newsStatus").is(statusText);
+    criteria.and("publishedAt").gte(from).lte(to);
+    criteria.and("viewCount").gte(viewsFrom).lte(viewsTo);
+
+    if (category != null && !category.isEmpty()) {
+        criteria.and("category").is(category);
     }
+
+    if (keyword != null) {
+        // OR search theo title, summary, content
+        criteria.andOperator(
+                new Criteria().orOperator(
+                        Criteria.where("title").regex(Pattern.quote(keyword), "i"),
+                        Criteria.where("summary").regex(Pattern.quote(keyword), "i"),
+                        Criteria.where("content").regex(Pattern.quote(keyword), "i")
+                )
+        );
+    }
+
+    Query query = new Query(criteria).with(pageable);
+    List<NewsDocument> documents = mongoTemplate.find(query, NewsDocument.class);
+    long total = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), NewsDocument.class);
+
+    List<NewsResponse> items = documents.stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
+
+    return PageResponse.<NewsResponse>builder()
+            .page(page)
+            .size(size)
+            .totalElements(total)
+            .totalPages((int) Math.ceil((double) total / size))
+            .items(items)
+            .build();
+}
+
 
 
     private NewsResponse mapToResponse(NewsDocument news) {
