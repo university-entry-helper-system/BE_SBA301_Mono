@@ -14,6 +14,7 @@ import com.example.SBA_M.mapper.AccountMapper;
 import com.example.SBA_M.repository.commands.AccountRepository;
 import com.example.SBA_M.repository.commands.RoleRepository;
 import com.example.SBA_M.repository.commands.TokenRepository;
+import com.example.SBA_M.service.PageVisitService;
 import com.example.SBA_M.utils.AccountStatus;
 import com.example.SBA_M.utils.RoleName;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final MailService mailService;
     private final AccountMapper accountMapper;
+    private final PageVisitService pageVisitService;
 
     @Value("${app.activation-code.expiration-minutes}")
     private long activationCodeExpirationMinutes;
@@ -193,6 +195,14 @@ public class AuthService {
         newToken.setRevoked(false);
         newToken.setCreatedAt(Instant.now());
         tokenRepository.save(newToken);
+        boolean isAdmin = account.getRoles().stream()
+                .anyMatch(role -> role.getName().name().equals("ADMIN"));
+
+        if (!isAdmin) {
+            pageVisitService.recordVisit();
+        }
+
+
 
         // FIX 3: AuthResponse needs @Builder
         return AuthResponse.builder()

@@ -8,6 +8,11 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ConsultantProfileMapper {
+    @Mapping(target = "accountId", source = "account.id")
+    @Mapping(target = "bio", source = "bio")
+    @Mapping(target = "maxConcurrentRequests", source = "maxConcurrentRequests")
+    @Mapping(target = "currentPendingRequests", source = "currentPendingRequests")
+    @Mapping(target = "specialties", source = "specialties")
     ConsultantProfileResponse toResponse(ConsultantProfile profile);
 
     // For create/update
@@ -15,5 +20,7 @@ public interface ConsultantProfileMapper {
     @Mapping(target = "account", ignore = true) // set manually in service
     @Mapping(target = "specialties", ignore = true) // set manually in service
     ConsultantProfile toEntity(ConsultantProfileRequest request);
+
+
 
 }

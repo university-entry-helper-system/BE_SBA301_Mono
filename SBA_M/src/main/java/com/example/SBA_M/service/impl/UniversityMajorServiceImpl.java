@@ -64,13 +64,22 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
 
 
     @Override
-    public PageResponse<UniversityMajorResponse> getAllUniversityMajors(int page, int size) {
+    public PageResponse<UniversityMajorResponse> getAllUniversityMajors(Integer universityId,String name ,int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<UniversityMajor> majorPage = universityMajorRepository.findByStatus(Status.ACTIVE, pageable);
+
+        Page<UniversityMajor> majorPage;
+        if (name == null || name.trim().isEmpty()) {
+            majorPage = universityMajorRepository.findByStatusAndUniversityId(Status.ACTIVE, universityId, pageable);
+        } else {
+            majorPage = universityMajorRepository.findByStatusAndUniversityIdAndUniversityMajorNameContainingIgnoreCase(
+                    Status.ACTIVE, universityId, name.trim(), pageable);
+        }
 
         List<UniversityMajorResponse> items = majorPage.getContent().stream()
                 .map(universityMajorMapper::toResponse)
                 .toList();
+
+
 
         return PageResponse.<UniversityMajorResponse>builder()
                 .page(majorPage.getNumber())

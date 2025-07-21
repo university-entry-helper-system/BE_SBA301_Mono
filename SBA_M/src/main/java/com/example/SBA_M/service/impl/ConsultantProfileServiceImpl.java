@@ -5,10 +5,12 @@ import com.example.SBA_M.dto.response.ConsultantProfileResponse;
 import com.example.SBA_M.entity.commands.Account;
 import com.example.SBA_M.entity.commands.ConsultantProfile;
 import com.example.SBA_M.entity.commands.Major;
+import com.example.SBA_M.entity.commands.Role;
 import com.example.SBA_M.mapper.ConsultantProfileMapper;
 import com.example.SBA_M.repository.commands.AccountRepository;
 import com.example.SBA_M.repository.commands.ConsultantProfileRepository;
 import com.example.SBA_M.repository.commands.MajorRepository;
+import com.example.SBA_M.repository.commands.RoleRepository;
 import com.example.SBA_M.service.ConsultantProfileService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +20,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -29,6 +33,7 @@ public class ConsultantProfileServiceImpl implements ConsultantProfileService {
     private final AccountRepository accountRepository;
     private final MajorRepository majorRepository;
     private final ConsultantProfileMapper profileMapper;
+    private final RoleRepository roleRepository;
 
     @Override
     @Transactional
@@ -37,9 +42,7 @@ public class ConsultantProfileServiceImpl implements ConsultantProfileService {
 
         Account account = accountRepository.findById(request.getAccountId())
                 .orElseThrow(() -> new EntityNotFoundException("Account not found"));
-
         profile.setAccount(account);
-
         if (request.getSpecialtyIds() != null) {
             List<Major> majors = majorRepository.findAllById(request.getSpecialtyIds());
             profile.setSpecialties(majors);
@@ -51,7 +54,7 @@ public class ConsultantProfileServiceImpl implements ConsultantProfileService {
 
     @Override
     @Transactional
-    public ConsultantProfileResponse update(UUID id, ConsultantProfileRequest request) {
+    public ConsultantProfileResponse update(Integer id, ConsultantProfileRequest request) {
         ConsultantProfile profile = profileRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Profile not found"));
 
@@ -69,13 +72,13 @@ public class ConsultantProfileServiceImpl implements ConsultantProfileService {
 
     @Override
     @Transactional
-    public void delete(UUID id) {
+    public void delete(Integer id) {
         profileRepository.deleteById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ConsultantProfileResponse getById(UUID id) {
+    public ConsultantProfileResponse getById(Integer id) {
         ConsultantProfile profile = profileRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Profile not found"));
 

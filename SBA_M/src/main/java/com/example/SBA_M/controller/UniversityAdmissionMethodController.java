@@ -2,6 +2,7 @@ package com.example.SBA_M.controller;
 
 import com.example.SBA_M.dto.request.UniversityMethodRequest;
 import com.example.SBA_M.dto.response.*;
+import com.example.SBA_M.service.SearchCountService;
 import com.example.SBA_M.service.UniversityAdmissionMethodService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -19,21 +20,26 @@ import java.util.List;
 public class UniversityAdmissionMethodController {
 
     private final UniversityAdmissionMethodService universityAdmissionMethodService;
+    private final SearchCountService searchCountService;
 
     // ✅ Public access: no login required
-    @Operation(summary = "Get all university admission methods (paginated)")
+    @Operation(summary = "Get all university admission methods by university (paginated)", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping
     public ApiResponse<PageResponse<UniversityAdmissionMethodResponse>> getAllUniversityAdmissionMethods(
+            @RequestParam Integer universityId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        PageResponse<UniversityAdmissionMethodResponse> result = universityAdmissionMethodService.getAll(page, size);
+        PageResponse<UniversityAdmissionMethodResponse> result =
+                universityAdmissionMethodService.getAll(universityId, page, size);
+
         return ApiResponse.<PageResponse<UniversityAdmissionMethodResponse>>builder()
                 .code(1000)
                 .message("University admission methods fetched successfully")
                 .result(result)
                 .build();
     }
+
 
     // ✅ Public access
     @Operation(summary = "Get university admission method by ID")
@@ -68,6 +74,9 @@ public class UniversityAdmissionMethodController {
             @PathVariable Integer universityId
     ) {
         UniversityAdmissionMethodDetailResponse result = universityAdmissionMethodService.getMethodsBySchool(universityId);
+        if (result != null) {
+            searchCountService.recordSearch(universityId);
+        }
         return ApiResponse.<UniversityAdmissionMethodDetailResponse>builder()
                 .code(1000)
                 .message("Methods of the school fetched successfully")

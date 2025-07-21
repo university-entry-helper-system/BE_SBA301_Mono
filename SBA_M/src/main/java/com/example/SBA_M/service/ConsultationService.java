@@ -14,17 +14,17 @@ public interface ConsultationService {
     ConsultationResponse updateConsultation(Long consultationId, ConsultationCreateRequest request);
 
 
-    Page<ConsultationResponse> getUserConsultations(UUID userId, Pageable pageable);
+    Page<ConsultationResponse> getUserConsultations(UUID consultantID ,Pageable pageable);
 
-    Page<ConsultationResponse> searchUserConsultations(UUID userId, String keyword, Pageable pageable);
+    Page<ConsultationResponse> searchUserConsultations(UUID consultantID, String keyword, Pageable pageable);
 
-    ConsultationResponse answerConsultation(UUID consultantId, ConsultationAnswerRequest request);
+    ConsultationResponse answerConsultation(ConsultationAnswerRequest request);
 
-    ConsultationResponse updateConsultantAnswer(UUID consultantId, ConsultationAnswerRequest request);
+    ConsultationResponse updateConsultantAnswer(ConsultationAnswerRequest request);
 
     void cancelConsultation(Long consultationId);
 
-    Page<ConsultationResponse> getConsultantConsultations(UUID consultantId, Pageable pageable);
+    Page<ConsultationResponse> getConsultantConsultations(Pageable pageable);
 
-    Page<ConsultationResponse> searchConsultantConsultations(UUID consultantId, String keyword, Pageable pageable);
+    Page<ConsultationResponse> searchConsultantConsultations(String keyword, Pageable pageable);
 }

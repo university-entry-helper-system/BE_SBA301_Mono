@@ -22,19 +22,22 @@ public class UniversityMajorController {
 
     private final UniversityMajorService universityMajorService;
 
-    @Operation(summary = "Get all university majors (paginated)", security = @SecurityRequirement(name = "bearerAuth"))
-    @GetMapping
+    @Operation(summary = "Get all university majors (paginated, searchable)", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/uni/{id}")
     public ApiResponse<PageResponse<UniversityMajorResponse>> getAllUniversityMajors(
+            @PathVariable Integer id,
+            @RequestParam(required = false) String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        PageResponse<UniversityMajorResponse> result = universityMajorService.getAllUniversityMajors(page, size);
+        PageResponse<UniversityMajorResponse> result = universityMajorService.getAllUniversityMajors(id, name, page, size);
         return ApiResponse.<PageResponse<UniversityMajorResponse>>builder()
                 .code(1000)
                 .message("University majors fetched successfully")
                 .result(result)
                 .build();
     }
+
 
     @Operation(summary = "Get university major by ID", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/{id}")
