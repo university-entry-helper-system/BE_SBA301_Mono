@@ -9,9 +9,11 @@ import com.example.SBA_M.service.PdfExportService;
 import com.example.SBA_M.service.UniversityAdmissionMethodService;
 import com.example.SBA_M.service.UniversityMajorService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -86,7 +88,55 @@ public class PdfExportController {
                 .result(fileName)
                 .build();
     }
+    @Operation(summary = "Export admission year groups to PDF for download")
+    @GetMapping("/year-groups/download")
+    public void exportYearGroupsForDownload(
+            @RequestParam Integer universityId,
+            HttpServletResponse httpResponse
+    ) throws IOException {
+        AdmissionUniversityTuitionResponse response = majorService.getAdmissionYearGroupsByUniversityId(universityId);
+        String fileName = generateFileName("admission-year-groups", universityId);
+        pdfExportService.exportAdmissionYearGroupsToPdf(response, httpResponse);
+        httpResponse.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+    }
 
+    @Operation(summary = "Export major admission details to PDF for download")
+    @GetMapping("/major-admission/download")
+    public void exportMajorAdmissionForDownload(
+            @RequestParam Integer universityId,
+            @RequestParam Long majorId,
+            HttpServletResponse httpResponse
+    ) throws IOException {
+        MajorAdmissionResponse response = majorService.getMajorAdmissionByUniversityAndMajor(universityId, majorId);
+        String fileName = generateFileName("major-admission", universityId + "-" + majorId);
+        pdfExportService.exportMajorAdmissionToPdf(response, httpResponse);
+        httpResponse.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+    }
+
+    @Operation(summary = "Export subject combination admission to PDF for download")
+    @GetMapping("/subject-combination/download")
+    public void exportSubjectCombinationForDownload(
+            @RequestParam Integer universityId,
+            @RequestParam Long subjectCombinationId,
+            HttpServletResponse httpResponse
+    ) throws IOException {
+        SubjectCombinationResponse response = majorService.getSubjectCombinationAdmission(universityId, subjectCombinationId);
+        String fileName = generateFileName("subject-combination", universityId + "-" + subjectCombinationId);
+        pdfExportService.exportSubjectCombinationToPdf(response, httpResponse);
+        httpResponse.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+    }
+
+    @Operation(summary = "Export admission methods to PDF for download")
+    @GetMapping("/admission-methods/download")
+    public void exportAdmissionMethodsForDownload(
+            @RequestParam Integer universityId,
+            HttpServletResponse httpResponse
+    ) throws IOException {
+        UniversityAdmissionMethodDetailResponse response = admissionService.getMethodsBySchool(universityId);
+        String fileName = generateFileName("admission-methods", universityId);
+        pdfExportService.exportAdmissionMethodsToPdf(response, httpResponse);
+        httpResponse.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+    }
     private String generateFileName(String prefix, Object identifier) {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         return prefix + "_" + identifier + "_" + timestamp + ".pdf";
