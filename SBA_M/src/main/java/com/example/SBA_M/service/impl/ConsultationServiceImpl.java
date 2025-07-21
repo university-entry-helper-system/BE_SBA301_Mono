@@ -5,6 +5,8 @@ import com.example.SBA_M.dto.request.ConsultationCreateRequest;
 import com.example.SBA_M.dto.response.ConsultationResponse;
 import com.example.SBA_M.entity.commands.Account;
 import com.example.SBA_M.entity.commands.Consultation;
+import com.example.SBA_M.exception.AppException;
+import com.example.SBA_M.exception.ErrorCode;
 import com.example.SBA_M.mapper.ConsultationMapper;
 import com.example.SBA_M.repository.commands.AccountRepository;
 import com.example.SBA_M.repository.commands.ConsultationRepository;
@@ -15,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,8 +76,10 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ConsultationResponse> getUserConsultations(UUID userId, Pageable pageable) {
-        return consultationRepository.findByAccountId(userId, pageable)
+    public Page<ConsultationResponse> getUserConsultations(UUID ConsultantId ,Pageable pageable) {
+        Account account = accountRepository.findByUsername(getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException("Account not found"));;
+        return consultationRepository.findByAccountIdAndConsultantId(account.getId(),ConsultantId ,pageable)
                 .map(consultationMapper::toResponse);
     }
 
@@ -94,11 +100,14 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     @Transactional
-    public ConsultationResponse answerConsultation(UUID consultantId, ConsultationAnswerRequest request) {
+    public ConsultationResponse answerConsultation(ConsultationAnswerRequest request) {
+        Account account = accountRepository.findByUsername(getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException("Account not found"));;
+
         Consultation consultation = consultationRepository.findById(request.getConsultationId())
                 .orElseThrow(() -> new EntityNotFoundException("Consultation not found"));
 
-        if (!consultation.getConsultant().getId().equals(consultantId)) {
+        if (!consultation.getConsultant().getId().equals(account.getId())) {
             throw new IllegalArgumentException("Not your consultation.");
         }
 
@@ -118,11 +127,13 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     @Transactional
-    public ConsultationResponse updateConsultantAnswer(UUID consultantId, ConsultationAnswerRequest request) {
+    public ConsultationResponse updateConsultantAnswer(ConsultationAnswerRequest request) {
         Consultation consultation = consultationRepository.findById(request.getConsultationId())
                 .orElseThrow(() -> new EntityNotFoundException("Consultation not found"));
+        Account account = accountRepository.findByUsername(getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException("Account not found"));;
 
-        if (!consultation.getConsultant().getId().equals(consultantId)) {
+        if (!consultation.getConsultant().getId().equals(account.getId())) {
             throw new IllegalArgumentException("Not your consultation.");
         }
 
@@ -155,16 +166,20 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ConsultationResponse> getConsultantConsultations(UUID consultantId, Pageable pageable) {
-        return consultationRepository.findByConsultantId(consultantId, pageable)
+    public Page<ConsultationResponse> getConsultantConsultations(Pageable pageable) {
+        Account account = accountRepository.findByUsername(getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException("Account not found"));;
+        return consultationRepository.findByConsultantId(account.getId(), pageable)
                 .map(consultationMapper::toResponse);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ConsultationResponse> searchConsultantConsultations(UUID consultantId, String keyword, Pageable pageable) {
+    public Page<ConsultationResponse> searchConsultantConsultations(String keyword, Pageable pageable) {
+        Account account = accountRepository.findByUsername(getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException("Account not found"));;
         Specification<Consultation> spec = (root, query, cb) -> cb.and(
-                cb.equal(root.get("consultant").get("id"), consultantId),
+                cb.equal(root.get("consultant").get("id"), account.getId()),
                 cb.or(
                         cb.like(cb.lower(root.get("title")), "%" + keyword.toLowerCase() + "%"),
                         cb.like(cb.lower(root.get("content")), "%" + keyword.toLowerCase() + "%")
@@ -190,4 +205,11 @@ public class ConsultationServiceImpl implements ConsultationService {
         }
     }
 
+    private String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getName() == null) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+        return authentication.getName();
+    }
 }

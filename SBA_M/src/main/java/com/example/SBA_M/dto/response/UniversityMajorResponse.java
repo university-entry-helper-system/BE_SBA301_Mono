@@ -21,6 +21,8 @@ public class UniversityMajorResponse {
     private Long majorId;
     private String majorName;
 
+    private String uniMajorName;
+
     private Double score;
 
     private Integer quota;

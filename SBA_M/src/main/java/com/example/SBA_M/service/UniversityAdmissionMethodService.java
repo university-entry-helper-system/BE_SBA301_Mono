@@ -9,7 +9,7 @@ import com.example.SBA_M.dto.response.UniversityAdmissionMethodSummaryResponse;
 import java.util.List;
 
 public interface UniversityAdmissionMethodService {
-    PageResponse<UniversityAdmissionMethodResponse> getAll(int page, int size);
+    PageResponse<UniversityAdmissionMethodResponse> getAll(Integer universityId, int page, int size);
 
     UniversityAdmissionMethodResponse getById(Integer id);
 

@@ -15,4 +15,6 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
     Page<Consultation> findByAccountId(UUID accountId, Pageable pageable);
 
     Page<Consultation> findByConsultantId(UUID consultantId, Pageable pageable);
+
+    Page<Consultation> findByAccountIdAndConsultantId(UUID accountId, UUID consultantId, Pageable pageable);
 }

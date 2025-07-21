@@ -3,11 +3,9 @@ package com.example.SBA_M.entity.commands;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -17,9 +15,12 @@ import java.util.UUID;
 public class ConsultantProfile {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(name = "id", updatable = false, nullable = false, insertable = false)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @OneToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Column(columnDefinition = "TEXT")
     private String bio;
@@ -29,10 +30,6 @@ public class ConsultantProfile {
 
     @Column(name = "current_pending_requests")
     private Integer currentPendingRequests = 0;
-
-    @OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "id")
-    private Account account;
 
     @ManyToMany
     @JoinTable(

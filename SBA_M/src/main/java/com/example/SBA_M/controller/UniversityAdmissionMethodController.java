@@ -23,19 +23,23 @@ public class UniversityAdmissionMethodController {
     private final SearchCountService searchCountService;
 
     // ✅ Public access: no login required
-    @Operation(summary = "Get all university admission methods (paginated)")
+    @Operation(summary = "Get all university admission methods by university (paginated)", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping
     public ApiResponse<PageResponse<UniversityAdmissionMethodResponse>> getAllUniversityAdmissionMethods(
+            @RequestParam Integer universityId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        PageResponse<UniversityAdmissionMethodResponse> result = universityAdmissionMethodService.getAll(page, size);
+        PageResponse<UniversityAdmissionMethodResponse> result =
+                universityAdmissionMethodService.getAll(universityId, page, size);
+
         return ApiResponse.<PageResponse<UniversityAdmissionMethodResponse>>builder()
                 .code(1000)
                 .message("University admission methods fetched successfully")
                 .result(result)
                 .build();
     }
+
 
     // ✅ Public access
     @Operation(summary = "Get university admission method by ID")

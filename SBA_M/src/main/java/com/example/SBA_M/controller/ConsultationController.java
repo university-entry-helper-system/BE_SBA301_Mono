@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -60,14 +61,15 @@ public class ConsultationController {
 
     @Operation(summary = "User views all their consultations (paginated)")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    @GetMapping("/user/{userId}")
+    @SendTo("/topic/user/{consultantId}/consultations")
+    @GetMapping("/user/{consultantId}")
     public ApiResponse<Page<ConsultationResponse>> getUserConsultations(
-            @PathVariable UUID userId,
+            @PathVariable UUID consultantId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Page<ConsultationResponse> response = consultationService.getUserConsultations(
-                userId, PageRequest.of(page, size)
+                consultantId, PageRequest.of(page, size)
         );
         return ApiResponse.<Page<ConsultationResponse>>builder()
                 .code(1000)
@@ -78,15 +80,16 @@ public class ConsultationController {
 
     @Operation(summary = "User searches their consultations by keyword")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    @GetMapping("/user/{userId}/search")
+    @SendTo("/topic/user/{consultantId}/search")
+    @GetMapping("/user/{consultantId}/search")
     public ApiResponse<Page<ConsultationResponse>> searchUserConsultations(
-            @PathVariable UUID userId,
+            @PathVariable UUID consultantId,
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Page<ConsultationResponse> response = consultationService.searchUserConsultations(
-                userId, keyword, PageRequest.of(page, size)
+                consultantId, keyword, PageRequest.of(page, size)
         );
         return ApiResponse.<Page<ConsultationResponse>>builder()
                 .code(1000)
@@ -101,12 +104,11 @@ public class ConsultationController {
 
     @Operation(summary = "Consultant answers a consultation (new answer)")
     @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
-    @PostMapping("/consultant/{consultantId}/answer")
+    @PostMapping("/consultant/answer")
     public ApiResponse<ConsultationResponse> answerConsultation(
-            @PathVariable UUID consultantId,
             @Valid @RequestBody ConsultationAnswerRequest request
     ) {
-        ConsultationResponse response = consultationService.answerConsultation(consultantId, request);
+        ConsultationResponse response = consultationService.answerConsultation( request);
         return ApiResponse.<ConsultationResponse>builder()
                 .code(1001)
                 .message("Consultation answered successfully.")
@@ -116,12 +118,11 @@ public class ConsultationController {
 
     @Operation(summary = "Consultant updates their answer for a consultation")
     @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
-    @PutMapping("/consultant/{consultantId}/answer")
+    @PutMapping("/consultant/answer")
     public ApiResponse<ConsultationResponse> updateConsultantAnswer(
-            @PathVariable UUID consultantId,
             @Valid @RequestBody ConsultationAnswerRequest request
     ) {
-        ConsultationResponse response = consultationService.updateConsultantAnswer(consultantId, request);
+        ConsultationResponse response = consultationService.updateConsultantAnswer( request);
         return ApiResponse.<ConsultationResponse>builder()
                 .code(1002)
                 .message("Consultation answer updated successfully.")
@@ -144,14 +145,14 @@ public class ConsultationController {
 
     @Operation(summary = "Consultant views all their consultations (paginated)")
     @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
-    @GetMapping("/consultant/{consultantId}")
+    @SendTo("/topic/consultant/consultations")
+    @GetMapping("/consultant")
     public ApiResponse<Page<ConsultationResponse>> getConsultantConsultations(
-            @PathVariable UUID consultantId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Page<ConsultationResponse> response = consultationService.getConsultantConsultations(
-                consultantId, PageRequest.of(page, size)
+                 PageRequest.of(page, size)
         );
         return ApiResponse.<Page<ConsultationResponse>>builder()
                 .code(1000)
@@ -162,15 +163,15 @@ public class ConsultationController {
 
     @Operation(summary = "Consultant searches consultations by keyword")
     @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
-    @GetMapping("/consultant/{consultantId}/search")
+    @SendTo("/topic/consultant/search")
+    @GetMapping("/consultant/search")
     public ApiResponse<Page<ConsultationResponse>> searchConsultantConsultations(
-            @PathVariable UUID consultantId,
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Page<ConsultationResponse> response = consultationService.searchConsultantConsultations(
-                consultantId, keyword, PageRequest.of(page, size)
+                keyword, PageRequest.of(page, size)
         );
         return ApiResponse.<Page<ConsultationResponse>>builder()
                 .code(1000)
