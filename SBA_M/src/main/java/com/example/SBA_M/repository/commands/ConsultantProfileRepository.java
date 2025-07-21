@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface ConsultantProfileRepository extends JpaRepository<ConsultantProfile, UUID>, JpaSpecificationExecutor<ConsultantProfile> {
+public interface ConsultantProfileRepository extends JpaRepository<ConsultantProfile, Integer>, JpaSpecificationExecutor<ConsultantProfile> {
 }

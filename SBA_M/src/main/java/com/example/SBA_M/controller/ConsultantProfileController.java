@@ -41,7 +41,7 @@ public class ConsultantProfileController {
     @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<ConsultantProfileResponse> updateProfile(
-            @PathVariable UUID id,
+            @PathVariable Integer id,
             @Valid @RequestBody ConsultantProfileRequest request
     ) {
         ConsultantProfileResponse response = consultantProfileService.update(id, request);
@@ -56,7 +56,7 @@ public class ConsultantProfileController {
     @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteProfile(
-            @PathVariable UUID id
+            @PathVariable Integer id
     ) {
         consultantProfileService.delete(id);
         return ApiResponse.<Void>builder()
@@ -69,7 +69,7 @@ public class ConsultantProfileController {
     @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ApiResponse<ConsultantProfileResponse> getProfileById(
-            @PathVariable UUID id
+            @PathVariable Integer id
     ) {
         ConsultantProfileResponse response = consultantProfileService.getById(id);
         return ApiResponse.<ConsultantProfileResponse>builder()
@@ -80,7 +80,7 @@ public class ConsultantProfileController {
     }
 
     @Operation(summary = "Get all consultant profiles (paginated)")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ApiResponse<Page<ConsultantProfileResponse>> getAllProfiles(
             @RequestParam(defaultValue = "0") int page,

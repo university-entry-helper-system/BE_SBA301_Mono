@@ -15,7 +15,7 @@ import java.util.List;
 
 
 public interface UniversityMajorService {
-    PageResponse<UniversityMajorResponse> getAllUniversityMajors(int page, int size);
+    PageResponse<UniversityMajorResponse> getAllUniversityMajors(Integer universityId,String name, int page, int size);
 
     UniversityMajorResponse getUniversityMajorById(Integer id);
 

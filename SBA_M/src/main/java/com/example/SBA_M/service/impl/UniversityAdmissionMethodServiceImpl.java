@@ -41,9 +41,12 @@ public class UniversityAdmissionMethodServiceImpl implements UniversityAdmission
     private final UniversityAdmissionMethodProducer universityAdmissionMethodProducer;
 
     @Override
-    public PageResponse<UniversityAdmissionMethodResponse> getAll(int page, int size) {
+    public PageResponse<UniversityAdmissionMethodResponse> getAll(Integer universityId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<UniversityAdmissionMethod> methodPage = universityAdmissionMethodRepository.findByStatus(Status.ACTIVE, pageable);
+
+        Page<UniversityAdmissionMethod> methodPage =
+                universityAdmissionMethodRepository.findByStatusAndUniversityId(Status.ACTIVE, universityId, pageable);
+
         List<UniversityAdmissionMethodResponse> items = methodPage.getContent().stream()
                 .map(mapper::toResponse)
                 .toList();
@@ -56,6 +59,8 @@ public class UniversityAdmissionMethodServiceImpl implements UniversityAdmission
                 .items(items)
                 .build();
     }
+
+
 
     @Override
     public UniversityAdmissionMethodResponse getById(Integer id) {

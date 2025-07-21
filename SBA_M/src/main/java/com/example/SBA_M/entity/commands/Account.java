@@ -57,6 +57,10 @@ public class Account {
     @Column(name = "login_count")
     private Integer loginCount = 0;
 
+    @OneToOne
+    @JoinColumn(name = "account") // same as Account.id
+    private ConsultantProfile consultantProfile;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "account_roles",
