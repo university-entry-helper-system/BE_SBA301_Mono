@@ -9,7 +9,10 @@ import java.util.List;
 
 @Repository
 public interface SearchCountRepository extends JpaRepository<SearchCount, Long> {
-    List<SearchCount> findAllByCreatedAtDateBetween(LocalDate from, LocalDate to);
+    List<SearchCount> findAllByCreatedAtBetween(LocalDate from, LocalDate to);
 
     SearchCount findByCreatedAtAndUniversity_Id(LocalDate date, Integer universityId);
+
+    SearchCount findFirstByUniversity_Id(Integer universityId);
+    List<SearchCount> findAllByUniversity_IdAndCreatedAtBetween(Integer universityId, LocalDate from, LocalDate to);
 }

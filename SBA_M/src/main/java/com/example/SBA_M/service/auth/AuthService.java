@@ -195,7 +195,10 @@ public class AuthService {
         newToken.setRevoked(false);
         newToken.setCreatedAt(Instant.now());
         tokenRepository.save(newToken);
-        pageVisitService.recordVisit();
+        if(!account.getStatus().name().equals("ADMIN")) {
+            pageVisitService.recordVisit();
+        }
+
 
 
         // FIX 3: AuthResponse needs @Builder

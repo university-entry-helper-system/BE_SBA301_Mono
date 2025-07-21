@@ -4,21 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/PageVisitStatsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/PageVisitCompareRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/PageVisitCompareResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/VisitCompareResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/VisitDailyResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/PageVisit.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/SearchCount.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/PageVisitRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/SearchCountRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/PageVisitService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/PageVisitServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="new static api">
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/SearcherStatsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/DateRangeRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/SingleDateRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/UniversityDateRangeRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/search_count/DateCountPointResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/search_count/UniversitySearchStatResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/search_count/UniversitySearchTrendResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/PageVisitStatsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/PageVisitStatsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/UniversityAdmissionMethodController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/UniversityAdmissionMethodController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/PageVisitCompareResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/page_visit/PageVisitCompareResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/VisitCompareResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/page_visit/VisitCompareResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/VisitDailyResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/page_visit/VisitDailyResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/SearchCountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/SearchCountRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/PageVisitService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/PageVisitService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/SearchCountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/SearchCountService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/auth/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/auth/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/PageVisitServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/PageVisitServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/SearchCountServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/SearchCountServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -177,7 +182,17 @@
       <workItem from="1752971635946" duration="2171000" />
       <workItem from="1752975695284" duration="1663000" />
       <workItem from="1752977680479" duration="176000" />
+      <workItem from="1753029466225" duration="25758000" />
     </task>
+    <task id="LOCAL-00001" summary="new static api">
+      <option name="closed" value="true" />
+      <created>1753031696543</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1753031696543</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -196,5 +211,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="new static api" />
+    <option name="LAST_COMMIT_MESSAGE" value="new static api" />
   </component>
 </project>

@@ -1,9 +1,9 @@
 package com.example.SBA_M.service.impl;
 
 
-import com.example.SBA_M.dto.response.PageVisitCompareResponse;
-import com.example.SBA_M.dto.response.VisitCompareResponse;
-import com.example.SBA_M.dto.response.VisitDailyResponse;
+import com.example.SBA_M.dto.response.page_visit.PageVisitCompareResponse;
+import com.example.SBA_M.dto.response.page_visit.VisitCompareResponse;
+import com.example.SBA_M.dto.response.page_visit.VisitDailyResponse;
 import com.example.SBA_M.entity.commands.PageVisit;
 import com.example.SBA_M.repository.commands.PageVisitRepository;
 import com.example.SBA_M.service.PageVisitService;
