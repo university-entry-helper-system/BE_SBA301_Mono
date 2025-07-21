@@ -51,6 +51,7 @@ public class NewsProducer {
         news.setCreatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
         news.setUpdatedBy(username);
         news.setUpdatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
+        news.setReleaseDate(request.getReleaseDate());
 
         News savedNews = newsRepository.save(news);
 
@@ -70,6 +71,7 @@ public class NewsProducer {
                 savedNews.getViewCount(),
                 savedNews.getNewsStatus().name(), // pass as String
                 publishedAt,
+                savedNews.getReleaseDate(),
                 savedNews.getDeletedAt(),
                 savedNews.getStatus(),
                 savedNews.getCreatedAt(),
@@ -107,6 +109,7 @@ public class NewsProducer {
         existingNews.setNewsStatus(request.getNewsStatus());
         existingNews.setUpdatedBy(username);
         existingNews.setUpdatedAt(LocalDateTime.now(ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
+        existingNews.setReleaseDate(request.getReleaseDate());
 
         News updatedNews = newsRepository.save(existingNews);
 
@@ -126,6 +129,7 @@ public class NewsProducer {
             updatedNews.getViewCount(),
             updatedNews.getNewsStatus().name(), // pass as String
             publishedAt,
+            updatedNews.getReleaseDate(),
             updatedNews.getDeletedAt(),
             updatedNews.getStatus(),
             updatedNews.getCreatedAt(),
@@ -166,6 +170,7 @@ public class NewsProducer {
             deletedNews.getViewCount(),
             deletedNews.getNewsStatus().name(), // pass as String
             publishedAt,
+            deletedNews.getReleaseDate(),
             deletedNews.getDeletedAt(),
             deletedNews.getStatus(),
             deletedNews.getCreatedAt(),
@@ -196,6 +201,7 @@ public class NewsProducer {
                 news.getViewCount(),
                 news.getNewsStatus().name(),
                 publishedAt,
+                news.getReleaseDate(),
                 news.getDeletedAt(),
                 news.getStatus(),
                 news.getCreatedAt(),

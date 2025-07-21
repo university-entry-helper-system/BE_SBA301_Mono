@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -316,6 +317,10 @@ public class NewsServiceImpl implements NewsService {
                     .build();
         }
 
+        Long daysToRelease = null;
+        if (news.getPublishedAt() != null && news.getReleaseDate() != null) {
+            daysToRelease = ChronoUnit.DAYS.between(news.getPublishedAt(), news.getReleaseDate());
+        }
         return NewsResponse.builder()
                 .id(news.getId())
                 .university(universityResponse)
@@ -327,6 +332,8 @@ public class NewsServiceImpl implements NewsService {
                 .viewCount(news.getViewCount())
                 .newsStatus(news.getNewsStatus() != null ? NewsStatus.valueOf(news.getNewsStatus()) : NewsStatus.PUBLISHED)
                 .publishedAt(news.getPublishedAt())
+                .releaseDate(news.getReleaseDate())
+                .daysToRelease(daysToRelease)
                 .status(news.getStatus())
                 .createdAt(news.getCreatedAt())
                 .createdBy(news.getCreatedBy())

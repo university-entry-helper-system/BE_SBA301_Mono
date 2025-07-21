@@ -38,4 +38,7 @@ public class NewsSearch extends AbstractElasticsearchDocument<Long> {
 
     @Field(type = FieldType.Date)
     private Instant publishedAt;
+
+    @Field(type = FieldType.Date)
+    private Instant releaseDate;
 }
