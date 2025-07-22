@@ -1,12 +1,9 @@
 package com.example.SBA_M.service.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import com.example.SBA_M.dto.response.UniversityMajorSearchResponse;
+import com.example.SBA_M.dto.response.*;
 import com.example.SBA_M.entity.queries.UniversityMajorSearch;
 import com.example.SBA_M.dto.request.UniversityMajorRequest;
-import com.example.SBA_M.dto.response.PageResponse;
-import com.example.SBA_M.dto.response.UniversityMajorResponse;
-import com.example.SBA_M.dto.response.UniversitySubjectCombinationSearchResponse;
 import com.example.SBA_M.dto.response.major_search_response.MajorAdmissionResponse;
 import com.example.SBA_M.dto.response.major_search_response.MajorAdmissionYearGroup;
 import com.example.SBA_M.dto.response.major_search_response.MajorMethodGroup;
@@ -217,21 +214,20 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
                                         .map(AdmissionEntriesDocument::getMethodName)
                                         .orElse(null);
 
-                                List<MajorEntry> majors = methodEntry.getValue().values().stream()
-                                        .map(docs -> {
-                                            AdmissionEntriesDocument any = docs.getFirst();
+                                List<MajorEntry> majors = methodEntry.getValue().entrySet().stream()
+                                        .map(majorEntry -> {
+                                            AdmissionEntriesDocument any = majorEntry.getValue().getFirst();
 
-                                            List<SubjectCombinationTuitionScore> scores = docs.stream()
+                                            List<SubjectCombinationTuitionScore> scores = majorEntry.getValue().stream()
                                                     .map(d -> new SubjectCombinationTuitionScore(
-                                                            d.getSubjectCombination(),
-                                                            d.getScore(),
-                                                            d.getNote()
+                                                            d.getSubjectCombination()
                                                     ))
                                                     .toList();
 
                                             return new MajorEntry(
                                                     any.getMajorId().toString(),
                                                     any.getMajorName(),
+                                                    any.getScore(),
                                                     scores,
                                                     any.getNote()
                                             );
@@ -408,6 +404,31 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
     }
 
     @Override
+    public List<UniversityMajorResponse> getAllUniversityMajors() {
+        List<UniversityMajor> majors = universityMajorRepository.findByStatus(Status.ACTIVE);
+        return majors.stream()
+                .map(universityMajorMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<UniversityMajorAdmissionResponse> findEligibleMajors(Double score, Long subjectCombinationId) {
+        List<UniversityMajor> majors = universityMajorRepository.findEligibleMajorsByScoreAndSubjectCombination(
+                score, subjectCombinationId, Status.ACTIVE
+        );
+        return majors.stream()
+                .map(major -> new UniversityMajorAdmissionResponse(
+                        major.getUniversity().getId(),
+                        major.getUniversity().getName(),
+                        major.getMajor().getId(),
+                        major.getMajor().getName(),
+                        major.getUniversityMajorName(),
+                        major.getScore(),
+                        major.getYear()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<UniversityMajorSearchResponse> searchByMajor(
             Long majorId,
             @Nullable String universityName) throws IOException {
@@ -430,13 +451,14 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
             }
         }
 
-        // ✅ Group by universityId + majorId to remove duplicates
+        // Group by universityId + majorId and keep the entry with the highest count
         Map<String, UniversityMajorSearch> groupedResults = results.stream()
                 .collect(Collectors.toMap(
                         // Key: universityId-majorId
                         item -> item.getUniversityId() + "-" + item.getMajorId(),
                         item -> item,
-                        (existing, replacement) -> existing // Keep the first occurrence
+                        // Keep the item with the higher count
+                        (existing, replacement) -> existing.getUniversityMajorCountByMajor() >= replacement.getUniversityMajorCountByMajor() ? existing : replacement
                 ));
 
         return groupedResults.values().stream()

@@ -1,5 +1,4 @@
-package com.example.SBA_M.dto.response.tuition_search_response;
-
+package com.example.SBA_M.dto.request;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SubjectCombinationTuitionScore {
-    private String subjectCombination;
+public class UniversityMajorAdmissionRequest {
+    private Double score;
+    private Long subjectCombinationId;
 }

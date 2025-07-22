@@ -1,5 +1,6 @@
 package com.example.SBA_M.entity.commands;
 
+import com.example.SBA_M.utils.StatusConsultant;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,11 +26,9 @@ public class ConsultantProfile {
     @Column(columnDefinition = "TEXT")
     private String bio;
 
-    @Column(name = "max_concurrent_requests")
-    private Integer maxConcurrentRequests = 5;
-
-    @Column(name = "current_pending_requests")
-    private Integer currentPendingRequests = 0;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private StatusConsultant status = StatusConsultant.OFFLINE;
 
     @ManyToMany
     @JoinTable(
