@@ -32,7 +32,7 @@ public class PdfExportServiceImpl implements PdfExportService {
 
     private PDType0Font getVietnameseFont(PDDocument document) throws IOException {
         try {
-            return PDType0Font.load(document, getClass().getResourceAsStream("/fonts/NotoSans-Regular.ttf"));
+            return PDType0Font.load(document, getClass().getResourceAsStream("/fonts/Arial.ttf"));
         } catch (Exception e) {
             try {
                 return PDType0Font.load(document, getClass().getResourceAsStream("/fonts/Arial.ttf"));
@@ -340,74 +340,54 @@ public class PdfExportServiceImpl implements PdfExportService {
         float cellHeight = 20;
         float xStart = margin;
 
+        // Draw header row
         drawTableRow(contentStream, font, xStart, yPosition, columnWidths, cellHeight, true,
                 "Year", "Method", "Major", "Subject Combinations", "Score", "Note");
         yPosition -= cellHeight;
 
-        // Group by year (sorted in descending order) and method
-        Map<Integer, Map<String, List<AdmissionYearGroup>>> groupedData = new TreeMap<>(Collections.reverseOrder());
-        groupedData.putAll(response.getYears().stream()
-                .collect(Collectors.groupingBy(
-                        AdmissionYearGroup::getYear,
-                        Collectors.groupingBy(yearGroup -> yearGroup.getMethods().stream()
-                                .map(method -> method.getMethodName() != null ? method.getMethodName() : "")
-                                .findFirst().orElse("")
-                        )
-                )));
+        // Iterate through years
+        for (AdmissionYearGroup yearGroup : response.getYears()) {
+            Integer year = yearGroup.getYear();
 
-        for (Map.Entry<Integer, Map<String, List<AdmissionYearGroup>>> yearEntry : groupedData.entrySet()) {
-            Integer year = yearEntry.getKey();
-            for (Map.Entry<String, List<AdmissionYearGroup>> methodEntry : yearEntry.getValue().entrySet()) {
-                String methodName = methodEntry.getKey();
-                List<String> majors = new ArrayList<>();
-                List<String> subjectCombinations = new ArrayList<>();
-                List<String> scores = new ArrayList<>();
-                List<String> notes = new ArrayList<>();
+            // Iterate through methods
+            for (AdmissionMethodGroup methodGroup : yearGroup.getMethods()) {
+                String methodName = methodGroup.getMethodName() != null ? methodGroup.getMethodName() : "";
 
-                for (AdmissionYearGroup yearGroup : methodEntry.getValue()) {
-                    for (AdmissionMethodGroup methodGroup : yearGroup.getMethods()) {
-                        for (MajorEntry major : methodGroup.getMajors()) {
-                            majors.add(major.getMajorName() != null ? major.getMajorName() : "");
-                            String combinations = major.getSubjectCombinations().stream()
-                                    .map(score -> score.getSubjectCombination() != null ? score.getSubjectCombination() : "")
-                                    .filter(Objects::nonNull)
-                                    .collect(Collectors.joining(", "));
-                            subjectCombinations.add(combinations);
-                            scores.add(major.getSubjectCombinations().stream()
-                                    .map(score -> score.getScore() != null ? score.getScore().toString() : "")
-                                    .filter(Objects::nonNull)
-                                    .collect(Collectors.joining(", ")));
-                            notes.add(major.getSubjectCombinations().stream()
-                                    .map(score -> score.getNote() != null ? score.getNote() : "")
-                                    .filter(Objects::nonNull)
-                                    .collect(Collectors.joining(", ")));
-                        }
-                    }
+                // Iterate through majors
+                for (MajorEntry major : methodGroup.getMajors()) {
+                    String majorName = major.getMajorName() != null ? major.getMajorName() : "";
+
+                    // Collect subject combinations
+                    String combinationText = major.getSubjectCombinations().stream()
+                            .map(score -> score.getSubjectCombination() != null ? score.getSubjectCombination() : "")
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.joining(", "));
+
+                    // Get score and note from MajorEntry
+                    String scoreText = major.getScore() != null ? major.getScore().toString() : "";
+                    String noteText = major.getNote() != null ? major.getNote() : "";
+
+                    // Adjust cell height for long content
+                    int lines = Math.max(1, Math.max(
+                            majorName.split("\n").length,
+                            Math.max(combinationText.split("\n").length,
+                                    Math.max(scoreText.split("\n").length, noteText.split("\n").length))));
+                    float adjustedCellHeight = cellHeight * lines;
+
+                    // Draw table row
+                    drawTableRow(contentStream, font, xStart, yPosition, columnWidths, adjustedCellHeight, false,
+                            String.valueOf(year),
+                            methodName,
+                            majorName,
+                            combinationText,
+                            scoreText,
+                            noteText);
+                    yPosition -= adjustedCellHeight;
                 }
-
-                String majorText = String.join(", ", majors);
-                String combinationText = String.join(", ", subjectCombinations);
-                String scoreText = String.join(", ", scores);
-                String noteText = String.join(", ", notes);
-
-                // Adjust cell height for long content
-                int lines = Math.max(1, Math.max(majorText.split("\n").length, combinationText.split("\n").length));
-                float adjustedCellHeight = cellHeight * lines;
-
-                drawTableRow(contentStream, font, xStart, yPosition, columnWidths, adjustedCellHeight, false,
-                        String.valueOf(year),
-                        methodName,
-                        majorText,
-                        combinationText,
-                        scoreText,
-                        noteText);
-                yPosition -= adjustedCellHeight;
             }
         }
         return yPosition - 10;
-    }
-
-    private float drawMajorAdmissionTable(PDPageContentStream contentStream, PDType0Font font, MajorAdmissionResponse response, float margin, float yPosition, float tableWidth) throws IOException {
+    }    private float drawMajorAdmissionTable(PDPageContentStream contentStream, PDType0Font font, MajorAdmissionResponse response, float margin, float yPosition, float tableWidth) throws IOException {
         float[] columnWidths = {60, 100, 120, 120, 60, 80};
         float cellHeight = 20;
         float xStart = margin;
@@ -530,55 +510,161 @@ public class PdfExportServiceImpl implements PdfExportService {
         return yPosition - 10;
     }
 
+    private void drawTableRow(PDPageContentStream contentStream, PDType0Font font, float xStart, float yPosition, float[] columnWidths, float baseCellHeight, boolean isHeader, String... cells) throws IOException {
+        contentStream.setFont(font, isHeader ? 10 : 8);
+        float fontSize = isHeader ? 10 : 8;
+
+        // Calculate actual cell height needed
+        int maxLines = 1;
+        List<List<String>> wrappedCells = new ArrayList<>();
+
+        // Pre-process all cells to calculate wrapped text and max lines
+        for (int i = 0; i < cells.length && i < columnWidths.length; i++) {
+            String cellText = cells[i] != null ? cells[i].trim() : "";
+            List<String> wrappedLines = wrapText(cellText, columnWidths[i] - 4, font, fontSize); // 4px padding
+            wrappedCells.add(wrappedLines);
+            maxLines = Math.max(maxLines, wrappedLines.size());
+        }
+
+        float actualCellHeight = Math.max(baseCellHeight, maxLines * 12 + 8); // 12px line height + padding
+
+        // Draw cell backgrounds and borders first
+        float x = xStart;
+        for (int i = 0; i < columnWidths.length; i++) {
+            // Draw cell border
+            contentStream.addRect(x, yPosition - actualCellHeight, columnWidths[i], actualCellHeight);
+            contentStream.stroke();
+            x += columnWidths[i];
+        }
+
+        // Draw text content
+        x = xStart;
+        for (int i = 0; i < wrappedCells.size() && i < columnWidths.length; i++) {
+            List<String> lines = wrappedCells.get(i);
+            float textY = yPosition - 15; // Start position with padding from top
+
+            for (String line : lines) {
+                if (!line.trim().isEmpty()) {
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(x + 2, textY); // 2px left padding
+                    contentStream.showText(line);
+                    contentStream.endText();
+                }
+                textY -= 12; // Move to next line
+            }
+            x += columnWidths[i];
+        }
+    }
+
+    private List<String> wrapText(String text, float maxWidth, PDType0Font font, float fontSize) throws IOException {
+        List<String> lines = new ArrayList<>();
+        if (text == null || text.trim().isEmpty()) {
+            lines.add("");
+            return lines;
+        }
+
+        // Clean the text
+        text = text.replaceAll("\\s+", " ").trim();
+
+        String[] words = text.split(" ");
+        StringBuilder currentLine = new StringBuilder();
+
+        for (String word : words) {
+            String testLine = currentLine.length() == 0 ? word : currentLine + " " + word;
+            float textWidth = font.getStringWidth(testLine) / 1000 * fontSize;
+
+            if (textWidth <= maxWidth) {
+                currentLine = new StringBuilder(testLine);
+            } else {
+                if (currentLine.length() > 0) {
+                    lines.add(currentLine.toString());
+                    currentLine = new StringBuilder(word);
+                } else {
+                    // Single word is too long, force break it
+                    lines.add(word);
+                }
+            }
+        }
+
+        if (currentLine.length() > 0) {
+            lines.add(currentLine.toString());
+        }
+
+        return lines.isEmpty() ? Arrays.asList("") : lines;
+    }
+
     private float drawMethodsTable(PDPageContentStream contentStream, PDType0Font font, UniversityAdmissionMethodDetailResponse response, float margin, float yPosition, float tableWidth) throws IOException {
-        float[] columnWidths = {80, 120, 120, 120};
+        float[] columnWidths = {30, 100, 120, 120, 100}; // Adjusted for 5 columns
         float cellHeight = 20;
         float xStart = margin;
 
-        drawTableRow(contentStream, font, xStart, yPosition, columnWidths, cellHeight, true,
-                "Year", "Method Name", "Conditions", "Admission Time");
-        yPosition -= cellHeight;
+        // Draw header
+        float headerHeight = drawTableRowWithReturn(contentStream, font, xStart, yPosition, columnWidths, cellHeight, true,
+                "Năm", "Phương thức", "Điều Kiện", "Quy Chế", "Thời gian xét tuyển");
+        yPosition -= headerHeight;
 
-        // Sort methods by year in descending order
         List<AdmissionMethodDetail> sortedMethods = response.getMethods().stream()
                 .sorted(Comparator.comparingInt(AdmissionMethodDetail::getYear).reversed())
                 .collect(Collectors.toList());
 
         for (AdmissionMethodDetail method : sortedMethods) {
-            drawTableRow(contentStream, font, xStart, yPosition, columnWidths, cellHeight, false,
-                    String.valueOf(method.getYear()),
-                    method.getMethodName() != null ? method.getMethodName() : "",
-                    method.getConditions() != null ? method.getConditions() : "",
-                    method.getAdmissionTime() != null ? method.getAdmissionTime() : "");
-            yPosition -= cellHeight;
+            String year = String.valueOf(method.getYear());
+            String methodName = method.getMethodName() != null ? method.getMethodName() : "";
+            String conditions = method.getConditions() != null ? method.getConditions() : "";
+            String regulations = method.getRegulations() != null ? method.getRegulations() : "";
+            String admissionTime = method.getAdmissionTime() != null ? method.getAdmissionTime() : "";
+
+            float rowHeight = drawTableRowWithReturn(contentStream, font, xStart, yPosition, columnWidths, cellHeight, false,
+                    year, methodName, conditions, regulations, admissionTime);
+            yPosition -= rowHeight;
         }
         return yPosition - 10;
     }
 
-    private void drawTableRow(PDPageContentStream contentStream, PDType0Font font, float xStart, float yPosition, float[] columnWidths, float cellHeight, boolean isHeader, String... cells) throws IOException {
+    private float drawTableRowWithReturn(PDPageContentStream contentStream, PDType0Font font, float xStart, float yPosition, float[] columnWidths, float baseCellHeight, boolean isHeader, String... cells) throws IOException {
         contentStream.setFont(font, isHeader ? 10 : 8);
-        float x = xStart;
+        float fontSize = isHeader ? 10 : 8;
 
-        for (int i = 0; i < cells.length; i++) {
-            contentStream.beginText();
-            contentStream.newLineAtOffset(x + 2, yPosition - 15);
-            contentStream.showText(cells[i] != null ? cells[i] : "");
-            contentStream.endText();
+        // Calculate actual cell height needed
+        int maxLines = 1;
+        List<List<String>> wrappedCells = new ArrayList<>();
+
+        // Pre-process all cells to calculate wrapped text and max lines
+        for (int i = 0; i < cells.length && i < columnWidths.length; i++) {
+            String cellText = cells[i] != null ? cells[i].trim() : "";
+            List<String> wrappedLines = wrapText(cellText, columnWidths[i] - 4, font, fontSize); // 4px padding
+            wrappedCells.add(wrappedLines);
+            maxLines = Math.max(maxLines, wrappedLines.size());
+        }
+
+        float actualCellHeight = Math.max(baseCellHeight, maxLines * 12 + 8); // 12px line height + padding
+
+        // Draw cell backgrounds and borders first
+        float x = xStart;
+        for (int i = 0; i < columnWidths.length; i++) {
+            // Draw cell border
+            contentStream.addRect(x, yPosition - actualCellHeight, columnWidths[i], actualCellHeight);
+            contentStream.stroke();
             x += columnWidths[i];
         }
 
+        // Draw text content
         x = xStart;
-        for (float width : columnWidths) {
-            contentStream.moveTo(x, yPosition);
-            contentStream.lineTo(x, yPosition - cellHeight);
-            x += width;
-            contentStream.lineTo(x, yPosition - cellHeight);
-            contentStream.lineTo(x, yPosition);
-            contentStream.lineTo(x - width, yPosition);
-            contentStream.stroke();
+        for (int i = 0; i < wrappedCells.size() && i < columnWidths.length; i++) {
+            List<String> lines = wrappedCells.get(i);
+            float textY = yPosition - 15; // Start position with padding from top
+
+            for (String line : lines) {
+                if (!line.trim().isEmpty()) {
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(x + 2, textY); // 2px left padding
+                    contentStream.showText(line);
+                    contentStream.endText();
+                }
+                textY -= 12; // Move to next line
+            }
+            x += columnWidths[i];
         }
-        contentStream.moveTo(xStart, yPosition - cellHeight);
-        contentStream.lineTo(x, yPosition - cellHeight);
-        contentStream.stroke();
-    }
-}
+
+        return actualCellHeight;
+    }}

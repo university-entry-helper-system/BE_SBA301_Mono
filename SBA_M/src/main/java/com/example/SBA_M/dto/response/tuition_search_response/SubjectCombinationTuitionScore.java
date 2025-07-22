@@ -12,6 +12,4 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SubjectCombinationTuitionScore {
     private String subjectCombination;
-    private Double score;
-    private String note;
 }
