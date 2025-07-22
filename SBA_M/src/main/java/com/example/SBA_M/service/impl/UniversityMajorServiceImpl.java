@@ -1,12 +1,9 @@
 package com.example.SBA_M.service.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import com.example.SBA_M.dto.response.UniversityMajorSearchResponse;
+import com.example.SBA_M.dto.response.*;
 import com.example.SBA_M.entity.queries.UniversityMajorSearch;
 import com.example.SBA_M.dto.request.UniversityMajorRequest;
-import com.example.SBA_M.dto.response.PageResponse;
-import com.example.SBA_M.dto.response.UniversityMajorResponse;
-import com.example.SBA_M.dto.response.UniversitySubjectCombinationSearchResponse;
 import com.example.SBA_M.dto.response.major_search_response.MajorAdmissionResponse;
 import com.example.SBA_M.dto.response.major_search_response.MajorAdmissionYearGroup;
 import com.example.SBA_M.dto.response.major_search_response.MajorMethodGroup;
@@ -411,6 +408,23 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
         List<UniversityMajor> majors = universityMajorRepository.findByStatus(Status.ACTIVE);
         return majors.stream()
                 .map(universityMajorMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<UniversityMajorAdmissionResponse> findEligibleMajors(Double score, Long subjectCombinationId) {
+        List<UniversityMajor> majors = universityMajorRepository.findEligibleMajorsByScoreAndSubjectCombination(
+                score, subjectCombinationId, Status.ACTIVE
+        );
+        return majors.stream()
+                .map(major -> new UniversityMajorAdmissionResponse(
+                        major.getUniversity().getId(),
+                        major.getUniversity().getName(),
+                        major.getMajor().getId(),
+                        major.getMajor().getName(),
+                        major.getUniversityMajorName(),
+                        major.getScore(),
+                        major.getYear()
+                ))
                 .collect(Collectors.toList());
     }
 
