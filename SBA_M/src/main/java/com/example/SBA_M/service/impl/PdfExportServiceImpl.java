@@ -562,7 +562,10 @@ public class PdfExportServiceImpl implements PdfExportService {
         for (int i = 0; i < cells.length; i++) {
             contentStream.beginText();
             contentStream.newLineAtOffset(x + 2, yPosition - 15);
-            contentStream.showText(cells[i] != null ? cells[i] : "");
+            // Replace tabs with spaces and normalize whitespace
+            String cleanText = cells[i] != null ?
+                    cells[i].replaceAll("\\t", "    ").replaceAll("\\s+", " ").trim() : "";
+            contentStream.showText(cleanText);
             contentStream.endText();
             x += columnWidths[i];
         }
