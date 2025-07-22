@@ -34,7 +34,6 @@ public class ConsultantProfileServiceImpl implements ConsultantProfileService {
     private final AccountRepository accountRepository;
     private final MajorRepository majorRepository;
     private final ConsultantProfileMapper profileMapper;
-    private final RoleRepository roleRepository;
 
     @Override
     @Transactional
