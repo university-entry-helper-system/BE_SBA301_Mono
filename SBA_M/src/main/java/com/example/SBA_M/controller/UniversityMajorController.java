@@ -100,6 +100,16 @@ public class UniversityMajorController {
                 .result(response)
                 .build();
     }
+    @Operation(summary = "Get all university majors")
+    @GetMapping
+    public ApiResponse<List<UniversityMajorResponse>> getAllUniversityMajors() {
+        List<UniversityMajorResponse> result = universityMajorService.getAllUniversityMajors();
+        return ApiResponse.<List<UniversityMajorResponse>>builder()
+                .code(1000)
+                .message("All university majors fetched successfully")
+                .result(result)
+                .build();
+    }
 
     @Operation(summary = "Get grouped admissions by university + major")
     @GetMapping("/admissions/university/{majorId}/major/{universityId}")

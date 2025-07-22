@@ -39,7 +39,7 @@ public interface UniversityMajorRepository extends JpaRepository<UniversityMajor
     );
 
     int countByUniversityIdAndMajorIdAndStatusAndYear(Integer universityId, Long majorId, Status status, Integer year);
-
+    List<UniversityMajor> findByStatus(Status status);
     Page<UniversityMajor> findByStatusAndUniversityId(Status status, Integer universityId, Pageable pageable);
 
     Page<UniversityMajor> findByStatusAndUniversityIdAndUniversityMajorNameContainingIgnoreCase(Status status, Integer universityId, String universityMajorName, Pageable pageable);

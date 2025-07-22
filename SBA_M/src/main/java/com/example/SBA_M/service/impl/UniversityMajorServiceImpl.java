@@ -407,6 +407,14 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
     }
 
     @Override
+    public List<UniversityMajorResponse> getAllUniversityMajors() {
+        List<UniversityMajor> majors = universityMajorRepository.findByStatus(Status.ACTIVE);
+        return majors.stream()
+                .map(universityMajorMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<UniversityMajorSearchResponse> searchByMajor(
             Long majorId,
             @Nullable String universityName) throws IOException {
