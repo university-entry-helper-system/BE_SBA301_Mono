@@ -12,6 +12,7 @@ import com.example.SBA_M.repository.commands.ConsultantProfileRepository;
 import com.example.SBA_M.repository.commands.MajorRepository;
 import com.example.SBA_M.repository.commands.RoleRepository;
 import com.example.SBA_M.service.ConsultantProfileService;
+import com.example.SBA_M.utils.StatusConsultant;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,7 +48,7 @@ public class ConsultantProfileServiceImpl implements ConsultantProfileService {
             List<Major> majors = majorRepository.findAllById(request.getSpecialtyIds());
             profile.setSpecialties(majors);
         }
-
+    profile.setStatus(StatusConsultant.OFFLINE);
         ConsultantProfile saved = profileRepository.save(profile);
         return profileMapper.toResponse(saved);
     }
@@ -59,7 +60,6 @@ public class ConsultantProfileServiceImpl implements ConsultantProfileService {
                 .orElseThrow(() -> new EntityNotFoundException("Profile not found"));
 
         profile.setBio(request.getBio());
-        profile.setMaxConcurrentRequests(request.getMaxConcurrentRequests());
 
         if (request.getSpecialtyIds() != null) {
             List<Major> majors = majorRepository.findAllById(request.getSpecialtyIds());
@@ -73,7 +73,10 @@ public class ConsultantProfileServiceImpl implements ConsultantProfileService {
     @Override
     @Transactional
     public void delete(Integer id) {
-        profileRepository.deleteById(id);
+        ConsultantProfile profile = profileRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Profile not found"));
+        profile.setStatus(StatusConsultant.OFFLINE);
+        profileRepository.save(profile);
     }
 
     @Override
@@ -81,16 +84,15 @@ public class ConsultantProfileServiceImpl implements ConsultantProfileService {
     public ConsultantProfileResponse getById(Integer id) {
         ConsultantProfile profile = profileRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Profile not found"));
-
         return profileMapper.toResponse(profile);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<ConsultantProfileResponse> getAll(Pageable pageable) {
-        return profileRepository.findAll(pageable)
+    public Page<ConsultantProfileResponse> getAllOnlineConsultants(Pageable pageable) {
+        return profileRepository.findAllByStatus(StatusConsultant.ONLINE, pageable)
                 .map(profileMapper::toResponse);
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -100,5 +102,13 @@ public class ConsultantProfileServiceImpl implements ConsultantProfileService {
 
         return profileRepository.findAll(spec, pageable)
                 .map(profileMapper::toResponse);
+    }
+
+    @Override
+    public void changeConsultantStatus(Integer consultantProfileId, StatusConsultant newStatus) {
+        ConsultantProfile profile = profileRepository.findById(consultantProfileId)
+                .orElseThrow(() -> new EntityNotFoundException("Consultant profile not found"));
+        profile.setStatus(newStatus);
+        profileRepository.save(profile);
     }
 }
