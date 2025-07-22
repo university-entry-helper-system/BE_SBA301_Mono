@@ -1,5 +1,6 @@
 package com.example.SBA_M.controller;
 
+import com.example.SBA_M.dto.request.UniversityMajorAdmissionRequest;
 import com.example.SBA_M.dto.request.UniversityMajorRequest;
 import com.example.SBA_M.dto.response.*;
 import com.example.SBA_M.dto.response.major_search_response.MajorAdmissionResponse;
@@ -100,6 +101,16 @@ public class UniversityMajorController {
                 .result(response)
                 .build();
     }
+    @Operation(summary = "Get all university majors")
+    @GetMapping
+    public ApiResponse<List<UniversityMajorResponse>> getAllUniversityMajors() {
+        List<UniversityMajorResponse> result = universityMajorService.getAllUniversityMajors();
+        return ApiResponse.<List<UniversityMajorResponse>>builder()
+                .code(1000)
+                .message("All university majors fetched successfully")
+                .result(result)
+                .build();
+    }
 
     @Operation(summary = "Get grouped admissions by university + major")
     @GetMapping("/admissions/university/{majorId}/major/{universityId}")
@@ -114,7 +125,20 @@ public class UniversityMajorController {
                 .result(response)
                 .build();
     }
-
+    @Operation(summary = "Danh sách trường/ngành đủ điểm đậu theo tổ hợp môn và điểm nhập vào")
+    @PostMapping("/eligible-majors")
+    public ApiResponse<List<UniversityMajorAdmissionResponse>> getEligibleMajors(
+            @RequestBody UniversityMajorAdmissionRequest request
+    ) {
+        List<UniversityMajorAdmissionResponse> result = universityMajorService.findEligibleMajors(
+                request.getScore(), request.getSubjectCombinationId()
+        );
+        return ApiResponse.<List<UniversityMajorAdmissionResponse>>builder()
+                .code(1000)
+                .message("Eligible majors fetched successfully")
+                .result(result)
+                .build();
+    }
     @Operation(summary = "Get grouped admissions by subject combination")
     @GetMapping("/admissions/university/{subjectCombinationId}/subject-combination/{universityId}")
     public ApiResponse<SubjectCombinationResponse> getSubjectCombinationAdmission(

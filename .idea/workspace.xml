@@ -5,17 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="update FAQ api and method">
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/utils/StatusConsultant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_15_07_2025_07_41_[Changes]1/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_15_07_2025_07_41__Changes_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_07_2025_07_42_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_07_2025_07_42__Changes_.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/UniversityMajorAdmissionRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/UniversityMajorAdmissionResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/ConsultantProfileRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/ConsultantProfileRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/ConsultantProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/ConsultantProfile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/ConsultantProfileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/ConsultantProfileRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/ConsultantProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/ConsultantProfileService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/ConsultantProfileServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/ConsultantProfileServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/UniversityMajorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/UniversityMajorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/UniversityMajorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/UniversityMajorRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/UniversityMajorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/UniversityMajorService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/UniversityMajorServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/UniversityMajorServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,9 +21,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
-        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -47,8 +43,8 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/university-entry-helper-system/BE_SBA301_Mono.git&quot;,
-    &quot;accountId&quot;: &quot;c91efdee-37a4-4c32-b14b-0ee203569aa0&quot;
+    &quot;url&quot;: &quot;git@github.com:university-entry-helper-system/BE_SBA301_Mono.git&quot;,
+    &quot;accountId&quot;: &quot;dff3d485-d2d2-45de-9d23-f37fda0dbaf5&quot;
   }
 }</component>
   <component name="KubernetesApiPersistence">{}</component>
@@ -93,7 +89,7 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/solution&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/CODE/semester_7/huy-khoi-minh-gay/BE_SBA301_Mono&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -114,7 +110,7 @@
       <option name="envFilePaths">
         <option value="$PROJECT_DIR$/SBA_M/.env" />
       </option>
-      <module name="backend-service" />
+      <module name="SBA_M" />
       <selectedOptions>
         <option name="environmentVariables" />
       </selectedOptions>
@@ -138,8 +134,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.21829.142" />
-        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-IU-242.21829.142" />
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
       </set>
     </attachedChunks>
   </component>
@@ -168,9 +164,9 @@
       <workItem from="1752282869105" duration="636000" />
       <workItem from="1752383431719" duration="9632000" />
       <workItem from="1752892209814" duration="3645000" />
-      <workItem from="1753188530761" duration="10000" />
-      <workItem from="1753193324150" duration="4246000" />
-      <workItem from="1753202459929" duration="1086000" />
+      <workItem from="1753145707784" duration="18000" />
+      <workItem from="1753145777444" duration="274000" />
+      <workItem from="1753194925314" duration="4612000" />
     </task>
     <task id="LOCAL-00001" summary="update FAQ api and method">
       <option name="closed" value="true" />
