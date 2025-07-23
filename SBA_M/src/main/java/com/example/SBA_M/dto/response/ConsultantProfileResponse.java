@@ -12,6 +12,5 @@ public class ConsultantProfileResponse {
     private UUID accountId;
     private String fullName;
     private String bio;
-    private Gender gender;
     private List<MajorResponse> specialties;
 }
