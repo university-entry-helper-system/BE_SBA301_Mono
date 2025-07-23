@@ -4,6 +4,7 @@ import com.example.SBA_M.dto.request.ConsultantProfileRequest;
 import com.example.SBA_M.dto.response.ApiResponse;
 import com.example.SBA_M.dto.response.ConsultantProfileResponse;
 import com.example.SBA_M.service.ConsultantProfileService;
+import com.example.SBA_M.utils.StatusConsultant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -133,6 +134,19 @@ public class ConsultantProfileController {
                 .code(1000)
                 .message("All consultant profiles fetched successfully")
                 .result(response)
+                .build();
+    }
+    @Operation(summary = "Change consultant status")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
+    @PatchMapping("/{id}/status")
+    public ApiResponse<Void> changeConsultantStatus(
+            @PathVariable Integer id,
+            @RequestParam StatusConsultant status
+    ) {
+        consultantProfileService.changeConsultantStatus(id, status);
+        return ApiResponse.<Void>builder()
+                .code(1004)
+                .message("Consultant status updated successfully")
                 .build();
     }
 }

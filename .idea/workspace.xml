@@ -6,8 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="update FAQ api and method">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/UniversityMajorAdmissionRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/UniversityMajorAdmissionRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/UniversityMajorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/UniversityMajorRepository.java" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/ConsultantProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/ConsultantProfileController.java" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,7 +168,8 @@
       <workItem from="1753145777444" duration="274000" />
       <workItem from="1753194925314" duration="4612000" />
       <workItem from="1753280940430" duration="1513000" />
-      <workItem from="1753284350453" duration="171000" />
+      <workItem from="1753284350453" duration="3709000" />
+      <workItem from="1753313701546" duration="151000" />
     </task>
     <task id="LOCAL-00001" summary="update FAQ api and method">
       <option name="closed" value="true" />
