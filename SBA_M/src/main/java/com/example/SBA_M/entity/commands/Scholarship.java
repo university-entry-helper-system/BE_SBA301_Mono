@@ -60,11 +60,11 @@ public class Scholarship {
     private List<University> universities = new ArrayList<>();
 
     public enum ValueType {
-        PERCENTAGE, FIXED_AMOUNT
+        PERCENTAGE, FIXED_AMOUNT, ACADEMIC_YEAR  // Đã thêm ACADEMIC_YEAR
     }
 
     public enum EligibilityType {
-        GPA, EXAM_SCORE
+        GPA, EXAM_SCORE, EVALUATION  // Đã thêm EVALUATION
     }
     public String getStatus() {
         return applicationDeadline != null && applicationDeadline.isAfter(Instant .now())

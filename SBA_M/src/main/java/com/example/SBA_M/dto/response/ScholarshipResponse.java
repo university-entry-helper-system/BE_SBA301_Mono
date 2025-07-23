@@ -29,6 +29,6 @@ public class ScholarshipResponse {
     @Setter
     public static class UniversityShort {
         private Integer id;
-        private String name;
+        private String shortName;
     }
 }
