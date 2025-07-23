@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -79,22 +81,6 @@ public class ConsultantProfileController {
                 .build();
     }
 
-    @Operation(summary = "Get all consultant profiles (paginated)")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @GetMapping
-    public ApiResponse<Page<ConsultantProfileResponse>> getAllProfiles(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Page<ConsultantProfileResponse> response = consultantProfileService.getAll(
-                org.springframework.data.domain.PageRequest.of(page, size)
-        );
-        return ApiResponse.<Page<ConsultantProfileResponse>>builder()
-                .code(1000)
-                .message("Consultant profiles fetched successfully")
-                .result(response)
-                .build();
-    }
 
     @Operation(summary = "Search consultant profiles by keyword (bio, etc.)")
     @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN', 'USER')")
@@ -111,6 +97,41 @@ public class ConsultantProfileController {
         return ApiResponse.<Page<ConsultantProfileResponse>>builder()
                 .code(1000)
                 .message("Consultant profiles search successful")
+                .result(response)
+                .build();
+    }
+
+    @Operation(summary = "Get all online consultants")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN', 'USER')")
+    @GetMapping("/online")
+    public ApiResponse<Page<ConsultantProfileResponse>> getAllOnlineConsultants(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<ConsultantProfileResponse> response = consultantProfileService.getAllOnlineConsultants(
+                org.springframework.data.domain.PageRequest.of(page, size)
+        );
+        return ApiResponse.<Page<ConsultantProfileResponse>>builder()
+                .code(1000)
+                .message("Online consultants fetched successfully")
+                .result(response)
+                .build();
+    }
+
+    @Operation(summary = "Get all consultant profiles")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN', 'USER')")
+    @GetMapping
+    public ApiResponse<Page<ConsultantProfileResponse>> getAllConsultantProfiles(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ConsultantProfileResponse> response = consultantProfileService.getAll(
+                pageable
+        );
+        return ApiResponse.<Page<ConsultantProfileResponse>>builder()
+                .code(1000)
+                .message("All consultant profiles fetched successfully")
                 .result(response)
                 .build();
     }
