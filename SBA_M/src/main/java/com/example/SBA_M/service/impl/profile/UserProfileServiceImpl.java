@@ -1,108 +1,61 @@
 package com.example.SBA_M.service.impl.profile;
 
+
+import com.example.SBA_M.dto.request.profile.UserProfileCreateRequest;
 import com.example.SBA_M.entity.commands.profile.UserProfile;
-import com.example.SBA_M.entity.commands.profile.UserProfileImage;
-import com.example.SBA_M.repository.commands.profile.UserProfileImageRepository;
+import com.example.SBA_M.mapper.UserProfileMapper;
 import com.example.SBA_M.repository.commands.profile.UserProfileRepository;
+
 import com.example.SBA_M.service.profile.UserProfileService;
-import com.example.SBA_M.utils.Gender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserProfileServiceImpl implements UserProfileService {
 
     private final UserProfileRepository userProfileRepository;
-    private final UserProfileImageRepository userProfileImageRepository;
-
-
 
     @Override
-    public UserProfile updateUserProfile(Long userId, String firstName, String lastName, String email,
-                                         String phone, String identityCard, Gender gender, LocalDateTime dob) {
-        // Tìm UserProfile từ userId
-        UserProfile userProfile = userProfileRepository.findByUserId(userId);
+    public UserProfile createUserProfile(UserProfileCreateRequest request) {
+        // Tạo mã hồ sơ tự động
+        String profileCode = generateProfileCode();
 
-        // Nếu UserProfile không tồn tại, trả về null
-        if (userProfile == null) {
-            throw new RuntimeException("UserProfile not found for userId: " + userId);
+        // Kiểm tra nếu mã hồ sơ đã tồn tại
+        while (userProfileRepository.existsByProfileCode(profileCode)) {
+            profileCode = generateProfileCode(); // Tạo lại mã nếu bị trùng
         }
 
-        // Cập nhật thông tin
-        userProfile.setFirstName(firstName);
-        userProfile.setLastName(lastName);
-        userProfile.setEmail(email);
-        userProfile.setPhone(phone);
-        userProfile.setIdentityCard(identityCard);
-        userProfile.setGender(gender);
-        userProfile.setDob(dob);
+        // Sử dụng mapper để chuyển từ DTO sang Entity
+        UserProfile userProfile = UserProfileMapper.mapToEntity(request, profileCode);
 
-        // Nếu chưa có profileCode, sinh mã hồ sơ
-        if (userProfile.getProfileCode() == null || userProfile.getProfileCode().isEmpty()) {
-            userProfile.setProfileCode(generateProfileCode());
-        }
+        // Lưu vào cơ sở dữ liệu
+        UserProfile savedUserProfile = userProfileRepository.save(userProfile);
 
-        // Lưu lại UserProfile sau khi cập nhật
-        return userProfileRepository.save(userProfile);
+        // Trả về thông tin hồ sơ người dùng đã tạo
+        return savedUserProfile;
     }
 
-    @Override
-    public UserProfileImage saveUserProfileImage(Long userProfileId, String imageUrl, String imageName, UserProfileImage.ImageType imageType) {
-        // Tìm UserProfile theo userProfileId
-        UserProfile userProfile = userProfileRepository.findById(userProfileId)
-                .orElseThrow(() -> new RuntimeException("UserProfile not found for userId: " + userProfileId));
-
-        // Tạo mới UserProfileImage và lưu lại
-        UserProfileImage userProfileImage = new UserProfileImage();
-        userProfileImage.setUserProfile(userProfile);
-        userProfileImage.setImageUrl(imageUrl);
-        userProfileImage.setImageName(imageName);
-        userProfileImage.setImageType(imageType);
-
-        // Lưu và trả về UserProfileImage
-        return userProfileImageRepository.save(userProfileImage);
-    }
-
-    @Override
-    public List<UserProfileImage> getUserProfileImages(Long userProfileId) {
-        // Tìm UserProfile theo userProfileId
-        UserProfile userProfile = userProfileRepository.findById(userProfileId)
-                .orElseThrow(() -> new RuntimeException("UserProfile not found for userId: " + userProfileId));
-
-        // Trả về tất cả hình ảnh liên quan đến UserProfile
-        return userProfileImageRepository.findByUserProfile(userProfile);
-    }
-
-    // Sinh mã hồ sơ (3 chữ và 3 số)
+    // Hàm private sinh mã hồ sơ ngẫu nhiên gồm 6 ký tự chữ và số
     private String generateProfileCode() {
-        String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        StringBuilder code;
-        String generatedCode;
+        StringBuilder code = new StringBuilder();
+        Random random = new Random();
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String digits = "0123456789";
 
-        // Kiểm tra trùng lặp mã hồ sơ trong cơ sở dữ liệu
-        do {
-            code = new StringBuilder();
+        // Sinh 3 chữ cái ngẫu nhiên
+        for (int i = 0; i < 3; i++) {
+            code.append(alphabet.charAt(random.nextInt(alphabet.length())));
+        }
 
-            // Sinh 3 chữ ngẫu nhiên
-            for (int i = 0; i < 3; i++) {
-                int index = new Random().nextInt(letters.length());
-                code.append(letters.charAt(index));
-            }
+        // Sinh 3 chữ số ngẫu nhiên
+        for (int i = 0; i < 3; i++) {
+            code.append(digits.charAt(random.nextInt(digits.length())));
+        }
 
-            // Sinh 3 số ngẫu nhiên
-            for (int i = 0; i < 3; i++) {
-                int number = new Random().nextInt(10);  // Random số từ 0 đến 9
-                code.append(number);
-            }
-
-            generatedCode = code.toString();
-        } while (userProfileRepository.existsByProfileCode(generatedCode));  // Kiểm tra xem mã đã tồn tại hay chưa
-
-        return generatedCode;
+        return code.toString    ();
     }
 }

@@ -4,15 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="Update VisitPage">
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/profile/UserProfile.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/profile/UserProfileImage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/profile/UserProfileImageRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/profile/UserProfileRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/profile/UserProfileServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/profile/UserProfileImageService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/profile/UserProfileService.java" afterDir="false" />
+    <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="New ( UserProfile and UserProfileImage)">
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/profile/UserProfileController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/profile/UserProfileImageController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/profile/GetUserProfileImageRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/profile/UserProfileCreateRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/profile/UserProfileImageListRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/profile/UserProfileImageRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/profile/UserProfileImageResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/profile/UserProfileResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/mapper/UserProfileImageMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/mapper/UserProfileMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/profile/UserProfileImageServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/profile/UserProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/profile/UserProfile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/profile/UserProfileImageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/profile/UserProfileImageRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/profile/UserProfileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/profile/UserProfileRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/profile/UserProfileServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/profile/UserProfileServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/minio/MinioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/minio/MinioService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/profile/UserProfileImageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/profile/UserProfileImageService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/profile/UserProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/profile/UserProfileService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,6 +90,7 @@
   "keyToString": {
     "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
     "Maven.SBA_M [install].executor": "Run",
+    "Maven.backend-service [clean,install].executor": "Run",
     "Maven.backend-service [clean].executor": "Run",
     "Maven.backend-service [install].executor": "Run",
     "RequestMappingsPanelOrder0": "0",
@@ -189,7 +202,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753095407363</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="New ( UserProfile and UserProfileImage)">
+      <option name="closed" value="true" />
+      <created>1753303285069</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1753303285069</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -213,6 +234,7 @@
     <MESSAGE value="update static api" />
     <MESSAGE value="update FAQ api and method" />
     <MESSAGE value="Update VisitPage" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update VisitPage" />
+    <MESSAGE value="New ( UserProfile and UserProfileImage)" />
+    <option name="LAST_COMMIT_MESSAGE" value="New ( UserProfile and UserProfileImage)" />
   </component>
 </project>

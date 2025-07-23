@@ -6,9 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserProfileImageRepository extends JpaRepository<UserProfileImage, Long> {
     // Tìm tất cả hình ảnh của một UserProfile
-    List<UserProfileImage> findByUserProfile(UserProfile userProfile);
+
+    Optional<UserProfileImage> findByUserProfileIdAndImageType(Long userProfile_id, UserProfileImage.ImageType imageType);
 }
+

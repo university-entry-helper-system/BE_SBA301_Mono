@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
-    UserProfile findByUserId(Long userId);  // Tìm UserProfile theo userId
 
-    boolean existsByProfileCode(String profileCode);  // Kiểm tra trùng mã hồ sơ
+    // Kiểm tra xem mã hồ sơ đã tồn tại chưa
+    boolean existsByProfileCode(String profileCode);
 }

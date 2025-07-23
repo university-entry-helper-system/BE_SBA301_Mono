@@ -1,6 +1,5 @@
 package com.example.SBA_M.entity.commands.profile;
 
-import com.example.SBA_M.utils.Gender;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -61,5 +60,9 @@ public class UserProfile {
     @PreUpdate
     public void preUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+    public enum Gender {
+        MALE,
+        FEMALE
     }
 }
