@@ -44,13 +44,20 @@ public interface UniversityMajorRepository extends JpaRepository<UniversityMajor
     Page<UniversityMajor> findByStatusAndUniversityId(Status status, Integer universityId, Pageable pageable);
 
     Page<UniversityMajor> findByStatusAndUniversityIdAndUniversityMajorNameContainingIgnoreCase(Status status, Integer universityId, String universityMajorName, Pageable pageable);
-    @Query("SELECT um FROM UniversityMajor um " +
-            "JOIN um.subjectCombinations sc " +
-            "WHERE sc.id = :subjectCombinationId " +
-            "AND um.status = :status")
-    List<UniversityMajor> findEligibleMajorsBySubjectCombinationAndStatus(
+    @Query("""
+    SELECT DISTINCT um
+    FROM UniversityMajor um
+         JOIN um.university u
+         JOIN u.campuses c
+         JOIN c.province p
+         JOIN um.subjectCombinations sc
+    WHERE sc.id = :subjectCombinationId
+      AND um.status = :status
+      AND (:provinceId IS NULL OR p.id = :provinceId)""")
+    List<UniversityMajor> findEligibleMajorsBySubjectCombinationAndProvince(
             @Param("subjectCombinationId") Long subjectCombinationId,
-            @Param("status") Status status
+            @Param("status") Status status,
+            @Param("provinceId") Long provinceId
     );
 }
 
