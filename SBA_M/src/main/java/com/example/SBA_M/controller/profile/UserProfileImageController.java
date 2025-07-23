@@ -52,6 +52,41 @@ public class UserProfileImageController {
                 .result(response)
                 .build();
     }
+
+    @Operation(summary = "Xóa ảnh theo loại và UserProfile ID", description = "Xóa ảnh từ MinIO theo loại ảnh và ID hồ sơ người dùng.")
+    @DeleteMapping("/images")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ApiResponse<Void> deleteImageByType(@RequestBody GetUserProfileImageRequest request) {
+        // Gọi service để xóa ảnh theo UserProfileId và imageType
+        userProfileImageService.deleteImage(request);
+
+        // Trả về phản hồi thành công
+        return ApiResponse.<Void>builder()
+                .code(1000)
+                .message("Xóa ảnh thành công")
+                .build();
+    }
+
+    @Operation(summary = "Cập nhật ảnh cho UserProfile", description = "Cập nhật ảnh cho UserProfile theo loại ảnh.")
+    @PutMapping("/{userProfileId}/images")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<UserProfileImageResponse> updateImageForUserProfile(
+            @PathVariable Long userProfileId,
+            @Valid @RequestBody UserProfileImageListRequest.UserProfileImageRequest request) {
+
+        // Gọi service để cập nhật ảnh cho UserProfile
+        UserProfileImageResponse response = userProfileImageService.updateImageForUserProfile(userProfileId, request);
+
+        // Trả về URL ảnh đã cập nhật
+        return ApiResponse.<UserProfileImageResponse>builder()
+                .code(1000)
+                .message("Cập nhật ảnh thành công")
+                .result(response)
+                .build();
+    }
+
+
+
 }
 
 

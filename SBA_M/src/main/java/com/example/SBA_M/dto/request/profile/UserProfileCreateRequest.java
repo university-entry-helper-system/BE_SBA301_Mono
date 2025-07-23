@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -29,7 +30,7 @@ public class UserProfileCreateRequest {
     private String identityCard;
 
     @NotNull(message = "Ngày sinh không được để trống")
-    private LocalDateTime dob;
+    private LocalDate dob;
 
     @NotNull(message = "Giới tính không được để trống")
     private UserProfile.Gender gender;

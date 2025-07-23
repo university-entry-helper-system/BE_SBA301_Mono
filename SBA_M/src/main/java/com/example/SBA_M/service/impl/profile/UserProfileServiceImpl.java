@@ -1,15 +1,22 @@
 package com.example.SBA_M.service.impl.profile;
 
 
+import com.example.SBA_M.dto.request.profile.GetUserProfileImageRequest;
 import com.example.SBA_M.dto.request.profile.UserProfileCreateRequest;
+import com.example.SBA_M.dto.request.profile.UserProfileUpdateRequest;
 import com.example.SBA_M.entity.commands.profile.UserProfile;
+import com.example.SBA_M.entity.commands.profile.UserProfileImage;
 import com.example.SBA_M.mapper.UserProfileMapper;
+import com.example.SBA_M.repository.commands.profile.UserProfileImageRepository;
 import com.example.SBA_M.repository.commands.profile.UserProfileRepository;
 
+import com.example.SBA_M.service.minio.MinioService;
 import com.example.SBA_M.service.profile.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Random;
 
 @Service
@@ -18,8 +25,12 @@ import java.util.Random;
 public class UserProfileServiceImpl implements UserProfileService {
 
     private final UserProfileRepository userProfileRepository;
+    private final UserProfileImageRepository userProfileImageRepository;
+    private final MinioService minioService;
+
 
     @Override
+    @Transactional
     public UserProfile createUserProfile(UserProfileCreateRequest request) {
         // Tạo mã hồ sơ tự động
         String profileCode = generateProfileCode();
@@ -38,6 +49,46 @@ public class UserProfileServiceImpl implements UserProfileService {
         // Trả về thông tin hồ sơ người dùng đã tạo
         return savedUserProfile;
     }
+
+
+    @Override
+    @Transactional
+    public UserProfile updateUserProfile(Long userProfileId, UserProfileUpdateRequest updatedUserProfile) {
+        // Kiểm tra xem UserProfile có tồn tại không
+        UserProfile existingUserProfile = userProfileRepository.findById(userProfileId)
+                .orElseThrow(() -> new IllegalArgumentException("UserProfile không tồn tại với ID: " + userProfileId));
+
+        // Cập nhật các trường từ updatedUserProfile vào existingUserProfile
+        existingUserProfile.setFirstName(updatedUserProfile.getFirstName());
+        existingUserProfile.setLastName(updatedUserProfile.getLastName());
+        existingUserProfile.setDob(updatedUserProfile.getDob());
+        existingUserProfile.setIdentityCard(updatedUserProfile.getIdentityCard());
+        existingUserProfile.setEmail(updatedUserProfile.getEmail());
+        existingUserProfile.setPhone(updatedUserProfile.getPhoneNumber());
+        existingUserProfile.setGender(updatedUserProfile.getGender()); // Cập nhật giới tính
+
+        // Lưu lại UserProfile đã được cập nhật
+        return userProfileRepository.save(existingUserProfile);
+    }
+
+
+
+
+    @Override
+    @Transactional
+    public void deleteUserProfile(Long userProfileId) {
+        // Kiểm tra xem UserProfile có tồn tại không
+        UserProfile userProfile = userProfileRepository.findById(userProfileId)
+                .orElseThrow(() -> new IllegalArgumentException("UserProfile không tồn tại với ID: " + userProfileId));
+
+        // Xóa ảnh liên quan đến UserProfile
+        userProfileImageRepository.deleteByUserProfileId(userProfileId);
+
+        // Xóa UserProfile
+        userProfileRepository.delete(userProfile);
+    }
+
+
 
     // Hàm private sinh mã hồ sơ ngẫu nhiên gồm 6 ký tự chữ và số
     private String generateProfileCode() {

@@ -13,5 +13,9 @@ public interface UserProfileImageRepository extends JpaRepository<UserProfileIma
     // Tìm tất cả hình ảnh của một UserProfile
 
     Optional<UserProfileImage> findByUserProfileIdAndImageType(Long userProfile_id, UserProfileImage.ImageType imageType);
+
+    List<UserProfileImage> findByUserProfileId(Long userProfileId);
+
+    void deleteByUserProfileId(Long userProfileId);
 }
 

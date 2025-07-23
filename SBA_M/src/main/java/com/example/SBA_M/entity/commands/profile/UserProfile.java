@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -37,7 +39,7 @@ public class UserProfile {
     private String identityCard;  // CCCD (12 ký tự)
 
     @Column(name = "dob", nullable = false)
-    private LocalDateTime dob;  // Ngày sinh của người dùng
+    private LocalDate dob;  // Ngày sinh của người dùng
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false)

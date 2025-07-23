@@ -1,6 +1,7 @@
 package com.example.SBA_M.controller.profile;
 
 import com.example.SBA_M.dto.request.profile.UserProfileCreateRequest;
+import com.example.SBA_M.dto.request.profile.UserProfileUpdateRequest;
 import com.example.SBA_M.dto.response.ApiResponse;
 import com.example.SBA_M.dto.response.profile.UserProfileResponse;
 import com.example.SBA_M.entity.commands.profile.UserProfile;
@@ -25,7 +26,7 @@ public class UserProfileController {
     private final UserProfileService userProfileService;
 
     @Operation(summary = "Tạo hồ sơ người dùng", description = "Tạo hồ sơ người dùng mới với các thông tin cá nhân.")
-    @PostMapping("/register1")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<UserProfileResponse> registerUserProfile(@RequestBody @Valid UserProfileCreateRequest request) {
         // Gọi service để tạo hồ sơ
@@ -42,6 +43,38 @@ public class UserProfileController {
                 .build();
     }
 
+
+    @Operation(summary = "Xóa UserProfile và ảnh liên quan", description = "Xóa UserProfile và tất cả ảnh liên quan đến nó.")
+    @DeleteMapping("/{userProfileId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ApiResponse<Void>deleteUserProfile(@PathVariable Long userProfileId) {
+        // Gọi service để xóa UserProfile và ảnh liên quan
+        userProfileService.deleteUserProfile(userProfileId);
+        return ApiResponse.<Void>builder()
+                .code(1000)
+                .message("Tạo hồ sơ người dùng thành công")
+                .build();
+    }
+
+    @Operation(summary = "Cập nhật thông tin UserProfile", description = "Cập nhật thông tin của UserProfile.")
+    @PutMapping("/{userProfileId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<UserProfileResponse> updateUserProfile(
+            @PathVariable Long userProfileId,
+            @RequestBody @Valid UserProfileUpdateRequest updatedUserProfile) {
+        // Gọi service để cập nhật UserProfile
+        UserProfile userProfile = userProfileService.updateUserProfile(userProfileId, updatedUserProfile);
+
+        // Sử dụng mapper để chuyển Entity sang DTO response
+        UserProfileResponse response = UserProfileMapper.mapToResponse(userProfile);
+
+        // Trả về ApiResponse với thông tin hồ sơ đã cập nhật
+        return ApiResponse.<UserProfileResponse>builder()
+                .code(1000)
+                .message("Cập nhật hồ sơ người dùng thành công")
+                .result(response)
+                .build();
+    }
 
 
 

@@ -10,4 +10,8 @@ import java.util.List;
 public interface UserProfileImageService {
     public UserProfileImageResponse addImageToUserProfile(Long userProfileId, UserProfileImageListRequest.UserProfileImageRequest request);
     UserProfileImageResponse getImageByType(GetUserProfileImageRequest request);
+    public void deleteImage(GetUserProfileImageRequest request);
+    void deleteImagesByUserProfileId(Long userProfileId);
+    public UserProfileImageResponse updateImageForUserProfile(Long userProfileId, UserProfileImageListRequest.UserProfileImageRequest request);
+
 }
