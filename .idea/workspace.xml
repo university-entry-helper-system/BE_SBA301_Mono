@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="Update Scholarship api and method ( add new type)">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+    <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="Update Scholarship api ( update new type)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/ScholarshipResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/ScholarshipResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/mapper/ScholarshipMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/mapper/ScholarshipMapper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -184,7 +181,7 @@
       <workItem from="1753145707784" duration="18000" />
       <workItem from="1753145777444" duration="274000" />
       <workItem from="1753194925314" duration="4612000" />
-      <workItem from="1753280685212" duration="11612000" />
+      <workItem from="1753280685212" duration="15862000" />
     </task>
     <task id="LOCAL-00001" summary="update FAQ api and method">
       <option name="closed" value="true" />
@@ -218,7 +215,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753281316705</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Update Scholarship api ( update new type)">
+      <option name="closed" value="true" />
+      <created>1753293503363</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1753293503363</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -243,6 +248,7 @@
     <MESSAGE value="update FAQ api and method" />
     <MESSAGE value="new Scholarship api and method" />
     <MESSAGE value="Update Scholarship api and method ( add new type)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update Scholarship api and method ( add new type)" />
+    <MESSAGE value="Update Scholarship api ( update new type)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update Scholarship api ( update new type)" />
   </component>
 </project>

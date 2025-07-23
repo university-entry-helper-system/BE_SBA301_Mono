@@ -24,7 +24,7 @@ public class PageVisitStatsController {
     private final PageVisitService pageVisitService;
 
     @Operation(summary = "Lấy lượt truy cập theo ngày", description = "Truyền vào ngày cụ thể, trả về tổng số lượt truy cập trong ngày đó.")
-    @GetMapping("/visits/day")
+    @PostMapping("/visits/day")
     public ApiResponse<Long> getVisitCountOnDay(@RequestBody SingleDateRequest request) {
         Long result = pageVisitService.getVisitCountOn(request.getDate());
         return ApiResponse.<Long>builder()
