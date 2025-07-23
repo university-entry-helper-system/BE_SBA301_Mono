@@ -11,7 +11,6 @@ public interface ConsultantProfileMapper {
     @Mapping(target = "accountId", source = "account.id")
     @Mapping(target = "bio", source = "bio")
     @Mapping(target = "specialties", source = "specialties")
-    @Mapping(target = "gender", source = "account.gender")
     @Mapping(target = "fullName", source = "account.fullName")
     ConsultantProfileResponse toResponse(ConsultantProfile profile);
 

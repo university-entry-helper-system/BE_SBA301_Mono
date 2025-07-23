@@ -12,4 +12,6 @@ import lombok.experimental.FieldDefaults;
 public class UniversityMajorAdmissionRequest {
     private Double score;
     private Long subjectCombinationId;
+    private Double maxGap;
+    private Long provinceId;
 }
