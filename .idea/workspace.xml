@@ -4,19 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="update FAQ api and method">
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/ScholarshipController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/ScholarshipRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/ScholarshipSearchRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/ScholarshipResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/Scholarship.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/mapper/ScholarshipMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/ScholarshipRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/ScholarshipService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/ScholarshipServiceImpl.java" afterDir="false" />
+    <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="new Scholarship api and method">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/ConsultantProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/ConsultantProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/mapper/ConsultantProfileMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/mapper/ConsultantProfileMapper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,6 +55,9 @@
   <component name="MavenRunner">
     <option name="delegateBuildToMaven" value="true" />
     <option name="jreName" value="#JAVA_HOME" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -192,7 +184,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753095407363</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="new Scholarship api and method">
+      <option name="closed" value="true" />
+      <created>1753243053411</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1753243053411</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -215,6 +215,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="update static api" />
     <MESSAGE value="update FAQ api and method" />
-    <option name="LAST_COMMIT_MESSAGE" value="update FAQ api and method" />
+    <MESSAGE value="new Scholarship api and method" />
+    <option name="LAST_COMMIT_MESSAGE" value="new Scholarship api and method" />
   </component>
 </project>
