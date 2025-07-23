@@ -411,10 +411,17 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
                 .collect(Collectors.toList());
     }
     @Override
-    public List<UniversityMajorAdmissionResponse> findEligibleMajors(Double score, Long subjectCombinationId) {
+    public List<UniversityMajorAdmissionResponse> findEligibleMajors(Double score, Long subjectCombinationId, Integer maxGap) {
         List<UniversityMajor> majors = universityMajorRepository.findEligibleMajorsByScoreAndSubjectCombination(
                 score, subjectCombinationId, Status.ACTIVE
         );
+        if (maxGap != null) {
+            double minScore = score - maxGap;
+            double maxScoreVal = score + maxGap;
+            majors = majors.stream()
+                    .filter(m -> m.getScore() >= minScore && m.getScore() <= maxScoreVal)
+                    .collect(Collectors.toList());
+        }
         return majors.stream()
                 .map(major -> new UniversityMajorAdmissionResponse(
                         major.getUniversity().getId(),

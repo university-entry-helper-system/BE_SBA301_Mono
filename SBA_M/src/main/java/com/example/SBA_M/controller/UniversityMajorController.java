@@ -131,7 +131,7 @@ public class UniversityMajorController {
             @RequestBody UniversityMajorAdmissionRequest request
     ) {
         List<UniversityMajorAdmissionResponse> result = universityMajorService.findEligibleMajors(
-                request.getScore(), request.getSubjectCombinationId()
+                request.getScore(), request.getSubjectCombinationId(), request.getMaxGap()
         );
         return ApiResponse.<List<UniversityMajorAdmissionResponse>>builder()
                 .code(1000)
