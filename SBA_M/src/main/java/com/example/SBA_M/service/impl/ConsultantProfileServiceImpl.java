@@ -12,6 +12,7 @@ import com.example.SBA_M.repository.commands.ConsultantProfileRepository;
 import com.example.SBA_M.repository.commands.MajorRepository;
 import com.example.SBA_M.repository.commands.RoleRepository;
 import com.example.SBA_M.service.ConsultantProfileService;
+import com.example.SBA_M.utils.AccountStatus;
 import com.example.SBA_M.utils.StatusConsultant;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +22,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.stream.Collectors;
+;
 
 @Service
 @RequiredArgsConstructor
@@ -109,5 +109,12 @@ public class ConsultantProfileServiceImpl implements ConsultantProfileService {
                 .orElseThrow(() -> new EntityNotFoundException("Consultant profile not found"));
         profile.setStatus(newStatus);
         profileRepository.save(profile);
+    }
+
+    @Override
+    public Page<ConsultantProfileResponse> getAll(Pageable pageable) {
+        Page<ConsultantProfile> profiles = profileRepository.findAllByAccountStatus(AccountStatus.ACTIVE, pageable);
+        return profiles
+                .map(profileMapper::toResponse);
     }
 }
