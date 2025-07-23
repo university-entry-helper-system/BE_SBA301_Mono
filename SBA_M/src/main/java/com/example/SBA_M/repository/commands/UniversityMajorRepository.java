@@ -47,10 +47,8 @@ public interface UniversityMajorRepository extends JpaRepository<UniversityMajor
     @Query("SELECT um FROM UniversityMajor um " +
             "JOIN um.subjectCombinations sc " +
             "WHERE sc.id = :subjectCombinationId " +
-            "AND um.score <= :score " +
             "AND um.status = :status")
-    List<UniversityMajor> findEligibleMajorsByScoreAndSubjectCombination(
-            @Param("score") Double score,
+    List<UniversityMajor> findEligibleMajorsBySubjectCombinationAndStatus(
             @Param("subjectCombinationId") Long subjectCombinationId,
             @Param("status") Status status
     );
