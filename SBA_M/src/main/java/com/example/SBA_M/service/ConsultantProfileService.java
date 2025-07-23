@@ -22,4 +22,6 @@ public interface ConsultantProfileService {
     Page<ConsultantProfileResponse> search(String keyword, Pageable pageable);
 
     public void changeConsultantStatus(Integer consultantProfileId, StatusConsultant newStatus);
+
+    Page<ConsultantProfileResponse> getAll(Pageable pageable);
 }

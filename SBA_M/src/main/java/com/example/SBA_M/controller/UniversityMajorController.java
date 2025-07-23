@@ -125,13 +125,16 @@ public class UniversityMajorController {
                 .result(response)
                 .build();
     }
-    @Operation(summary = "Danh sách trường/ngành đủ điểm đậu theo tổ hợp môn và điểm nhập vào")
+    @Operation(summary = "Danh sách trường/ngành đủ điểm đậu theo tổ hợp môn, tỉnh và điểm chênh lệch")
     @PostMapping("/eligible-majors")
     public ApiResponse<List<UniversityMajorAdmissionResponse>> getEligibleMajors(
             @RequestBody UniversityMajorAdmissionRequest request
     ) {
         List<UniversityMajorAdmissionResponse> result = universityMajorService.findEligibleMajors(
-                request.getScore(), request.getSubjectCombinationId()
+                request.getScore(),
+                request.getSubjectCombinationId(),
+                request.getMaxGap(),
+                request.getProvinceId()
         );
         return ApiResponse.<List<UniversityMajorAdmissionResponse>>builder()
                 .code(1000)

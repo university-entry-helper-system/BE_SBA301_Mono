@@ -31,7 +31,7 @@ public interface UniversityMajorService {
     List<UniversitySubjectCombinationSearchResponse> searchBySubjectCombination (
             Long subjectCombinationId, @Nullable String universityName) throws IOException;
     List<UniversityMajorResponse> getAllUniversityMajors();
-    List<UniversityMajorAdmissionResponse> findEligibleMajors(Double score, Long subjectCombinationId);
+    List<UniversityMajorAdmissionResponse> findEligibleMajors(Double score, Long subjectCombinationId, Double maxGap,Long provinceId);
 
     List<UniversityMajorSearchResponse> searchByMajor (
             Long majorId, @Nullable String universityName) throws IOException;
