@@ -89,7 +89,9 @@ public class SecurityConfig {
                         "api/v1/faqs/**",
                         "/api/v1/pdf-export/**"
                 ).permitAll()
-                // All other requests require authentication
+                    .requestMatchers("/ws-consultations/**").permitAll() // Allow WebSocket endpoint
+
+                    // All other requests require authentication
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

@@ -10,15 +10,30 @@ public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
     @Override
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         messages
-                .simpDestMatchers("/topic/consultant/*").hasAnyRole("CONSULTANT", "ADMIN")
-                .simpDestMatchers("/topic/user/*").hasAnyRole("USER", "ADMIN")
-                .simpSubscribeDestMatchers("/topic/consultant/*").hasAnyRole("CONSULTANT", "ADMIN")
-                .simpSubscribeDestMatchers("/topic/user/*").hasAnyRole("USER", "ADMIN")
+                // Allow connection establishment
+                .simpDestMatchers("/app/consultation/subscribe").authenticated()
+
+                // Consultant-specific destinations
+                .simpDestMatchers("/topic/consultant/**").hasAnyRole("CONSULTANT", "ADMIN")
+                .simpSubscribeDestMatchers("/topic/consultant/**").hasAnyRole("CONSULTANT", "ADMIN")
+
+                // User-specific destinations
+                .simpDestMatchers("/topic/user/**").hasAnyRole("USER", "ADMIN")
+                .simpSubscribeDestMatchers("/topic/user/**").hasAnyRole("USER", "ADMIN")
+
+                // General stats topic - allow for all authenticated users
+                .simpDestMatchers("/topic/consultation/stats").authenticated()
+                .simpSubscribeDestMatchers("/topic/consultation/stats").authenticated()
+
+                // User-specific acknowledgment topic
+                .simpSubscribeDestMatchers("/user/topic/consultation/ack").authenticated()
+
+                // Require authentication for any other message
                 .anyMessage().authenticated();
     }
 
     @Override
     protected boolean sameOriginDisabled() {
-        return true; // Allow cross-origin for development; adjust for production
+        return true; // Allow cross-origin for development; set to false for production
     }
 }

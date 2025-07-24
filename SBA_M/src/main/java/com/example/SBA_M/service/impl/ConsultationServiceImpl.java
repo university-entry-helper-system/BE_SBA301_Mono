@@ -36,8 +36,8 @@ public class ConsultationServiceImpl implements ConsultationService {
     @Override
     @Transactional
     public ConsultationResponse createConsultation(ConsultationCreateRequest request) {
-        Account sender = accountRepository.findById(request.getUser())
-                .orElseThrow(() -> new EntityNotFoundException("Sender not found"));
+       Account sender = accountRepository.findByUsername(getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException("Account not found"));
 
         Account consultant = accountRepository.findById(request.getConsultant())
                 .orElseThrow(() -> new EntityNotFoundException("Consultant not found"));
@@ -211,5 +211,12 @@ public class ConsultationServiceImpl implements ConsultationService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         return authentication.getName();
+    }
+
+    @Override
+    public ConsultationResponse getConsultationById(Long consultationId) {
+        return consultationRepository.findById(consultationId)
+                .map(consultationMapper::toResponse)
+                .orElseThrow(() -> new EntityNotFoundException("Consultation not found"));
     }
 }

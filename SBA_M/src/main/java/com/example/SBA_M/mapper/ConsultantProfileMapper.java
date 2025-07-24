@@ -12,6 +12,7 @@ public interface ConsultantProfileMapper {
     @Mapping(target = "bio", source = "bio")
     @Mapping(target = "specialties", source = "specialties")
     @Mapping(target = "fullName", source = "account.fullName")
+    @Mapping(target = "status", source = "status")
     ConsultantProfileResponse toResponse(ConsultantProfile profile);
 
     // For create/update

@@ -4,23 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="New API ( UserProfile and UserProfileImage)">
+    <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="update FAQ api and method">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/ScholarshipController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/ScholarshipController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/profile/UserProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/profile/UserProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/profile/UserProfileImageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/profile/UserProfileImageController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/profile/UserProfileCreateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/profile/UserProfileCreateRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/profile/UserProfileImageListRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/profile/UserProfileImageListRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/profile/UserProfileImageRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/profile/UserProfileImageRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/profile/UserProfileUpdateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/profile/UserProfileUpdateRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/profile/UserProfileImageResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/response/profile/UserProfileImageResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/Scholarship.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/entity/commands/Scholarship.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/mapper/ScholarshipMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/mapper/ScholarshipMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/mapper/UserProfileImageMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/mapper/UserProfileImageMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/profile/UserProfileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/profile/UserProfileRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/profile/UserProfileServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/impl/profile/UserProfileServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/profile/UserProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/service/profile/UserProfileService.java" afterDir="false" />
+<<<<<<< Updated upstream
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/UniversityMajorAdmissionRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/UniversityMajorAdmissionRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/UniversityMajorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/UniversityMajorRepository.java" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/ConsultantProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/ConsultantProfileController.java" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,34 +73,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
-    "Maven.SBA_M [install].executor": "Run",
-    "Maven.backend-service [clean,install].executor": "Run",
-    "Maven.backend-service [clean].executor": "Run",
-    "Maven.backend-service [install].executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.SbaMApplication.executor": "Run",
-    "git-widget-placeholder": "congnhon",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/CODE/semester_7/huy-khoi-minh-gay/BE_SBA301_Mono",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.rmicompiler",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;Maven.SBA_M [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.backend-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.backend-service [install].executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.SbaMApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/CODE/semester_7/huy-khoi-minh-gay/BE_SBA301_Mono&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.rmicompiler&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.example.SBA_M.dto.response" />
@@ -120,7 +110,7 @@
       <option name="envFilePaths">
         <option value="$PROJECT_DIR$/SBA_M/.env" />
       </option>
-      <module name="backend-service" />
+      <module name="SBA_M" />
       <selectedOptions>
         <option name="environmentVariables" />
       </selectedOptions>
@@ -130,16 +120,6 @@
           <option name="PATTERN" value="com.example.SBA_M.*" />
           <option name="ENABLED" value="true" />
         </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
       </extension>
       <method v="2">
         <option name="Make" enabled="true" />
@@ -188,7 +168,8 @@
       <workItem from="1753145777444" duration="274000" />
       <workItem from="1753194925314" duration="4612000" />
       <workItem from="1753280940430" duration="1513000" />
-      <workItem from="1753284350453" duration="171000" />
+      <workItem from="1753284350453" duration="3709000" />
+      <workItem from="1753313701546" duration="151000" />
     </task>
     <task id="LOCAL-00001" summary="update FAQ api and method">
       <option name="closed" value="true" />
@@ -198,31 +179,7 @@
       <option name="project" value="LOCAL" />
       <updated>1753095407363</updated>
     </task>
-    <task id="LOCAL-00002" summary="New ( UserProfile and UserProfileImage)">
-      <option name="closed" value="true" />
-      <created>1753303285069</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1753303285069</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Base of new (UserProfile and UserProfileImage)">
-      <option name="closed" value="true" />
-      <created>1753310740675</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1753310740675</updated>
-    </task>
-    <task id="LOCAL-00004" summary="New API ( UserProfile and UserProfileImage)">
-      <option name="closed" value="true" />
-      <created>1753313831916</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1753313831916</updated>
-    </task>
-    <option name="localTasksCounter" value="5" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -245,10 +202,6 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="update static api" />
     <MESSAGE value="update FAQ api and method" />
-    <MESSAGE value="Update VisitPage" />
-    <MESSAGE value="New ( UserProfile and UserProfileImage)" />
-    <MESSAGE value="Base of new (UserProfile and UserProfileImage)" />
-    <MESSAGE value="New API ( UserProfile and UserProfileImage)" />
-    <option name="LAST_COMMIT_MESSAGE" value="New API ( UserProfile and UserProfileImage)" />
+    <option name="LAST_COMMIT_MESSAGE" value="update FAQ api and method" />
   </component>
 </project>

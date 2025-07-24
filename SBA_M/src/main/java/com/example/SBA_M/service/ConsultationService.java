@@ -27,4 +27,6 @@ public interface ConsultationService {
     Page<ConsultationResponse> getConsultantConsultations(Pageable pageable);
 
     Page<ConsultationResponse> searchConsultantConsultations(String keyword, Pageable pageable);
+
+    ConsultationResponse getConsultationById(Long consultationId);
 }
