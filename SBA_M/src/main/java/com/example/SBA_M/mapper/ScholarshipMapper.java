@@ -45,6 +45,7 @@ public class ScholarshipMapper {
         List<ScholarshipResponse.UniversityShort> uniList = s.getUniversities().stream().map(u -> {
             ScholarshipResponse.UniversityShort us = new ScholarshipResponse.UniversityShort();
             us.setId(u.getId());
+            us.setShortName(u.getUniversityCode());
             return us;
         }).collect(Collectors.toList());
         r.setUniversities(uniList);

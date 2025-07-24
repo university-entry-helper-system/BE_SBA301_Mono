@@ -128,4 +128,25 @@ public class MinioService {
             throw new RuntimeException("Failed to upload file to MinIO", e);
         }
     }
+
+
+    public void deleteFileFromMinIO(String fileName) {
+        try {
+            log.info("Deleting file {} from bucket {}", fileName, properties.getBucket());
+
+            // Tạo yêu cầu xóa đối tượng (file) từ MinIO
+            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+                    .bucket(properties.getBucket())
+                    .key(fileName)
+                    .build();
+
+            // Xóa đối tượng (file) khỏi MinIO
+            s3Client.deleteObject(deleteRequest);
+            log.info("File {} deleted successfully from bucket {}", fileName, properties.getBucket());
+
+        } catch (S3Exception e) {
+            log.error("Error deleting file from MinIO: {} - {}", e.getMessage(), e.awsErrorDetails().errorMessage(), e);
+            throw new RuntimeException("Failed to delete file from MinIO", e);
+        }
+    }
 }
