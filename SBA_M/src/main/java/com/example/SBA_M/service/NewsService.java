@@ -14,6 +14,8 @@ public interface NewsService {
      */
     PageResponse<NewsResponse> getNewsPaginated(int page, int size);
 
+    PageResponse<NewsResponse> getNewsPaginatedByStatus(int page, int size);
+
     /**
      * Get news by ID
      */
