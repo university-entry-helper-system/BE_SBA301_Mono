@@ -54,6 +54,7 @@ public enum ErrorCode {
     CAMPUS_CODE_ALREADY_EXISTS(1033, "Campus code already exists within this university", HttpStatus.BAD_REQUEST),
     CAMPUS_TYPE_NOT_FOUND(1034, "Campus type not found", HttpStatus.NOT_FOUND),
     CAMPUS_TYPE_NAME_EXISTS(1035, "Campus type name already exists", HttpStatus.BAD_REQUEST),
+    ENTITY_NOT_FOUND(1036, "Entity not found", HttpStatus.NOT_FOUND),
     ;
     private final int code;
     private final String message;
