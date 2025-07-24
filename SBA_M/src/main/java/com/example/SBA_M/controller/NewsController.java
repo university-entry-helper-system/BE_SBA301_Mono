@@ -44,6 +44,19 @@ public class NewsController {
                 .build();
     }
 
+    @Operation(summary = "Get paginated news by news status")
+    @GetMapping("/paginated-status")
+    public ApiResponse<PageResponse<NewsResponse>> getNewsPaginatedNewStatus(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PageResponse<NewsResponse> result = newsService.getNewsPaginatedByStatus(page, size);
+        return ApiResponse.<PageResponse<NewsResponse>>builder()
+                .code(1000)
+                .message("News fetched successfully")
+                .result(result)
+                .build();
+    }
+
     @Operation(summary = "Get news by ID")
     @GetMapping("/{id}")
     public ApiResponse<NewsResponse> getNewsById(@PathVariable Long id) {

@@ -71,6 +71,25 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    public PageResponse<NewsResponse> getNewsPaginatedByStatus(int page, int size) {
+        log.info("Fetching paginated news with page={}, size={}", page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<NewsDocument> newsPage = newsReadRepository.findByStatusAndNewsStatus(Status.ACTIVE, NewsStatus.PUBLISHED, pageable);
+
+        List<NewsResponse> items = newsPage.getContent().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+        log.info("Fetched {} news items for page {}, size {}", items.size(), page, size);
+        return PageResponse.<NewsResponse>builder()
+                .page(newsPage.getNumber())
+                .size(newsPage.getSize())
+                .totalElements(newsPage.getTotalElements())
+                .totalPages(newsPage.getTotalPages())
+                .items(items)
+                .build();
+    }
+
+    @Override
     public NewsResponse getNewsById(Long id) {
         log.info("Fetching news with id: {}", id);
 

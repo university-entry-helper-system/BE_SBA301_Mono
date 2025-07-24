@@ -87,7 +87,9 @@ public class SecurityConfig {
                         "/api/v1/majors/**",
                         "api/v1/graduation-score/**",
                         "api/v1/faqs/**",
+                        "api/v1/scores/**",
                         "/api/v1/pdf-export/**"
+                        
                 ).permitAll()
                     .requestMatchers("/ws-consultations/**").permitAll() // Allow WebSocket endpoint
 

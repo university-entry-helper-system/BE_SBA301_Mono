@@ -3,6 +3,7 @@ package com.example.SBA_M.service;
 import com.example.SBA_M.dto.request.ConsultationAnswerRequest;
 import com.example.SBA_M.dto.request.ConsultationCreateRequest;
 import com.example.SBA_M.dto.response.ConsultationResponse;
+import com.example.SBA_M.dto.response.GroupedConsultationResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,7 +25,7 @@ public interface ConsultationService {
 
     void cancelConsultation(Long consultationId);
 
-    Page<ConsultationResponse> getConsultantConsultations(Pageable pageable);
+    Page<GroupedConsultationResponse> getConsultantConsultations(Pageable pageable);
 
     Page<ConsultationResponse> searchConsultantConsultations(String keyword, Pageable pageable);
 

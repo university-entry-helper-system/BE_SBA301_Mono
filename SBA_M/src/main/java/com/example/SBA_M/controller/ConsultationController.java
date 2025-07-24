@@ -4,6 +4,7 @@ import com.example.SBA_M.dto.request.ConsultationAnswerRequest;
 import com.example.SBA_M.dto.request.ConsultationCreateRequest;
 import com.example.SBA_M.dto.response.ApiResponse;
 import com.example.SBA_M.dto.response.ConsultationResponse;
+import com.example.SBA_M.dto.response.GroupedConsultationResponse;
 import com.example.SBA_M.service.ConsultationService;
 import com.example.SBA_M.service.websocket.WebSocketNotificationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -172,14 +173,14 @@ public class ConsultationController {
     @Operation(summary = "Consultant views all their consultations (paginated)")
     @PreAuthorize("hasAnyRole('CONSULTANT', 'ADMIN')")
     @GetMapping("/consultant")
-    public ApiResponse<Page<ConsultationResponse>> getConsultantConsultations(
+    public ApiResponse<Page<GroupedConsultationResponse>> getConsultantConsultations(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<ConsultationResponse> response = consultationService.getConsultantConsultations(
+        Page<GroupedConsultationResponse> response = consultationService.getConsultantConsultations(
                 PageRequest.of(page, size)
         );
-        return ApiResponse.<Page<ConsultationResponse>>builder()
+        return ApiResponse.<Page<GroupedConsultationResponse>>builder()
                 .code(1000)
                 .message("Consultant consultations fetched successfully.")
                 .result(response)

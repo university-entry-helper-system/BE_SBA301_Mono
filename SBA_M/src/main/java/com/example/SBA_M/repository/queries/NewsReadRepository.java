@@ -1,6 +1,7 @@
 package com.example.SBA_M.repository.queries;
 
 import com.example.SBA_M.entity.queries.NewsDocument;
+import com.example.SBA_M.utils.NewsStatus;
 import com.example.SBA_M.utils.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import java.util.List;
 public interface NewsReadRepository extends MongoRepository<NewsDocument, Long> {
 
     Page<NewsDocument> findByStatus(Status status, Pageable pageable);
+    Page<NewsDocument> findByStatusAndNewsStatus(Status status, NewsStatus newsStatus, Pageable pageable);
 
     /**
      * Lấy top N hot news theo tiêu chí:
