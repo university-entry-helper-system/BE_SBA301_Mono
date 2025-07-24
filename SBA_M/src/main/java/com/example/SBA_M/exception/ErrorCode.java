@@ -55,6 +55,8 @@ public enum ErrorCode {
     CAMPUS_TYPE_NOT_FOUND(1034, "Campus type not found", HttpStatus.NOT_FOUND),
     CAMPUS_TYPE_NAME_EXISTS(1035, "Campus type name already exists", HttpStatus.BAD_REQUEST),
     ENTITY_NOT_FOUND(1036, "Entity not found", HttpStatus.NOT_FOUND),
+    VNPAY_SIGNING_FAILED(1037, "VNPay signing failed", HttpStatus.INTERNAL_SERVER_ERROR),
+    BILL_NOT_FOUND(1038, "Bill not found", HttpStatus.NOT_FOUND),
     ;
     private final int code;
     private final String message;
