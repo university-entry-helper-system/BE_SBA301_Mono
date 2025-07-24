@@ -34,7 +34,20 @@ public class ScoreServiceImpl implements ScoreService {
                 .orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_FOUND, "Score not found"));
         return scoreMapper.toResponse(score);
     }
-
+    @Override
+    public List<ScoreResponse> getAllScores(Integer year, String type) {
+        List<Score> scores;
+        if (year != null && type != null) {
+            scores = scoreRepository.findByYearAndType(year, type);
+        } else if (year != null) {
+            scores = scoreRepository.findByYear(year);
+        } else if (type != null) {
+            scores = scoreRepository.findByType(type);
+        } else {
+            scores = scoreRepository.findAll();
+        }
+        return scores.stream().map(scoreMapper::toResponse).collect(Collectors.toList());
+    }
     @Override
     public ScoreResponse createScore(ScoreRequest request) {
         Score score = scoreMapper.toEntity(request);

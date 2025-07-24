@@ -15,16 +15,16 @@ public class ScoreController {
 
     private final ScoreService scoreService;
 
-    @GetMapping
-    public List<ScoreResponse> getAllScores() {
-        return scoreService.getAllScores();
-    }
-
     @GetMapping("/{id}")
     public ScoreResponse getScoreById(@PathVariable Long id) {
         return scoreService.getScoreById(id);
     }
-
+    @GetMapping
+    public List<ScoreResponse> getAllScores(
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) String type) {
+        return scoreService.getAllScores(year, type);
+    }
     @PostMapping
     public ScoreResponse createScore(@RequestBody ScoreRequest request) {
         return scoreService.createScore(request);
