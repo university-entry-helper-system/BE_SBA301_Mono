@@ -11,8 +11,6 @@ import java.util.UUID;
 @Data
 @RequiredArgsConstructor
 public class ConsultationCreateRequest {
-    @NotNull(message = "Sender ID is required.")
-    private UUID user;
 
     @NotNull(message = "Receiver ID is required.")
     private UUID consultant;
