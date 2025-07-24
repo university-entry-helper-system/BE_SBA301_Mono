@@ -11,4 +11,5 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     List<Score> findByYearAndType(Integer year, String type);
     List<Score> findByYear(Integer year);
     List<Score> findByType(String type);
+    List<Score> findByYearAndTypeAndSubject(Integer year, String type, String subject);
 }

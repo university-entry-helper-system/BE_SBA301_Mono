@@ -34,7 +34,13 @@ public class ScoreController {
     public ScoreResponse updateScore(@PathVariable Long id, @RequestBody ScoreRequest request) {
         return scoreService.updateScore(id, request);
     }
-
+    @GetMapping("/filter")
+    public List<ScoreResponse> getScoresByYearTypeAndSubject(
+            @RequestParam Integer year,
+            @RequestParam String type,
+            @RequestParam String subject) {
+        return scoreService.getScoresByYearTypeAndSubject(year, type, subject);
+    }
     @DeleteMapping("/{id}")
     public void deleteScore(@PathVariable Long id) {
         scoreService.deleteScore(id);
