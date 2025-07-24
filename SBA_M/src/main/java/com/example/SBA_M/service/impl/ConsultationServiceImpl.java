@@ -3,6 +3,7 @@ package com.example.SBA_M.service.impl;
 import com.example.SBA_M.dto.request.ConsultationAnswerRequest;
 import com.example.SBA_M.dto.request.ConsultationCreateRequest;
 import com.example.SBA_M.dto.response.ConsultationResponse;
+import com.example.SBA_M.dto.response.GroupedConsultationResponse;
 import com.example.SBA_M.entity.commands.Account;
 import com.example.SBA_M.entity.commands.Consultation;
 import com.example.SBA_M.exception.AppException;
@@ -15,6 +16,7 @@ import com.example.SBA_M.utils.ConsultationStatus;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
@@ -23,7 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -166,11 +171,28 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ConsultationResponse> getConsultantConsultations(Pageable pageable) {
+    public Page<GroupedConsultationResponse> getConsultantConsultations(Pageable pageable) {
         Account account = accountRepository.findByUsername(getCurrentUsername())
-                .orElseThrow(() -> new EntityNotFoundException("Account not found"));;
-        return consultationRepository.findByConsultantId(account.getId(), pageable)
+                .orElseThrow(() -> new EntityNotFoundException("Account not found"));
+
+        Page<ConsultationResponse> consultationPage = consultationRepository
+                .findByConsultantId(account.getId(), pageable)
                 .map(consultationMapper::toResponse);
+
+        // Group consultations by sender ID
+        Map<UUID, List<ConsultationResponse>> groupedBySenderId = consultationPage.getContent()
+                .stream()
+                .collect(Collectors.groupingBy(response -> response.getSender().getId()));
+
+        // Convert grouped data to GroupedConsultationResponse
+        List<GroupedConsultationResponse> groupedResponses = groupedBySenderId.entrySet().stream()
+                .map(entry -> GroupedConsultationResponse.builder()
+                        .senderId(entry.getKey())
+                        .consultations(entry.getValue())
+                        .build())
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(groupedResponses, pageable, consultationPage.getTotalElements());
     }
 
     @Override

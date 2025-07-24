@@ -1,6 +1,7 @@
 package com.example.SBA_M.controller;
 
 import com.example.SBA_M.dto.response.ConsultationResponse;
+import com.example.SBA_M.utils.NotificationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -137,11 +138,5 @@ public class WebSocketConsultationController {
         private java.time.Instant timestamp;
     }
 
-    public enum NotificationType {
-        NEW_CONSULTATION,
-        CONSULTATION_ANSWERED,
-        CONSULTATION_UPDATED,
-        CONSULTATION_CANCELLED,
-        STATS_UPDATE
-    }
+
 }
