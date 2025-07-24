@@ -44,6 +44,12 @@ public class ConsultationServiceImpl implements ConsultationService {
        Account sender = accountRepository.findByUsername(getCurrentUsername())
                 .orElseThrow(() -> new EntityNotFoundException("Account not found"));
 
+        if (sender.getRemainingConsultations() <= 0) {
+            throw new AppException(ErrorCode.INVALID_OPERATION, "No remaining consultations. Please buy a package.");
+        }
+        sender.setRemainingConsultations(sender.getRemainingConsultations() - 1);
+        accountRepository.save(sender);
+
         Account consultant = accountRepository.findById(request.getConsultant())
                 .orElseThrow(() -> new EntityNotFoundException("Consultant not found"));
 

@@ -57,6 +57,9 @@ public class Account {
     @Column(name = "login_count")
     private Integer loginCount = 0;
 
+    @Column(name = "remaining_consultations")
+    private int remainingConsultations = 0;
+
     @OneToOne
     @JoinColumn(name = "account") // same as Account.id
     private ConsultantProfile consultantProfile;
@@ -68,6 +71,14 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "account_subscription_package",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "subscription_package_id")
+    )
+    private Set<SubscriptionPackage> subscriptionPackages = new HashSet<>();
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

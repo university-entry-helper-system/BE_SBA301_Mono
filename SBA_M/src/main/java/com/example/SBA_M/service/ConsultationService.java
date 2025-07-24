@@ -30,4 +30,5 @@ public interface ConsultationService {
     Page<ConsultationResponse> searchConsultantConsultations(String keyword, Pageable pageable);
 
     ConsultationResponse getConsultationById(Long consultationId);
+
 }

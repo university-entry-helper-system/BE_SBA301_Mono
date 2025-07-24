@@ -26,6 +26,7 @@ public class AccountResponse {
     RoleResponse role;
     Integer loginCount;
     Instant lastLoginAt;
+    Integer remainingConsultations;
     String createdBy;
     String updatedBy;
     Instant createdAt;

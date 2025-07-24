@@ -321,5 +321,17 @@ public class AccountController {
                 .result(accountService.getAccountStats())
                 .build();
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONSULTANT') or @accountServiceImpl.isAccountOwner(#accountId)")
+    @Operation(summary = "Get user's remaining consultations")
+    @GetMapping("/{accountId}/remaining-consultations")
+    public ApiResponse<Integer> getRemainingConsultations(@PathVariable UUID accountId) {
+        AccountResponse account = accountService.getUserById(accountId);
+        return ApiResponse.<Integer>builder()
+                .code(1000)
+                .message("Remaining consultations fetched successfully")
+                .result(account.getRemainingConsultations())
+                .build();
+    }
 }
 

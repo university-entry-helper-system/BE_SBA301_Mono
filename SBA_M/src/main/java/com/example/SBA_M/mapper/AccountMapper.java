@@ -47,6 +47,7 @@ public interface AccountMapper {
     @Mapping(target = "lastLoginAt", source = "lastLoginAt")
     @Mapping(target = "createdBy", source = "createdBy")
     @Mapping(target = "updatedBy", source = "updatedBy")
+    @Mapping(target = "remainingConsultations", source = "remainingConsultations")
     AccountResponse toAccountResponse(Account account);
 
     // Cập nhật một Account entity hiện có từ UserUpdateRequest
