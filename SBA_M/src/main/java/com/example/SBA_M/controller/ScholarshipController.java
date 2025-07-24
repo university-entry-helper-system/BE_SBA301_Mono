@@ -19,11 +19,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/scholarships")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+
 public class ScholarshipController {
 
     private final ScholarshipService scholarshipService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Tạo học bổng mới", description = "Truyền thông tin học bổng và danh sách ID trường áp dụng.")
     @PostMapping("/create")
     public ApiResponse<ScholarshipResponse> createScholarship(@Valid @RequestBody ScholarshipRequest request) {
@@ -38,6 +39,7 @@ public class ScholarshipController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Cập nhật học bổng", description = "Cập nhật thông tin học bổng theo ID.")
     @PutMapping("/{id}")
     public ApiResponse<ScholarshipResponse> updateScholarship(
@@ -53,6 +55,7 @@ public class ScholarshipController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Xóa học bổng", description = "Xóa học bổng theo ID.")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteScholarship(@PathVariable Integer id) {
@@ -62,7 +65,7 @@ public class ScholarshipController {
                 .message("Xóa học bổng thành công")
                 .build();
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @Operation(summary = "Lấy học bổng theo ID", description = "Trả về thông tin chi tiết học bổng.")
     @GetMapping("/{id}")
     public ApiResponse<ScholarshipResponse> getScholarshipById(@PathVariable Integer id) {
@@ -73,7 +76,7 @@ public class ScholarshipController {
                 .result(ScholarshipMapper.mapToResponse(result))
                 .build();
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @Operation(summary = "Lấy tất cả học bổng", description = "Trả về danh sách toàn bộ học bổng.")
     @GetMapping
     public ApiResponse<List<ScholarshipResponse>> getAllScholarships() {
@@ -83,7 +86,7 @@ public class ScholarshipController {
                 .result(ScholarshipMapper.mapToResponseList(scholarshipService.getAll()))
                 .build();
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @Operation(summary = "Lấy học bổng theo trường", description = "Truyền ID trường, trả về học bổng tương ứng.")
     @GetMapping("/by-university/{universityId}")
     public ApiResponse<List<ScholarshipResponse>> getByUniversity(@PathVariable Integer universityId) {
@@ -93,7 +96,7 @@ public class ScholarshipController {
                 .result(ScholarshipMapper.mapToResponseList(scholarshipService.getByUniversity(universityId)))
                 .build();
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @Operation(summary = "Lấy học bổng theo loại điều kiện", description = "GPA hoặc điểm thi THPT.")
     @GetMapping("/by-eligibility/{type}")
     public ApiResponse<List<ScholarshipResponse>> getByEligibilityType(@PathVariable Scholarship.EligibilityType type) {
@@ -103,7 +106,7 @@ public class ScholarshipController {
                 .result(ScholarshipMapper.mapToResponseList(scholarshipService.getByEligibilityType(type)))
                 .build();
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @Operation(summary = "Lấy học bổng theo dạng giá trị", description = "Phần trăm học phí hoặc số tiền cụ thể.")
     @GetMapping("/by-value/{type}")
     public ApiResponse<List<ScholarshipResponse>> getByValueType(@PathVariable Scholarship.ValueType type) {
@@ -113,7 +116,7 @@ public class ScholarshipController {
                 .result(ScholarshipMapper.mapToResponseList(scholarshipService.getByValueType(type)))
                 .build();
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @Operation(summary = "Tìm kiếm học bổng theo nhiều tiêu chí")
     @PostMapping("/search")
     public ApiResponse<List<ScholarshipResponse>> search(@RequestBody ScholarshipSearchRequest request) {

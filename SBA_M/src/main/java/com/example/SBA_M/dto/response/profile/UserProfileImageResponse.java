@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 public class UserProfileImageResponse {
-
+    private Long id;
+    private Long UserProfileId;
     private ImageType imageType;  // Loại ảnh (CCCD_1, CCCD_2, v.v.)
     private String imageUrl;      // URL của ảnh đã tải lên MinIO
     private String imageName;     // Tên ảnh

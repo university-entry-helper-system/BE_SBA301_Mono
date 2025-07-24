@@ -34,6 +34,8 @@ public class UserProfileImageMapper {
 
     public static UserProfileImageResponse mapToResponse(UserProfileImage userProfileImage) {
         UserProfileImageResponse response = new UserProfileImageResponse();
+        response.setId(userProfileImage.getId());  // ID của ảnh
+        response.setUserProfileId(userProfileImage.getUserProfile().getId());
         response.setImageType(userProfileImage.getImageType());  // Loại ảnh
         response.setImageUrl(userProfileImage.getImageUrl());    // URL ảnh
         response.setImageName(userProfileImage.getImageName());  // Tên ảnh

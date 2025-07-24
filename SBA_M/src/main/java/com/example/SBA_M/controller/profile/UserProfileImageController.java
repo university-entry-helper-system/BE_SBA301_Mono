@@ -8,9 +8,10 @@ import com.example.SBA_M.service.profile.UserProfileImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/v1/user-profile")
@@ -19,12 +20,14 @@ public class UserProfileImageController {
 
     private final UserProfileImageService userProfileImageService;
 
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @Operation(summary = "Thêm ảnh vào hồ sơ người dùng", description = "Tải ảnh lên MinIO và trả về URL của ảnh đã tải lên.")
     @PostMapping("/{userProfileId}/images")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<UserProfileImageResponse> addImageToUserProfile(
             @PathVariable Long userProfileId,
-            @Valid @RequestBody UserProfileImageListRequest.UserProfileImageRequest request) {
+            @RequestBody UserProfileImageListRequest.UserProfileImageRequest request) {
 
         // Gọi service để xử lý thêm ảnh vào hồ sơ người dùng và lấy URL
         UserProfileImageResponse response = userProfileImageService.addImageToUserProfile(userProfileId, request);
@@ -37,6 +40,7 @@ public class UserProfileImageController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @Operation(summary = "Lấy ảnh theo loại và UserProfile ID", description = "Trả về ảnh từ MinIO theo loại ảnh và ID hồ sơ người dùng.")
     @PostMapping("/images")
     @ResponseStatus(HttpStatus.OK)
@@ -53,6 +57,7 @@ public class UserProfileImageController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @Operation(summary = "Xóa ảnh theo loại và UserProfile ID", description = "Xóa ảnh từ MinIO theo loại ảnh và ID hồ sơ người dùng.")
     @DeleteMapping("/images")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -67,12 +72,13 @@ public class UserProfileImageController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @Operation(summary = "Cập nhật ảnh cho UserProfile", description = "Cập nhật ảnh cho UserProfile theo loại ảnh.")
     @PutMapping("/{userProfileId}/images")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<UserProfileImageResponse> updateImageForUserProfile(
             @PathVariable Long userProfileId,
-            @Valid @RequestBody UserProfileImageListRequest.UserProfileImageRequest request) {
+             @RequestBody UserProfileImageListRequest.UserProfileImageRequest request) {
 
         // Gọi service để cập nhật ảnh cho UserProfile
         UserProfileImageResponse response = userProfileImageService.updateImageForUserProfile(userProfileId, request);

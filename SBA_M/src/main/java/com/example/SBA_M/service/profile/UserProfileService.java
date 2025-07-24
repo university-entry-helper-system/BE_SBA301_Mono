@@ -9,4 +9,6 @@ public interface UserProfileService {
     UserProfile createUserProfile(UserProfileCreateRequest request);
     public void deleteUserProfile(Long userProfileId);
     public UserProfile updateUserProfile(Long userProfileId, UserProfileUpdateRequest updatedUserProfile);
+    public UserProfile getUserProfileByAccountId(String accountId);
+    public UserProfile getUserProfileById(Long userProfileId);
 }

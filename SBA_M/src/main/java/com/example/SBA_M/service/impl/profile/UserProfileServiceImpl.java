@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,29 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepository userProfileRepository;
     private final UserProfileImageRepository userProfileImageRepository;
     private final MinioService minioService;
+
+
+    @Override
+    public UserProfile getUserProfileByAccountId(String accountId){
+        // Tìm kiếm UserProfile theo accountId
+        return userProfileRepository.findByUserId(UUID.fromString(accountId));
+    }
+
+    @Override
+    public UserProfile getUserProfileById(Long userProfileId) {
+        // Tìm kiếm UserProfile theo ID
+        return userProfileRepository.findById(userProfileId)
+                .orElseThrow(() -> new IllegalArgumentException("UserProfile không tồn tại với ID: " + userProfileId));
+    }
+
+
+
+
+
+
+
+
+
 
 
     @Override
