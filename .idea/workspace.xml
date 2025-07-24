@@ -6,12 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3d058bf6-0f27-4e4a-a926-b80cebd29818" name="Changes" comment="update FAQ api and method">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-<<<<<<< Updated upstream
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/UniversityMajorAdmissionRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/dto/request/UniversityMajorAdmissionRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/UniversityMajorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/repository/commands/UniversityMajorRepository.java" afterDir="false" />
-=======
-      <change beforePath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/ConsultantProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/src/main/java/com/example/SBA_M/controller/ConsultantProfileController.java" afterDir="false" />
->>>>>>> Stashed changes
+      <change beforePath="$PROJECT_DIR$/SBA_M/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SBA_M/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,21 +31,21 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
+    &quot;lastFilter&quot;: {
     &quot;state&quot;: &quot;OPEN&quot;,
     &quot;assignee&quot;: &quot;sonnamnguyen&quot;
-  }
-}</component>
+    }
+    }</component>
   <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/university-entry-helper-system/BE_SBA301_Mono.git&quot;,
     &quot;accountId&quot;: &quot;c91efdee-37a4-4c32-b14b-0ee203569aa0&quot;
-  }
-}</component>
+    }
+    }</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
-  &quot;isMigrated&quot;: true
-}</component>
+    &quot;isMigrated&quot;: true
+    }</component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
       <MavenImportingSettings>
@@ -63,8 +58,8 @@
     <option name="jreName" value="#JAVA_HOME" />
   </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 5
-}</component>
+    &quot;associatedIndex&quot;: 5
+    }</component>
   <component name="ProjectId" id="2yOq920aSMEgv3BLhyD8gJ5l7io" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -74,7 +69,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
+    &quot;keyToString&quot;: {
     &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
     &quot;Maven.SBA_M [install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.backend-service [clean].executor&quot;: &quot;Run&quot;,
@@ -98,8 +93,8 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.rmicompiler&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-  }
-}</component>
+    }
+    }</component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.example.SBA_M.dto.response" />
@@ -168,8 +163,7 @@
       <workItem from="1753145777444" duration="274000" />
       <workItem from="1753194925314" duration="4612000" />
       <workItem from="1753280940430" duration="1513000" />
-      <workItem from="1753284350453" duration="3709000" />
-      <workItem from="1753313701546" duration="151000" />
+      <workItem from="1753284350453" duration="171000" />
     </task>
     <task id="LOCAL-00001" summary="update FAQ api and method">
       <option name="closed" value="true" />
