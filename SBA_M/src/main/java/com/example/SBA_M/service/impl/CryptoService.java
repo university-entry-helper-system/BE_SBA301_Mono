@@ -20,7 +20,7 @@ public class CryptoService {
 
     private final Mac mac = Mac.getInstance(DefaultValue.HMAC_SHA512);
 
-    @Value("${vnpay.secret-key}")
+    @Value("${payment.vnpay.secret-key}")
     private String secretKey;
 
     public CryptoService() throws NoSuchAlgorithmException {

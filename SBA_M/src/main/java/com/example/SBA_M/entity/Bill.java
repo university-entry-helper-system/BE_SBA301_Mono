@@ -31,7 +31,7 @@ public class Bill extends AbstractEntity<Long> {
     Double total;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "bill_status", nullable = false)
     BillStatus billStatus;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {

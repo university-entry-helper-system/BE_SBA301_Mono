@@ -6,7 +6,7 @@ import com.example.SBA_M.dto.response.BillResponse;
 
 import java.io.IOException;
 
-public interface BillSevice {
+public interface BillService {
     public BillResponse processPayment(final BillRequest request);
     public BillDTO markBooked(Long billId) throws IOException;
     }

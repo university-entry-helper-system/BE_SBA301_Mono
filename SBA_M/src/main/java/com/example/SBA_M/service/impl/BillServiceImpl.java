@@ -13,6 +13,7 @@ import com.example.SBA_M.exception.ErrorCode;
 import com.example.SBA_M.repository.commands.AccountRepository;
 import com.example.SBA_M.repository.commands.BillRepository;
 import com.example.SBA_M.repository.commands.PaymentRepository;
+import com.example.SBA_M.service.BillService;
 import com.example.SBA_M.service.PaymentService;
 import com.example.SBA_M.utils.BillStatus;
 import com.example.SBA_M.utils.PaymentStatus;
@@ -35,7 +36,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-public class BillSeviceImpl {
+public class BillServiceImpl implements BillService {
     PaymentService paymentService;
     BillRepository billRepository;
     AccountRepository accountRepository;

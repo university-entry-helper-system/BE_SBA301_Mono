@@ -7,7 +7,7 @@ import com.example.SBA_M.constant.VNPayParams;
 import com.example.SBA_M.constant.VnpIpnResponseConst;
 import com.example.SBA_M.dto.response.IpnResponse;
 import com.example.SBA_M.exception.AppException;
-import com.example.SBA_M.service.BillSevice;
+import com.example.SBA_M.service.BillService;
 import com.example.SBA_M.service.IpnHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import java.util.Map;
 public class VNPayIpnHandler implements IpnHandler {
 
     private final VNPayService vnPayService;
-    private final BillSevice billSevice;
+    private final BillService billSevice;
 
 
     public IpnResponse process(Map<String, String> params) {
