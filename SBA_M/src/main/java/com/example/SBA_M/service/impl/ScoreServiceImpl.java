@@ -27,6 +27,11 @@ public class ScoreServiceImpl implements ScoreService {
                 .map(scoreMapper::toResponse)
                 .collect(Collectors.toList());
     }
+    @Override
+    public List<ScoreResponse> getScoresByYearTypeAndSubject(Integer year, String type, String subject) {
+        List<Score> scores = scoreRepository.findByYearAndTypeAndSubject(year, type, subject);
+        return scores.stream().map(scoreMapper::toResponse).collect(Collectors.toList());
+    }
 
     @Override
     public ScoreResponse getScoreById(Long id) {

@@ -12,4 +12,6 @@ public interface ScoreService {
     ScoreResponse updateScore(Long id, ScoreRequest request);
     void deleteScore(Long id);
     List<ScoreResponse> getAllScores(Integer year, String type);
+    List<ScoreResponse> getScoresByYearTypeAndSubject(Integer year, String type, String subject);
+
 }
