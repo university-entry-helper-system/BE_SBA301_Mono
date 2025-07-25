@@ -51,6 +51,21 @@ public class SearcherStatsController {
     }
 
 
+    @Operation(summary = "Trường được tìm kiếm nhiều nhất trong ngày hom nay", description = "Trả về trường có lượt tìm kiếm cao nhất vào ngày hien tai")
+    @PostMapping("/top-today")
+    public ApiResponse<UniversitySearchStatResponse> getTopUniversityToDay(
+           ) {
+
+        UniversitySearchStatResponse top = searchCountService.getTopUniversityToDay();
+
+        return ApiResponse.<UniversitySearchStatResponse>builder()
+                .code(1000)
+                .message("Lấy trường được tìm kiếm nhiều nhất thành công")
+                .result(top)
+                .build();
+    }
+
+
     @Operation(summary = "Trường được tìm kiếm nhiều nhất trong khoảng thời gian", description = "Trả về trường có tổng lượt tìm kiếm cao nhất trong khoảng from - to")
     @PostMapping("/top-in-range")
     public ApiResponse<UniversitySearchStatResponse> getTopUniversityInRange(@RequestBody DateRangeRequest request) {

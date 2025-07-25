@@ -60,6 +60,9 @@ public class UniversityAdmissionMethodController {
             @PathVariable Integer methodId
     ) {
         List<UniversityAdmissionMethodSummaryResponse> result = universityAdmissionMethodService.getSchoolsByMethod(methodId);
+        if (result != null) {
+            searchCountService.recordSearch(methodId);
+        }
         return ApiResponse.<List<UniversityAdmissionMethodSummaryResponse>>builder()
                 .code(1000)
                 .message("Schools using the method fetched successfully")

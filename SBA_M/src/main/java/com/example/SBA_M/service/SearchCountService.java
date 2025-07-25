@@ -16,7 +16,7 @@ public interface SearchCountService {
     List<UniversitySearchTrendResponse> getUniversitySearchTrends(LocalDate from, LocalDate to);
     UniversitySearchStatResponse getTopUniversityInRange(LocalDate from, LocalDate to);
     UniversitySearchTrendResponse getTrendOfUniversity(Integer universityId, LocalDate from, LocalDate to);
-
+    public UniversitySearchStatResponse getTopUniversityToDay();
 
 
     SearchCount getById(Long id);

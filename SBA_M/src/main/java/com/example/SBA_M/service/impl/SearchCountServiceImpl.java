@@ -76,6 +76,23 @@ public class SearchCountServiceImpl implements SearchCountService {
                 top.getSearchCount()
         );
     }
+    @Override
+    public UniversitySearchStatResponse getTopUniversityToDay() {
+        LocalDate date = LocalDate.now();
+        List<SearchCount> records = searchCountRepository.findAllByCreatedAtBetween(date, date);
+
+        if (records.isEmpty()) return null;
+
+        SearchCount top = records.stream()
+                .max(Comparator.comparingLong(SearchCount::getSearchCount))
+                .orElseThrow(); // không thể null ở đây vì vừa check empty ở trên
+
+        return new UniversitySearchStatResponse(
+                top.getUniversity().getId(),
+                top.getUniversity().getName(),
+                top.getSearchCount()
+        );
+    }
 
 
     @Override
