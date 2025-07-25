@@ -68,6 +68,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints (no authentication required)
                 .requestMatchers(
+                        "/", // Cho phép truy cập root URL
+                        "/api/v1/payments/vnpay_ipn",
                         "/api/v1/auth/**",
                         "/api/v1/accounts/check-username",
                         "/api/v1/accounts/check-email",
@@ -82,14 +84,13 @@ public class SecurityConfig {
                         "/api/v1/university-majors/**",
                         "/api/v1/university-admission-methods/**",
                         "/api/v1/subject-combinations/**",
-                        "api/v1/provinces/**",
+                        "/api/v1/provinces/**",
                         "/api/v1/admission-methods/**",
                         "/api/v1/majors/**",
-                        "api/v1/graduation-score/**",
-                        "api/v1/faqs/**",
-                        "api/v1/scores/**",
+                        "/api/v1/graduation-score/**",
+                        "/api/v1/faqs/**",
+                        "/api/v1/scores/**",
                         "/api/v1/pdf-export/**"
-                        
                 ).permitAll()
                     .requestMatchers("/ws-consultations/**").permitAll() // Allow WebSocket endpoint
 
@@ -111,7 +112,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173")); // Replace with your frontend origin
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "https://56f5c5883f3d.ngrok-free.app" // Thêm domain ngrok
+        )); // Replace with your frontend origin
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*")); // Allow all headers
         configuration.setAllowCredentials(true); // Allow credentials like cookies (for refresh tokens, etc.)
