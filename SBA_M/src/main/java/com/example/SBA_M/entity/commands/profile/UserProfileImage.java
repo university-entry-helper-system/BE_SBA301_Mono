@@ -36,6 +36,7 @@ public class UserProfileImage {
         CCCD_2,
         DGNL,
         THPT,
-        HOCBA
+        HOCBA11,
+        HOCBA12,
     }
 }

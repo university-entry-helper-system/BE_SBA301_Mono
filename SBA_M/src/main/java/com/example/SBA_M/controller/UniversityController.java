@@ -7,6 +7,7 @@ import com.example.SBA_M.dto.response.PageResponse;
 import com.example.SBA_M.dto.response.UniversityResponse;
 import com.example.SBA_M.entity.commands.University;
 import com.example.SBA_M.entity.queries.UniversityDocument;
+import com.example.SBA_M.service.SearchCountService;
 import com.example.SBA_M.service.UniversityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -23,6 +24,7 @@ import org.springframework.http.MediaType;
 public class UniversityController {
 
     private final UniversityService universityService;
+    private final SearchCountService searchCountService;
 
     @Operation(summary = "Get all universities (search, pagination, sort)")
     @GetMapping
@@ -46,6 +48,9 @@ public class UniversityController {
     @GetMapping("/{id}")
     public ApiResponse<UniversityResponse> getUniversityById(@PathVariable Integer id) {
         UniversityResponse university = universityService.getUniversityById(id);
+        if (university != null) {
+            searchCountService.recordSearch(id);
+        }
         return ApiResponse.<UniversityResponse>builder()
                 .code(1000)
                 .message("University fetched successfully")
